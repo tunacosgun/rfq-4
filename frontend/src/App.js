@@ -35,6 +35,10 @@ function App() {
             <Routes>
               {/* Customer Routes */}
               <Route path="/" element={<HomePage />} />
+              <Route path="/urunler" element={<ProductsPage />} />
+              <Route path="/ozellikler" element={<FeaturesPage />} />
+              <Route path="/hakkimizda" element={<AboutPage />} />
+              <Route path="/iletisim" element={<ContactPage />} />
               <Route path="/urun/:id" element={<ProductDetailPage />} />
               <Route path="/teklif-sepeti" element={<QuoteCartPage />} />
               <Route path="/teklif-gonder" element={<QuoteFormPage />} />
