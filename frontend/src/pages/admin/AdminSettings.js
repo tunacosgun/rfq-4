@@ -82,7 +82,54 @@ const AdminSettings = () => {
   const fetchSettings = async () => {
     try {
       const response = await axios.get(`${API}/settings`);
-      setSettings(response.data);
+      // Merge with default values to ensure all fields exist
+      const defaultSettings = {
+        company_name: '',
+        company_address: '',
+        company_phone: '',
+        company_email: '',
+        logo_url: '',
+        home_hero_title: '',
+        home_hero_subtitle: '',
+        home_features_title: '',
+        home_features_subtitle: '',
+        home_products_title: '',
+        home_products_subtitle: '',
+        home_cta_title: '',
+        home_cta_subtitle: '',
+        products_hero_title: '',
+        products_hero_subtitle: '',
+        products_empty_text: '',
+        features_hero_title: '',
+        features_hero_subtitle: '',
+        features_cta_title: '',
+        features_cta_subtitle: '',
+        about_hero_title: '',
+        about_hero_subtitle: '',
+        about_title: '',
+        about_description: '',
+        about_image_url: '',
+        about_stat1_number: '',
+        about_stat1_label: '',
+        about_stat2_number: '',
+        about_stat2_label: '',
+        about_stat3_number: '',
+        about_stat3_label: '',
+        about_stat4_number: '',
+        about_stat4_label: '',
+        about_mission: '',
+        about_vision: '',
+        about_values: '',
+        contact_hero_title: '',
+        contact_hero_subtitle: '',
+        contact_form_title: '',
+        contact_form_subtitle: '',
+        contact_work_hours: '',
+        footer_description: '',
+        footer_newsletter_title: '',
+        footer_newsletter_subtitle: ''
+      };
+      setSettings({ ...defaultSettings, ...response.data });
     } catch (error) {
       toast.error('Ayarlar yüklenemedi');
     } finally {
