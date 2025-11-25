@@ -60,7 +60,17 @@ const HomePage = () => {
   }
 
   return (
-    <div style={styles.page}>
+    <>
+      <style>{`
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12) !important; }
+        .product-card:hover img { transform: scale(1.05); }
+        .add-to-cart-btn:hover { background: var(--primary-700) !important; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3); }
+        .nav-link-item:hover { color: var(--primary-600) !important; }
+        .nav-link-item::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--primary-600); transition: width 0.3s ease; }
+        .nav-link-item:hover::after { width: 100%; }
+        .contact-card:hover { transform: translateY(-4px); border-color: var(--primary-200); }
+      `}</style>
+      <div style={styles.page}>
       {/* Navbar */}
       <nav style={styles.navbar}>
         <div className="container" style={styles.navContainer}>
