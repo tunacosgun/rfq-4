@@ -185,7 +185,7 @@ const HomePage = () => {
       {/* Contact */}
       <section id="contact" style={styles.contactSection}>
         <div className="container">
-          <h2 style={styles.sectionTitle}>\u0130leti\u015fim</h2>
+          <h2 style={styles.sectionTitle}>İletişim</h2>
           <div style={styles.contactGrid}>
             {settings?.company_address && (
               <div style={styles.contactCard} className="card">
