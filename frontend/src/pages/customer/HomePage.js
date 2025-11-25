@@ -102,7 +102,7 @@ const HomePage = () => {
             }}
             className="hero-title"
           >
-            {settings?.hero_title || 'Teklif Alın, Kazanın'}
+            {settings?.home_hero_title || 'Teklif Alın, Kazanın'}
           </h1>
           <p
             style={{
@@ -114,7 +114,7 @@ const HomePage = () => {
               lineHeight: '1.6'
             }}
           >
-            {settings?.hero_subtitle || 'Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın'}
+            {settings?.home_hero_subtitle || 'Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın'}
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
             <Link
