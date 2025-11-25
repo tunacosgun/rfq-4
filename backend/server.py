@@ -225,10 +225,40 @@ class CompanySettings(BaseModel):
     contact_form_subtitle: str = "Formu doldurarak bize ulaşabilirsiniz."
     contact_work_hours: str = "Pazartesi - Cuma: 09:00 - 18:00\nCumartesi: 09:00 - 14:00"
     
-    # Header & Footer
-    footer_description: str = "Profesyonel B2B teklif yönetim platformu. Hızlı, güvenilir ve modern çözümler sunuyoruz."
+    # Footer - Genel
+    footer_company_description: str = "Profesyonel B2B teklif yönetim platformu. Hızlı, güvenilir ve modern çözümler sunuyoruz."
+    footer_copyright_text: str = "© 2025 RFQ Platform. Tüm hakları saklıdır."
+    footer_powered_by_text: str = "Made with ❤️ by Emergent"
+    
+    # Footer - Sosyal Medya
+    footer_facebook_url: str = "#"
+    footer_twitter_url: str = "#"
+    footer_linkedin_url: str = "#"
+    footer_instagram_url: str = "#"
+    
+    # Footer - Hızlı Erişim Bölümü
+    footer_quicklinks_title: str = "Hızlı Erişim"
+    footer_menu_home: str = "Ana Sayfa"
+    footer_menu_products: str = "Ürünler"
+    footer_menu_features: str = "Özellikler"
+    footer_menu_about: str = "Hakkımızda"
+    footer_menu_contact: str = "İletişim"
+    
+    # Footer - İletişim Bölümü
+    footer_contact_title: str = "İletişim"
+    
+    # Footer - Bülten Bölümü
     footer_newsletter_title: str = "Bülten"
     footer_newsletter_subtitle: str = "Yeni ürünler ve kampanyalardan haberdar olmak için bültene kaydolun."
+    footer_newsletter_button_text: str = "Abone Ol"
+    
+    # Footer - Renkler
+    footer_bg_color: str = "#1F2937"
+    footer_text_color: str = "#9CA3AF"
+    footer_heading_color: str = "#FFFFFF"
+    footer_link_color: str = "#9CA3AF"
+    footer_link_hover_color: str = "#22C55E"
+    footer_divider_color: str = "#374151"
 
 # Helper functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
