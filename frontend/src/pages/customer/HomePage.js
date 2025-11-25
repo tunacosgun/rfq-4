@@ -109,7 +109,8 @@ const HomePage = () => {
               fontWeight: '900',
               marginBottom: '24px',
               letterSpacing: '-1.5px',
-              lineHeight: '1.1'
+              lineHeight: '1.1',
+              color: settings?.home_hero_text_color || '#FFFFFF'
             }}
             className="hero-title"
           >
@@ -122,7 +123,8 @@ const HomePage = () => {
               opacity: 0.95,
               maxWidth: '700px',
               margin: '0 auto 40px',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              color: settings?.home_hero_text_color || '#FFFFFF'
             }}
           >
             {settings?.home_hero_subtitle || 'Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın'}
