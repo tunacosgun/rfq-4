@@ -475,6 +475,26 @@ const AdminSettings = () => {
               </div>
 
               <div style={styles.formGroup}>
+                <label style={styles.label}>Yazı Rengi</label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <Input
+                    type="color"
+                    value={settings.home_hero_text_color || '#FFFFFF'}
+                    onChange={(e) => handleChange('home_hero_text_color', e.target.value)}
+                    style={{ width: '60px', height: '44px', padding: '4px' }}
+                  />
+                  <Input
+                    value={settings.home_hero_text_color}
+                    onChange={(e) => handleChange('home_hero_text_color', e.target.value)}
+                    placeholder="#FFFFFF"
+                  />
+                </div>
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  Beyaz (#FFFFFF) önerilir.
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
                 <label style={styles.label}>
                   Overlay Koyuluğu ({settings.home_hero_overlay_opacity || 80}%)
                 </label>
