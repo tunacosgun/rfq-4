@@ -95,8 +95,11 @@ const AdminProducts = () => {
       category: product.category,
       images: product.images.join(', '),
       variation: product.variation || '',
+      variants: (product.variants || []).join(', '),
       min_order_quantity: product.min_order_quantity || 1,
       price_range: product.price_range || '',
+      stock_quantity: product.stock_quantity || '',
+      is_active: product.is_active !== undefined ? product.is_active : true,
     });
     setIsDialogOpen(true);
   };
