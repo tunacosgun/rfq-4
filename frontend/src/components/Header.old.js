@@ -19,15 +19,6 @@ const Header = ({ settings }) => {
 
   const isActive = (path) => location.pathname === path;
 
-  // Get colors from settings or use defaults
-  const headerBgColor = settings?.header_bg_color || '#FFFFFF';
-  const headerScrolledBgColor = settings?.header_scrolled_bg_color || 'rgba(255, 255, 255, 0.98)';
-  const headerLinkColor = settings?.header_link_color || '#374151';
-  const headerLinkActiveColor = settings?.header_link_active_color || '#22C55E';
-  const headerLinkHoverColor = settings?.header_link_hover_color || '#22C55E';
-  const headerCartButtonBg = settings?.header_cart_button_bg || '#22C55E';
-  const headerCartButtonTextColor = settings?.header_cart_button_text_color || '#FFFFFF';
-
   return (
     <>
       <style>{`
@@ -35,7 +26,6 @@ const Header = ({ settings }) => {
           position: relative;
           padding-bottom: 4px;
           transition: all 0.3s ease;
-          color: ${headerLinkColor};
         }
         .header-nav-link::after {
           content: '';
@@ -44,18 +34,12 @@ const Header = ({ settings }) => {
           left: 0;
           width: 0;
           height: 2px;
-          background: ${headerLinkActiveColor};
+          background: var(--primary-600);
           transition: width 0.3s ease;
-        }
-        .header-nav-link:hover {
-          color: ${headerLinkHoverColor};
         }
         .header-nav-link:hover::after,
         .header-nav-link.active::after {
           width: 100%;
-        }
-        .header-nav-link.active {
-          color: ${headerLinkActiveColor};
         }
         .header-mobile-menu {
           animation: slideDown 0.3s ease-out;
@@ -70,17 +54,6 @@ const Header = ({ settings }) => {
             transform: translateY(0);
           }
         }
-        @media (max-width: 1024px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .mobile-menu-btn {
-            display: block !important;
-          }
-          .cart-text {
-            display: none;
-          }
-        }
       `}</style>
 
       <nav
@@ -90,7 +63,7 @@ const Header = ({ settings }) => {
           left: 0,
           right: 0,
           zIndex: 1000,
-          background: isScrolled ? headerScrolledBgColor : headerBgColor,
+          background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'white',
           backdropFilter: isScrolled ? 'blur(12px)' : 'none',
           boxShadow: isScrolled ? '0 2px 20px rgba(0,0,0,0.08)' : '0 1px 0 rgba(0,0,0,0.05)',
           transition: 'all 0.3s ease'
@@ -115,9 +88,9 @@ const Header = ({ settings }) => {
                 textDecoration: 'none'
               }}
             >
-              {settings?.header_logo_url ? (
+              {settings?.logo_url ? (
                 <img
-                  src={settings.header_logo_url}
+                  src={settings.logo_url}
                   alt="Logo"
                   style={{ height: '42px', width: 'auto' }}
                 />
@@ -125,7 +98,7 @@ const Header = ({ settings }) => {
                 <div
                   style={{
                     padding: '8px',
-                    background: headerCartButtonBg,
+                    background: 'var(--primary-600)',
                     borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
@@ -139,11 +112,11 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '22px',
                   fontWeight: '800',
-                  color: headerLinkActiveColor,
+                  color: 'var(--primary-600)',
                   letterSpacing: '-0.5px'
                 }}
               >
-                {settings?.header_company_name || settings?.company_name || 'Özmen Gıda'}
+                {settings?.company_name || 'Özmen Gıda'}
               </span>
             </Link>
 
@@ -162,10 +135,11 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
+                  color: isActive('/') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none'
                 }}
               >
-                {settings?.header_menu_home || 'Ana Sayfa'}
+                Ana Sayfa
               </Link>
               <Link
                 to="/urunler"
@@ -173,10 +147,11 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
+                  color: isActive('/urunler') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none'
                 }}
               >
-                {settings?.header_menu_products || 'Ürünler'}
+                Ürünler
               </Link>
               <Link
                 to="/ozellikler"
@@ -184,10 +159,11 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
+                  color: isActive('/ozellikler') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none'
                 }}
               >
-                {settings?.header_menu_features || 'Özellikler'}
+                Özellikler
               </Link>
               <Link
                 to="/hakkimizda"
@@ -195,10 +171,11 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
+                  color: isActive('/hakkimizda') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none'
                 }}
               >
-                {settings?.header_menu_about || 'Hakkımızda'}
+                Hakkımızda
               </Link>
               <Link
                 to="/iletisim"
@@ -206,10 +183,11 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
+                  color: isActive('/iletisim') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none'
                 }}
               >
-                {settings?.header_menu_contact || 'İletişim'}
+                İletişim
               </Link>
             </div>
 
@@ -222,27 +200,27 @@ const Header = ({ settings }) => {
                   alignItems: 'center',
                   gap: '10px',
                   padding: '12px 24px',
-                  background: headerCartButtonBg,
-                  color: headerCartButtonTextColor,
+                  background: 'var(--primary-600)',
+                  color: 'white',
                   borderRadius: '10px',
                   textDecoration: 'none',
                   fontWeight: '700',
                   fontSize: '15px',
                   position: 'relative',
                   transition: 'all 0.2s ease',
-                  boxShadow: `0 2px 8px ${headerCartButtonBg}33`
+                  boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = `0 4px 12px ${headerCartButtonBg}4D`;
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = `0 2px 8px ${headerCartButtonBg}33`;
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(34, 197, 94, 0.2)';
                 }}
               >
                 <ShoppingCart size={20} />
-                <span className="cart-text">{settings?.header_cart_button_text || 'Sepet'}</span>
+                <span className="cart-text">Sepet</span>
                 {getCartCount() > 0 && (
                   <span
                     style={{
@@ -277,7 +255,7 @@ const Header = ({ settings }) => {
                   padding: '10px',
                   borderRadius: '8px',
                   cursor: 'pointer',
-                  color: headerLinkColor,
+                  color: 'var(--text-primary)',
                   transition: 'all 0.2s ease'
                 }}
               >
@@ -305,14 +283,14 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/') ? `${headerLinkActiveColor}1A` : 'transparent',
+                  background: isActive('/') ? 'var(--primary-50)' : 'transparent',
                   transition: 'all 0.2s ease'
                 }}
               >
-                {settings?.header_menu_home || 'Ana Sayfa'}
+                Ana Sayfa
               </Link>
               <Link
                 to="/urunler"
@@ -321,14 +299,14 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/urunler') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/urunler') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/urunler') ? `${headerLinkActiveColor}1A` : 'transparent',
+                  background: isActive('/urunler') ? 'var(--primary-50)' : 'transparent',
                   transition: 'all 0.2s ease'
                 }}
               >
-                {settings?.header_menu_products || 'Ürünler'}
+                Ürünler
               </Link>
               <Link
                 to="/ozellikler"
@@ -337,14 +315,14 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/ozellikler') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/ozellikler') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/ozellikler') ? `${headerLinkActiveColor}1A` : 'transparent',
+                  background: isActive('/ozellikler') ? 'var(--primary-50)' : 'transparent',
                   transition: 'all 0.2s ease'
                 }}
               >
-                {settings?.header_menu_features || 'Özellikler'}
+                Özellikler
               </Link>
               <Link
                 to="/hakkimizda"
@@ -353,14 +331,14 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/hakkimizda') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/hakkimizda') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/hakkimizda') ? `${headerLinkActiveColor}1A` : 'transparent',
+                  background: isActive('/hakkimizda') ? 'var(--primary-50)' : 'transparent',
                   transition: 'all 0.2s ease'
                 }}
               >
-                {settings?.header_menu_about || 'Hakkımızda'}
+                Hakkımızda
               </Link>
               <Link
                 to="/iletisim"
@@ -369,18 +347,32 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/iletisim') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/iletisim') ? 'var(--primary-600)' : 'var(--text-primary)',
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/iletisim') ? `${headerLinkActiveColor}1A` : 'transparent',
+                  background: isActive('/iletisim') ? 'var(--primary-50)' : 'transparent',
                   transition: 'all 0.2s ease'
                 }}
               >
-                {settings?.header_menu_contact || 'İletişim'}
+                İletişim
               </Link>
             </div>
           )}
         </div>
+
+        <style>{`
+          @media (max-width: 1024px) {
+            .desktop-nav {
+              display: none !important;
+            }
+            .mobile-menu-btn {
+              display: block !important;
+            }
+            .cart-text {
+              display: none;
+            }
+          }
+        `}</style>
       </nav>
     </>
   );
