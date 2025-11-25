@@ -198,7 +198,7 @@ const HomePage = () => {
           <h2 style={styles.sectionTitle}>İletişim</h2>
           <div style={styles.contactGrid}>
             {settings?.company_address && (
-              <div style={styles.contactCard} className="card">
+              <div style={styles.contactCard} className="card contact-card">
                 <MapPin size={32} style={{ color: 'var(--primary-600)' }} />
                 <h3 style={styles.contactCardTitle}>Adres</h3>
                 <p style={styles.contactCardText}>{settings.company_address}</p>
