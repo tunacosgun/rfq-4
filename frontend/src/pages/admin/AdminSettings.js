@@ -692,20 +692,153 @@ const AdminSettings = () => {
                 />
               </div>
 
-              <h3 style={styles.subsectionTitle}>Footer</h3>
+            </div>
+          )}
+
+          {/* Footer */}
+          {activeTab === 'footer' && (
+            <div style={styles.section}>
+              <h2 style={styles.sectionTitle}>Footer Ayarları</h2>
+              
+              <h3 style={styles.subsectionTitle}>Genel Bilgiler</h3>
               <div style={styles.formGroup}>
-                <label style={styles.label}>Footer Açıklama</label>
+                <label style={styles.label}>Şirket Açıklaması</label>
                 <textarea
-                  value={settings.footer_description}
-                  onChange={(e) => handleChange('footer_description', e.target.value)}
-                  placeholder="Profesyonel B2B teklif yönetim..."
-                  rows={2}
+                  value={settings.footer_company_description}
+                  onChange={(e) => handleChange('footer_company_description', e.target.value)}
+                  placeholder="Profesyonel B2B teklif yönetim platformu..."
+                  rows={3}
                   style={styles.textarea}
                 />
               </div>
 
               <div style={styles.formGroup}>
-                <label style={styles.label}>Bülten Başlık</label>
+                <label style={styles.label}>Copyright Metni</label>
+                <Input
+                  value={settings.footer_copyright_text}
+                  onChange={(e) => handleChange('footer_copyright_text', e.target.value)}
+                  placeholder="© 2025 RFQ Platform. Tüm hakları saklıdır."
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>"Made by" Metni</label>
+                <Input
+                  value={settings.footer_powered_by_text}
+                  onChange={(e) => handleChange('footer_powered_by_text', e.target.value)}
+                  placeholder="Made with ❤️ by Emergent"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Sosyal Medya Linkleri</h3>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Facebook URL</label>
+                  <Input
+                    value={settings.footer_facebook_url}
+                    onChange={(e) => handleChange('footer_facebook_url', e.target.value)}
+                    placeholder="https://facebook.com/..."
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Twitter URL</label>
+                  <Input
+                    value={settings.footer_twitter_url}
+                    onChange={(e) => handleChange('footer_twitter_url', e.target.value)}
+                    placeholder="https://twitter.com/..."
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>LinkedIn URL</label>
+                  <Input
+                    value={settings.footer_linkedin_url}
+                    onChange={(e) => handleChange('footer_linkedin_url', e.target.value)}
+                    placeholder="https://linkedin.com/..."
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Instagram URL</label>
+                  <Input
+                    value={settings.footer_instagram_url}
+                    onChange={(e) => handleChange('footer_instagram_url', e.target.value)}
+                    placeholder="https://instagram.com/..."
+                  />
+                </div>
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Hızlı Erişim Menüsü</h3>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Bölüm Başlığı</label>
+                <Input
+                  value={settings.footer_quicklinks_title}
+                  onChange={(e) => handleChange('footer_quicklinks_title', e.target.value)}
+                  placeholder="Hızlı Erişim"
+                />
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ana Sayfa Link Metni</label>
+                  <Input
+                    value={settings.footer_menu_home}
+                    onChange={(e) => handleChange('footer_menu_home', e.target.value)}
+                    placeholder="Ana Sayfa"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ürünler Link Metni</label>
+                  <Input
+                    value={settings.footer_menu_products}
+                    onChange={(e) => handleChange('footer_menu_products', e.target.value)}
+                    placeholder="Ürünler"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Özellikler Link Metni</label>
+                  <Input
+                    value={settings.footer_menu_features}
+                    onChange={(e) => handleChange('footer_menu_features', e.target.value)}
+                    placeholder="Özellikler"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Hakkımızda Link Metni</label>
+                  <Input
+                    value={settings.footer_menu_about}
+                    onChange={(e) => handleChange('footer_menu_about', e.target.value)}
+                    placeholder="Hakkımızda"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>İletişim Link Metni</label>
+                <Input
+                  value={settings.footer_menu_contact}
+                  onChange={(e) => handleChange('footer_menu_contact', e.target.value)}
+                  placeholder="İletişim"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>İletişim Bölümü</h3>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Bölüm Başlığı</label>
+                <Input
+                  value={settings.footer_contact_title}
+                  onChange={(e) => handleChange('footer_contact_title', e.target.value)}
+                  placeholder="İletişim"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Bülten Bölümü</h3>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Bülten Başlığı</label>
                 <Input
                   value={settings.footer_newsletter_title}
                   onChange={(e) => handleChange('footer_newsletter_title', e.target.value)}
@@ -714,14 +847,132 @@ const AdminSettings = () => {
               </div>
 
               <div style={styles.formGroup}>
-                <label style={styles.label}>Bülten Açıklama</label>
+                <label style={styles.label}>Bülten Açıklaması</label>
                 <textarea
                   value={settings.footer_newsletter_subtitle}
                   onChange={(e) => handleChange('footer_newsletter_subtitle', e.target.value)}
-                  placeholder="Yeni ürünler ve kampanyalardan..."
+                  placeholder="Yeni ürünler ve kampanyalardan haberdar olmak için..."
                   rows={2}
                   style={styles.textarea}
                 />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Buton Metni</label>
+                <Input
+                  value={settings.footer_newsletter_button_text}
+                  onChange={(e) => handleChange('footer_newsletter_button_text', e.target.value)}
+                  placeholder="Abone Ol"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Renkler</h3>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Arkaplan Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.footer_bg_color || '#1F2937'}
+                      onChange={(e) => handleChange('footer_bg_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.footer_bg_color}
+                      onChange={(e) => handleChange('footer_bg_color', e.target.value)}
+                      placeholder="#1F2937"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Metin Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.footer_text_color || '#9CA3AF'}
+                      onChange={(e) => handleChange('footer_text_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.footer_text_color}
+                      onChange={(e) => handleChange('footer_text_color', e.target.value)}
+                      placeholder="#9CA3AF"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Başlık Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.footer_heading_color || '#FFFFFF'}
+                      onChange={(e) => handleChange('footer_heading_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.footer_heading_color}
+                      onChange={(e) => handleChange('footer_heading_color', e.target.value)}
+                      placeholder="#FFFFFF"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Link Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.footer_link_color || '#9CA3AF'}
+                      onChange={(e) => handleChange('footer_link_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.footer_link_color}
+                      onChange={(e) => handleChange('footer_link_color', e.target.value)}
+                      placeholder="#9CA3AF"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Link Hover Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.footer_link_hover_color || '#22C55E'}
+                      onChange={(e) => handleChange('footer_link_hover_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.footer_link_hover_color}
+                      onChange={(e) => handleChange('footer_link_hover_color', e.target.value)}
+                      placeholder="#22C55E"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ayırıcı Çizgi Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.footer_divider_color || '#374151'}
+                      onChange={(e) => handleChange('footer_divider_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.footer_divider_color}
+                      onChange={(e) => handleChange('footer_divider_color', e.target.value)}
+                      placeholder="#374151"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}
