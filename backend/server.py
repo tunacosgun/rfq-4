@@ -221,9 +221,42 @@ class CompanySettings(BaseModel):
     # İletişim Sayfası
     contact_hero_title: str = "İletişime Geçin"
     contact_hero_subtitle: str = "Sorularınız veya talepleriniz için bize ulaşabilirsiniz. Size yardımcı olmaktan mutluluk duyarız."
+    
+    # İletişim - Kartlar
+    contact_phone_card_title: str = "Telefon"
+    contact_email_card_title: str = "E-posta"
+    contact_address_card_title: str = "Adres"
+    
+    # İletişim - Form
     contact_form_title: str = "Mesaj Gönderin"
     contact_form_subtitle: str = "Formu doldurarak bize ulaşabilirsiniz."
+    contact_form_name_label: str = "Adınız Soyadınız *"
+    contact_form_name_placeholder: str = "Örn: Ahmet Yılmaz"
+    contact_form_email_label: str = "E-posta Adresiniz *"
+    contact_form_email_placeholder: str = "Örn: ahmet@example.com"
+    contact_form_phone_label: str = "Telefon Numaranız"
+    contact_form_phone_placeholder: str = "Örn: 0532 123 45 67"
+    contact_form_subject_label: str = "Konu *"
+    contact_form_subject_placeholder: str = "Mesajınızın konusu"
+    contact_form_message_label: str = "Mesajınız *"
+    contact_form_message_placeholder: str = "Mesajınızı buraya yazın..."
+    contact_form_button_text: str = "Mesaj Gönder"
+    contact_form_button_sending: str = "Gönderiliyor..."
+    contact_form_success_message: str = "Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız."
+    
+    # İletişim - Yan Bilgiler
+    contact_work_hours_title: str = "Çalışma Saatleri"
     contact_work_hours: str = "Pazartesi - Cuma: 09:00 - 18:00\nCumartesi: 09:00 - 14:00"
+    contact_quick_contact_title: str = "Hızlı İletişim"
+    contact_quick_contact_description: str = "Acil durumlar için telefon veya e-posta ile bize ulaşabilirsiniz. Ortalama yanıt süremiz 2 saat içindedir."
+    contact_call_button_text: str = "Hemen Ara"
+    
+    # İletişim - Renkler
+    contact_card_bg_color: str = "#FFFFFF"
+    contact_card_icon_bg_color: str = "#22C55E"
+    contact_card_hover_shadow: str = "#00000015"
+    contact_button_bg_color: str = "#22C55E"
+    contact_button_text_color: str = "#FFFFFF"
     
     # Footer - Genel
     footer_company_description: str = "Profesyonel B2B teklif yönetim platformu. Hızlı, güvenilir ve modern çözümler sunuyoruz."
