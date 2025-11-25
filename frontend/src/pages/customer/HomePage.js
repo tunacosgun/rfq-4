@@ -88,7 +88,12 @@ const HomePage = () => {
           background: settings?.home_hero_bg_image 
             ? (settings?.home_hero_disable_color 
                 ? `url(${settings.home_hero_bg_image})` 
-                : `linear-gradient(135deg, ${settings.home_hero_bg_color || '#22C55E'}CC 0%, ${settings.home_hero_bg_color || '#16A34A'}E6 100%), url(${settings.home_hero_bg_image})`)
+                : (() => {
+                    const opacity = settings?.home_hero_overlay_opacity || 80;
+                    const opacityHex1 = Math.round((opacity / 100) * 255).toString(16).padStart(2, '0');
+                    const opacityHex2 = Math.round((Math.min(opacity + 10, 100) / 100) * 255).toString(16).padStart(2, '0');
+                    return `linear-gradient(135deg, ${settings.home_hero_bg_color || '#22C55E'}${opacityHex1} 0%, ${settings.home_hero_bg_color || '#16A34A'}${opacityHex2} 100%), url(${settings.home_hero_bg_image})`;
+                  })())
             : `linear-gradient(135deg, ${settings?.home_hero_bg_color || '#22C55E'} 0%, ${settings?.home_hero_bg_color || '#16A34A'} 100%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
