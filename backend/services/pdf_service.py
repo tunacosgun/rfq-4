@@ -1,20 +1,40 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT, TA_JUSTIFY
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 from io import BytesIO
 from datetime import datetime
 from typing import List, Dict, Optional
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
 class PDFService:
     def __init__(self):
+        # Register Turkish-compatible font
+        try:
+            # Use DejaVu Sans which supports Turkish characters
+            font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+            font_bold_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+            
+            if os.path.exists(font_path):
+                pdfmetrics.registerFont(TTFont('DejaVu', font_path))
+            if os.path.exists(font_bold_path):
+                pdfmetrics.registerFont(TTFont('DejaVu-Bold', font_bold_path))
+            
+            self.font_name = 'DejaVu'
+            self.font_bold = 'DejaVu-Bold'
+        except Exception as e:
+            logger.warning(f"Could not load DejaVu font: {e}, using Helvetica")
+            self.font_name = 'Helvetica'
+            self.font_bold = 'Helvetica-Bold'
+        
         self.styles = getSampleStyleSheet()
         self._setup_custom_styles()
     
