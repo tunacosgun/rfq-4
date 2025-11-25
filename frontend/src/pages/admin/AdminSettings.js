@@ -131,10 +131,18 @@ const AdminSettings = () => {
             <h1 style={styles.title}>İçerik Yönetimi (CMS)</h1>
             <p style={styles.subtitle}>Tüm sayfa içeriklerini buradan yönetin</p>
           </div>
-          <Button onClick={handleSave} disabled={saving} style={styles.saveButton}>
+          <button 
+            onClick={handleSave} 
+            disabled={saving}
+            style={{
+              ...styles.saveButton,
+              opacity: saving ? 0.6 : 1,
+              cursor: saving ? 'not-allowed' : 'pointer'
+            }}
+          >
             <Save size={20} />
             {saving ? 'Kaydediliyor...' : 'Kaydet'}
-          </Button>
+          </button>
         </div>
 
         {/* Tabs */}
