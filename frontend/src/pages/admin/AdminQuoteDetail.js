@@ -244,20 +244,94 @@ const AdminQuoteDetail = () => {
             )}
 
             <div className="card" style={styles.section}>
-              <h2 style={styles.sectionTitle}>Talep Edilen Ürünler</h2>
-              <div style={styles.productsList}>
-                {quote.items.map((item, index) => (
-                  <div key={index} style={styles.productItem} data-testid={`quote-item-${index}`}>
-                    <div style={styles.productIcon}>
-                      <Package size={24} style={{ color: '#3BB77E' }} />
-                    </div>
-                    <div style={styles.productInfo}>
-                      <p style={styles.productName}>{item.product_name}</p>
-                      <p style={styles.productQuantity}>Miktar: {item.quantity} adet</p>
-                    </div>
-                  </div>
-                ))}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h2 style={styles.sectionTitle}>Talep Edilen Ürünler & Fiyatlandırma</h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPricing(!showPricing)}
+                  data-testid="toggle-pricing-button"
+                >
+                  <DollarSign size={16} style={{ marginRight: '6px' }} />
+                  {showPricing ? 'Fiyatı Gizle' : 'Fiyat Ver'}
+                </Button>
               </div>
+              
+              {!showPricing ? (
+                <div style={styles.productsList}>
+                  {quote.items.map((item, index) => (
+                    <div key={index} style={styles.productItem} data-testid={`quote-item-${index}`}>
+                      <div style={styles.productIcon}>
+                        <Package size={24} style={{ color: '#3BB77E' }} />
+                      </div>
+                      <div style={styles.productInfo}>
+                        <p style={styles.productName}>{item.product_name}</p>
+                        <p style={styles.productQuantity}>Miktar: {item.quantity} adet</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={styles.pricingTable}>
+                  <table style={styles.table}>
+                    <thead>
+                      <tr style={styles.tableHeaderRow}>
+                        <th style={styles.tableHeader}>Ürün</th>
+                        <th style={styles.tableHeader}>Miktar</th>
+                        <th style={styles.tableHeader}>Birim Fiyat (TL)</th>
+                        <th style={styles.tableHeader}>Toplam</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {quote.items.map((item, index) => {
+                        const unitPrice = parseFloat(pricing[item.product_id] || 0);
+                        const total = unitPrice * item.quantity;
+                        return (
+                          <tr key={index} style={styles.tableRow}>
+                            <td style={styles.tableCell}>{item.product_name}</td>
+                            <td style={styles.tableCell}>{item.quantity}</td>
+                            <td style={styles.tableCell}>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={pricing[item.product_id] || ''}
+                                onChange={(e) => setPricing({ ...pricing, [item.product_id]: e.target.value })}
+                                placeholder="0.00"
+                                data-testid={`unit-price-${index}`}
+                                style={{ width: '120px' }}
+                              />
+                            </td>
+                            <td style={styles.tableCell}>
+                              <strong>{total.toFixed(2)} TL</strong>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      <tr style={styles.tableTotalRow}>
+                        <td colSpan="3" style={{ ...styles.tableCell, textAlign: 'right', fontWeight: 'bold' }}>
+                          GENEL TOPLAM:
+                        </td>
+                        <td style={{ ...styles.tableCell, fontWeight: 'bold', fontSize: '18px', color: '#3BB77E' }}>
+                          {quote.items.reduce((sum, item) => {
+                            const unitPrice = parseFloat(pricing[item.product_id] || 0);
+                            return sum + (unitPrice * item.quantity);
+                          }, 0).toFixed(2)} TL
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <Button
+                    onClick={savePricing}
+                    disabled={updating}
+                    style={{ ...styles.saveButton, marginTop: '16px' }}
+                    data-testid="save-pricing-button"
+                  >
+                    <DollarSign size={18} style={{ marginRight: '8px' }} />
+                    Fiyatlandırmayı Kaydet
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 
