@@ -212,7 +212,7 @@ const HomePage = () => {
               </div>
             )}
             {settings?.company_email && (
-              <div style={styles.contactCard} className="card">
+              <div style={styles.contactCard} className="card contact-card">
                 <Mail size={32} style={{ color: 'var(--primary-600)' }} />
                 <h3 style={styles.contactCardTitle}>E-posta</h3>
                 <p style={styles.contactCardText}>{settings.company_email}</p>
