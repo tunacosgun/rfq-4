@@ -84,10 +84,10 @@ const HomePage = () => {
           </Link>
 
           <div style={styles.navLinks}>
-            <a href="#anasayfa" onClick={() => scrollToSection('hero')} style={styles.navLink}>Ana Sayfa</a>
-            <a href="#urunler" onClick={() => scrollToSection('products')} style={styles.navLink}>Ürünler</a>
-            <a href="#hakkimizda" onClick={() => scrollToSection('about')} style={styles.navLink}>Hakkımızda</a>
-            <a href="#iletisim" onClick={() => scrollToSection('contact')} style={styles.navLink}>İletişim</a>
+            <a href="#anasayfa" onClick={() => scrollToSection('hero')} style={styles.navLink} className="nav-link-item">Ana Sayfa</a>
+            <a href="#urunler" onClick={() => scrollToSection('products')} style={styles.navLink} className="nav-link-item">Ürünler</a>
+            <a href="#hakkimizda" onClick={() => scrollToSection('about')} style={styles.navLink} className="nav-link-item">Hakkımızda</a>
+            <a href="#iletisim" onClick={() => scrollToSection('contact')} style={styles.navLink} className="nav-link-item">İletişim</a>
           </div>
 
           <Link to="/teklif-sepeti" style={styles.cartBtn}>
