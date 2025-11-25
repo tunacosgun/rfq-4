@@ -79,7 +79,7 @@ const QuoteFormPage = () => {
         email: formData.email,
         phone: formData.phone || '',
         message: formData.message || '',
-        products: cart.map((item) => ({
+        items: cart.map((item) => ({
           product_id: item.id,
           product_name: item.name,
           quantity: item.quantity,
