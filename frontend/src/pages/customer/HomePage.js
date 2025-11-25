@@ -163,7 +163,7 @@ const HomePage = () => {
                       {product.price_range && <p style={styles.productPrice}>{product.price_range}</p>}
                     </div>
                   </Link>
-                  <Button onClick={() => handleAddToCart(product)} style={styles.addToCartBtn}>
+                  <Button onClick={() => handleAddToCart(product)} style={styles.addToCartBtn} className="add-to-cart-btn">
                     Sepete Ekle
                   </Button>
                 </div>
