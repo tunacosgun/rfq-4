@@ -278,6 +278,13 @@ async def create_quote(quote_data: QuoteCreate):
     doc = quote.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.quotes.insert_one(doc)
+    
+    # Send notification email to admin
+    try:
+        email_service.send_new_quote_notification(doc)
+    except Exception as e:
+        logger.error(f"Failed to send quote notification email: {str(e)}")
+    
     return quote
 
 @api_router.get("/quotes", response_model=List[Quote])
