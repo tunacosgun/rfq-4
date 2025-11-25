@@ -35,6 +35,8 @@ security = HTTPBasic()
 # Enums
 class QuoteStatus(str, Enum):
     BEKLEMEDE = "beklemede"
+    INCELENIYOR = "inceleniyor"
+    FIYAT_VERILDI = "fiyat_verildi"
     ONAYLANDI = "onaylandi"
     REDDEDILDI = "reddedildi"
 
