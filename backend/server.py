@@ -102,6 +102,13 @@ class QuoteItem(BaseModel):
     product_name: str
     quantity: int
 
+class QuotePricing(BaseModel):
+    product_id: str
+    product_name: str
+    quantity: int
+    unit_price: float
+    total_price: float
+
 class Quote(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
