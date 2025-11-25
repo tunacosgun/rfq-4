@@ -85,6 +85,64 @@ const AdminQuoteDetail = () => {
     }
   };
 
+  const savePricing = async () => {
+    setUpdating(true);
+    try {
+      const pricingData = quote.items.map(item => ({
+        product_id: item.product_id,
+        product_name: item.product_name,
+        quantity: item.quantity,
+        unit_price: parseFloat(pricing[item.product_id] || 0),
+        total_price: parseFloat(pricing[item.product_id] || 0) * item.quantity
+      }));
+
+      await axios.put(
+        `${API}/quotes/${id}`,
+        { pricing: pricingData, status: 'fiyat_verildi' },
+        { headers: getAuthHeader() }
+      );
+      toast.success('Fiyatlandırma kaydedildi');
+      fetchQuote();
+    } catch (error) {
+      toast.error('Fiyatlandırma kaydedilemedi');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const downloadPDF = async () => {
+    try {
+      const response = await axios.get(`${API}/quotes/${id}/pdf`, {
+        headers: getAuthHeader(),
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `teklif_${id.substring(0, 8)}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('PDF indirildi');
+    } catch (error) {
+      toast.error('PDF indirilemedi');
+    }
+  };
+
+  const sendEmail = async () => {
+    setUpdating(true);
+    try {
+      const response = await axios.post(`${API}/quotes/${id}/send-email`, {}, {
+        headers: getAuthHeader(),
+      });
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Email gönderilemedi');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const getStatusConfig = (status) => {
     const configs = {
       beklemede: { label: 'Beklemede', color: '#FDC040', icon: Clock },
