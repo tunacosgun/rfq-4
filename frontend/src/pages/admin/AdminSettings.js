@@ -210,6 +210,7 @@ const AdminSettings = () => {
     { id: 'features', label: 'Özellikler', icon: Award },
     { id: 'about', label: 'Hakkımızda', icon: Users },
     { id: 'contact', label: 'İletişim', icon: Phone },
+    { id: 'header', label: 'Header/Navbar', icon: Layout },
     { id: 'footer', label: 'Footer', icon: Layout }
   ];
 
