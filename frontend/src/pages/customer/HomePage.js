@@ -945,7 +945,7 @@ const styles = {
   },
   footerContent: {
     display: 'grid',
-    gridTemplateColumns: '2fr 1fr 1fr',
+    gridTemplateColumns: '2fr 1fr 1fr 1fr',
     gap: '48px',
     marginBottom: '40px',
     '@media (max-width: 768px)': {
