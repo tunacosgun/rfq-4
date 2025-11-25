@@ -85,7 +85,7 @@ const AdminSettings = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-2" style={{ gap: 'var(--space-6)' }}>
+          <div className="grid grid-3" style={{ gap: 'var(--space-6)' }}>
             <div className="card" style={styles.section}>
               <h2 style={styles.sectionTitle}>
                 <Settings size={20} style={{ marginRight: '8px' }} />
