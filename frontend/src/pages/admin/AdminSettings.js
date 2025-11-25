@@ -433,6 +433,35 @@ const AdminSettings = () => {
                 />
               </div>
 
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Arkaplan Görsel URL</label>
+                <Input
+                  value={settings.home_hero_bg_image}
+                  onChange={(e) => handleChange('home_hero_bg_image', e.target.value)}
+                  placeholder="https://example.com/hero-bg.jpg"
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  Boş bırakırsanız sadece renk uygulanır. Görsel eklerseniz gradient overlay ile birleştirilir.
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Arkaplan Rengi</label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <Input
+                    type="color"
+                    value={settings.home_hero_bg_color || '#22C55E'}
+                    onChange={(e) => handleChange('home_hero_bg_color', e.target.value)}
+                    style={{ width: '60px', height: '44px', padding: '4px' }}
+                  />
+                  <Input
+                    value={settings.home_hero_bg_color}
+                    onChange={(e) => handleChange('home_hero_bg_color', e.target.value)}
+                    placeholder="#22C55E"
+                  />
+                </div>
+              </div>
+
               <h3 style={styles.subsectionTitle}>Özellikler Bölümü</h3>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Başlık</label>
