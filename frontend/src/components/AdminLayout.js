@@ -38,6 +38,7 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/urunler', label: 'Ürünler', icon: PackageIcon },
     { path: '/admin/teklifler', label: 'Teklifler', icon: FileText },
     { path: '/admin/ayarlar', label: 'Ayarlar', icon: Settings },
+    { path: '/admin/renkler', label: 'Renk Yönetimi', icon: Palette },
   ];
 
   if (!isAuthenticated) {
