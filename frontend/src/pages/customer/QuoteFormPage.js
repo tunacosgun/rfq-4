@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Package, Upload, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Package, Upload, CheckCircle, Send, User, Mail, Phone, Building, MessageSquare } from 'lucide-react';
 import { useQuoteCart } from '../../context/QuoteCartContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import { toast } from 'sonner';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -14,6 +16,8 @@ const API = `${BACKEND_URL}/api`;
 const QuoteFormPage = () => {
   const navigate = useNavigate();
   const { cart, clearCart, getCartCount } = useQuoteCart();
+  const [settings, setSettings] = useState(null);
+  const [loadingSettings, setLoadingSettings] = useState(true);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,6 +28,21 @@ const QuoteFormPage = () => {
     message: '',
   });
   const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await axios.get(`${API}/settings`).catch(() => ({ data: null }));
+      setSettings(res.data);
+    } catch (error) {
+      console.error('Settings yüklenemedi');
+    } finally {
+      setLoadingSettings(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -54,411 +73,427 @@ const QuoteFormPage = () => {
     setLoading(true);
 
     try {
-      let fileUrl = null;
-      if (file) {
-        const fileFormData = new FormData();
-        fileFormData.append('file', file);
-        const uploadRes = await axios.post(`${API}/upload`, fileFormData);
-        fileUrl = uploadRes.data.url;
-      }
-
       const quoteData = {
         customer_name: formData.customer_name,
-        company: formData.company || null,
+        company: formData.company || '',
         email: formData.email,
-        phone: formData.phone || null,
-        message: formData.message || null,
-        items: cart.map((item) => ({
+        phone: formData.phone || '',
+        message: formData.message || '',
+        products: cart.map((item) => ({
           product_id: item.id,
           product_name: item.name,
           quantity: item.quantity,
         })),
+        attachments: file ? [file.name] : [],
       };
 
-      await axios.post(`${API}/quotes`, quoteData);
-      setSubmitted(true);
-      clearCart();
-      toast.success('Teklifiniz başarıyla gönderildi!');
+      const response = await axios.post(`${API}/quotes`, quoteData);
+
+      if (response.status === 200 || response.status === 201) {
+        setSubmitted(true);
+        clearCart();
+        toast.success('Teklif talebiniz başarıyla gönderildi!');
+        
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Teklif gönderilemedi');
+      toast.error('Teklif gönderilirken bir hata oluştu');
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
-  if (submitted) {
+  if (loadingSettings) {
     return (
-      <div data-testid="quote-form-success">
-        <header style={styles.header}>
-          <div className="container" style={styles.headerContainer}>
-            <Link to="/" style={styles.logo}>
-              <Package size={32} />
-              <span style={styles.logoText}>Teklif Sistemi</span>
-            </Link>
-          </div>
-        </header>
-
-        <div className="container" style={styles.container}>
-          <div style={styles.successCard} className="card">
-            <CheckCircle size={80} style={{ color: '#3BB77E' }} />
-            <h1 style={styles.successTitle}>Teklifiniz Alındı!</h1>
-            <p style={styles.successText}>
-              Talebiniz başarıyla ilgili ekibe iletildi. En kısa sürede sizinle iletişime geçilecektir.
-            </p>
-            <Link to="/">
-              <Button style={styles.homeButton}>Ana Sayfaya Dön</Button>
-            </Link>
-          </div>
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <div className="spinner"></div>
       </div>
     );
   }
 
-  if (cart.length === 0) {
-    navigate('/teklif-sepeti');
-    return null;
+  if (submitted) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)' }}>
+        <Header settings={settings} />
+        
+        <section style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 60px' }}>
+          <div className="card" style={{ maxWidth: '600px', padding: '60px 40px', textAlign: 'center' }}>
+            <div
+              style={{
+                width: '80px',
+                height: '80px',
+                background: 'var(--primary-100)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 24px'
+              }}
+            >
+              <CheckCircle size={40} color="var(--primary-600)" />
+            </div>
+            <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '16px', color: 'var(--text-primary)' }}>
+              Teklif Talebiniz Alındı!
+            </h1>
+            <p style={{ fontSize: '16px', color: 'var(--text-secondary)', marginBottom: '32px', lineHeight: '1.6' }}>
+              Teklif talebiniz başarıyla kaydedildi. En kısa sürede size dönüş yapacağız.
+            </p>
+            <Button
+              onClick={() => navigate('/')}
+              style={{
+                background: 'var(--primary-600)',
+                color: 'white',
+                padding: '14px 32px',
+                fontSize: '16px',
+                fontWeight: '700'
+              }}
+            >
+              Ana Sayfaya Dön
+            </Button>
+          </div>
+        </section>
+
+        <Footer settings={settings} />
+      </div>
+    );
   }
 
   return (
-    <div data-testid="quote-form-page">
-      <header style={styles.header}>
-        <div className="container" style={styles.headerContainer}>
-          <Link to="/" style={styles.logo}>
-            <Package size={32} />
-            <span style={styles.logoText}>Teklif Sistemi</span>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)' }}>
+      <Header settings={settings} />
+
+      {/* Hero Section */}
+      <section
+        style={{
+          background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)',
+          color: 'white',
+          padding: '120px 24px 60px',
+          marginTop: '72px'
+        }}
+      >
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <Link
+            to="/teklif-sepeti"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'white',
+              textDecoration: 'none',
+              marginBottom: '24px',
+              fontSize: '15px',
+              fontWeight: '600',
+              opacity: 0.9,
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.9)}
+          >
+            <ArrowLeft size={20} />
+            Sepete Dön
           </Link>
-        </div>
-      </header>
-
-      <div className="container" style={styles.container}>
-        <Link to="/teklif-sepeti" style={styles.backLink} data-testid="back-link">
-          <ArrowLeft size={20} />
-          <span>Sepete Dön</span>
-        </Link>
-
-        <h1 style={styles.pageTitle}>Teklif Gönder</h1>
-        <p style={styles.pageSubtitle}>
-          Seçtiğiniz ürünlerle birlikte talebinizi iletin; ekibimiz kısa sürede dönüş yapacaktır.
-        </p>
-
-        <div style={styles.formContainer}>
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <div className="card" style={styles.formCard}>
-              <h2 style={styles.sectionTitle}>İletişim Bilgileri</h2>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Ad Soyad *</label>
-                <Input
-                  name="customer_name"
-                  value={formData.customer_name}
-                  onChange={handleChange}
-                  required
-                  data-testid="customer-name-input"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Firma</label>
-                <Input
-                  name="company"
-                  value={formData.company}
-                  onChange={handleChange}
-                  data-testid="company-input"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>E-posta *</label>
-                <Input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  data-testid="email-input"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Telefon</label>
-                <Input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  data-testid="phone-input"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Mesaj / Açıklama</label>
-                <Textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={5}
-                  data-testid="message-input"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Dosya Ekle (opsiyonel)</label>
-                <div style={styles.fileInput}>
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    style={styles.fileInputHidden}
-                    id="file-upload"
-                    data-testid="file-input"
-                  />
-                  <label htmlFor="file-upload" style={styles.fileLabel}>
-                    <Upload size={20} />
-                    <span>{file ? file.name : 'Dosya Seçin'}</span>
-                  </label>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                style={styles.submitButton}
-                data-testid="submit-button"
-              >
-                {loading ? 'Gönderiliyor...' : 'Teklifi Gönder'}
-              </Button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+            <div
+              style={{
+                padding: '12px',
+                background: 'rgba(255,255,255,0.2)',
+                borderRadius: '12px'
+              }}
+            >
+              <Send size={32} />
             </div>
-          </form>
+            <h1 style={{ fontSize: '48px', fontWeight: '900', margin: 0 }}>Teklif Gönder</h1>
+          </div>
+          <p style={{ fontSize: '18px', opacity: 0.95 }}>
+            Bilgilerinizi doldurun, en kısa sürede size özel fiyatlandırma ile dönüş yapalım.
+          </p>
+        </div>
+      </section>
 
-          <div className="card" style={styles.summaryCard}>
-            <h2 style={styles.sectionTitle}>Seçili Ürünler</h2>
-            <div style={styles.productsList}>
-              {cart.map((item) => (
-                <div key={item.id} style={styles.productItem} data-testid={`quote-item-${item.id}`}>
-                  <div style={styles.productThumb}>
-                    {item.images && item.images[0] ? (
-                      <img src={item.images[0]} alt={item.name} style={styles.productThumbImg} />
-                    ) : (
-                      <div style={styles.productThumbPlaceholder}>
-                        <Package size={24} style={{ color: '#7E7E7E' }} />
-                      </div>
+      {/* Form Section */}
+      <section style={{ padding: '60px 24px', flex: 1 }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <form onSubmit={handleSubmit}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '32px' }} className="form-grid">
+              {/* Form Fields */}
+              <div className="card" style={{ padding: '40px' }}>
+                <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px' }}>İletişim Bilgileri</h2>
+                <p style={{ fontSize: '15px', color: 'var(--text-secondary)', marginBottom: '32px' }}>
+                  Lütfen aşağıdaki formu doldurun. * ile işaretli alanlar zorunludur.
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                  <div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <User size={16} />
+                      Adınız Soyadınız *
+                    </label>
+                    <Input
+                      name="customer_name"
+                      value={formData.customer_name}
+                      onChange={handleChange}
+                      placeholder="Örn: Ahmet Yılmaz"
+                      required
+                      style={{ height: '48px', fontSize: '15px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <Building size={16} />
+                      Şirket Adı
+                    </label>
+                    <Input
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      placeholder="Örn: ABC Ticaret Ltd."
+                      style={{ height: '48px', fontSize: '15px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <Mail size={16} />
+                      E-posta Adresiniz *
+                    </label>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="ornek@email.com"
+                      required
+                      style={{ height: '48px', fontSize: '15px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <Phone size={16} />
+                      Telefon Numaranız
+                    </label>
+                    <Input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="0532 123 45 67"
+                      style={{ height: '48px', fontSize: '15px' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <MessageSquare size={16} />
+                      Ek Notlar
+                    </label>
+                    <Textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Varsa özel taleplerinizi buraya yazabilirsiniz..."
+                      rows={4}
+                      style={{ fontSize: '15px', lineHeight: '1.6' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <Upload size={16} />
+                      Dosya Ekle (Opsiyonel)
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: 'var(--radius-md)',
+                        fontSize: '14px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                    {file && (
+                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                        Seçili: {file.name}
+                      </p>
                     )}
                   </div>
-                  <div style={styles.productDetails}>
-                    <p style={styles.productItemName}>{item.name}</p>
-                    <p style={styles.productItemQuantity}>Miktar: {item.quantity} adet</p>
-                  </div>
                 </div>
-              ))}
-            </div>
-            <div style={styles.summaryTotal}>
-              <div style={styles.summaryRow}>
-                <span>Toplam Ürün:</span>
-                <span style={styles.summaryValue}>{cart.length} çeşit</span>
               </div>
-              <div style={styles.summaryRow}>
-                <span>Toplam Adet:</span>
-                <span style={styles.summaryValue}>{getCartCount()} adet</span>
+
+              {/* Order Summary */}
+              <div style={{ position: 'sticky', top: '100px', height: 'fit-content' }}>
+                <div className="card" style={{ padding: '32px' }}>
+                  <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px' }}>Sipariş Özeti</h3>
+                  
+                  <div style={{ marginBottom: '24px' }}>
+                    {cart.map((item, index) => (
+                      <div
+                        key={item.id}
+                        style={{
+                          paddingBottom: '16px',
+                          marginBottom: '16px',
+                          borderBottom: index < cart.length - 1 ? '1px solid var(--border-light)' : 'none'
+                        }}
+                      >
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                          <div
+                            style={{
+                              width: '60px',
+                              height: '60px',
+                              background: 'var(--gray-100)',
+                              borderRadius: '8px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              overflow: 'hidden',
+                              flexShrink: 0
+                            }}
+                          >
+                            {item.images?.[0] ? (
+                              <img
+                                src={item.images[0]}
+                                alt={item.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            ) : (
+                              <Package size={24} color="var(--text-tertiary)" />
+                            )}
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{item.name}</h4>
+                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                              Adet: {item.quantity}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div
+                    style={{
+                      padding: '16px',
+                      background: 'var(--primary-50)',
+                      borderRadius: '8px',
+                      marginBottom: '24px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Toplam Ürün</span>
+                      <span style={{ fontSize: '14px', fontWeight: '700' }}>{getCartCount()}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Toplam Adet</span>
+                      <span style={{ fontSize: '14px', fontWeight: '700' }}>
+                        {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      width: '100%',
+                      background: 'var(--primary-600)',
+                      color: 'white',
+                      height: '56px',
+                      fontSize: '17px',
+                      fontWeight: '700',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '12px'
+                    }}
+                  >
+                    {loading ? 'Gönderiliyor...' : 'Teklif Talebini Gönder'}
+                    <Send size={20} />
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
-      </div>
+      </section>
+
+      <Footer settings={settings} />
+
+      <style>{`
+        @media (max-width: 1024px) {
+          .form-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
-};
-
-const styles = {
-  header: {
-    background: 'white',
-    borderBottom: '1px solid #ececec',
-    padding: '16px 0',
-    marginBottom: '32px',
-  },
-  headerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  logo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    color: '#3BB77E',
-    textDecoration: 'none',
-    fontWeight: '700',
-  },
-  logoText: {
-    fontSize: '24px',
-    fontFamily: 'Space Grotesk, sans-serif',
-  },
-  container: {
-    padding: '32px 20px',
-    maxWidth: '1200px',
-  },
-  backLink: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    color: '#3BB77E',
-    textDecoration: 'none',
-    fontSize: '16px',
-    fontWeight: '500',
-    marginBottom: '32px',
-  },
-  pageTitle: {
-    fontSize: '36px',
-    fontWeight: '700',
-    color: '#253D4E',
-    marginBottom: '12px',
-    fontFamily: 'Space Grotesk, sans-serif',
-  },
-  pageSubtitle: {
-    fontSize: '18px',
-    color: '#7E7E7E',
-    marginBottom: '48px',
-  },
-  formContainer: {
-    display: 'grid',
-    gridTemplateColumns: '1.5fr 1fr',
-    gap: '32px',
-  },
-  form: {
-    width: '100%',
-  },
-  formCard: {
-    padding: '32px',
-  },
-  sectionTitle: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: '#253D4E',
-    marginBottom: '24px',
-    fontFamily: 'Space Grotesk, sans-serif',
-  },
-  formGroup: {
-    marginBottom: '24px',
-  },
-  label: {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#253D4E',
-    marginBottom: '8px',
-  },
-  fileInput: {
-    position: 'relative',
-  },
-  fileInputHidden: {
-    display: 'none',
-  },
-  fileLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '12px 16px',
-    border: '2px dashed #ececec',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    color: '#7E7E7E',
-  },
-  submitButton: {
-    width: '100%',
-    padding: '16px',
-    fontSize: '18px',
-    fontWeight: '600',
-    background: '#3BB77E',
-    color: 'white',
-    marginTop: '16px',
-  },
-  summaryCard: {
-    padding: '32px',
-    height: 'fit-content',
-    position: 'sticky',
-    top: '100px',
-  },
-  productsList: {
-    marginBottom: '24px',
-  },
-  productItem: {
-    display: 'flex',
-    gap: '12px',
-    padding: '12px',
-    borderBottom: '1px solid #ececec',
-  },
-  productThumb: {
-    width: '60px',
-    height: '60px',
-    borderRadius: '6px',
-    overflow: 'hidden',
-    flexShrink: 0,
-  },
-  productThumbImg: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
-  productThumbPlaceholder: {
-    width: '100%',
-    height: '100%',
-    background: '#F4F6FA',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  productDetails: {
-    flex: 1,
-  },
-  productItemName: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#253D4E',
-    marginBottom: '4px',
-  },
-  productItemQuantity: {
-    fontSize: '13px',
-    color: '#7E7E7E',
-  },
-  summaryTotal: {
-    paddingTop: '16px',
-    borderTop: '2px solid #ececec',
-  },
-  summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px 0',
-    fontSize: '16px',
-    color: '#7E7E7E',
-  },
-  summaryValue: {
-    fontWeight: '600',
-    color: '#253D4E',
-  },
-  successCard: {
-    textAlign: 'center',
-    padding: '80px 40px',
-    maxWidth: '600px',
-    margin: '80px auto',
-  },
-  successTitle: {
-    fontSize: '32px',
-    fontWeight: '700',
-    color: '#253D4E',
-    margin: '24px 0 16px',
-    fontFamily: 'Space Grotesk, sans-serif',
-  },
-  successText: {
-    fontSize: '18px',
-    color: '#7E7E7E',
-    lineHeight: '1.6',
-    marginBottom: '32px',
-  },
-  homeButton: {
-    background: '#3BB77E',
-    color: 'white',
-    padding: '16px 48px',
-    fontSize: '18px',
-  },
 };
 
 export default QuoteFormPage;
