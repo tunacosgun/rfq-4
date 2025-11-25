@@ -25,12 +25,14 @@ const HomePage = () => {
 
   const fetchData = async () => {
     try {
-      const [productsRes, categoriesRes] = await Promise.all([
+      const [productsRes, categoriesRes, settingsRes] = await Promise.all([
         axios.get(`${API}/products`),
         axios.get(`${API}/categories`),
+        axios.get(`${API}/settings`).catch(() => ({ data: null })),
       ]);
       setProducts(productsRes.data);
       setCategories(categoriesRes.data);
+      setSettings(settingsRes.data);
     } catch (error) {
       toast.error('Ürünler yüklenemedi');
     } finally {
