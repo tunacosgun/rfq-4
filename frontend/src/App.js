@@ -38,6 +38,7 @@ function App() {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/kategoriler" element={<AdminCategories />} />
               <Route path="/admin/urunler" element={<AdminProducts />} />
               <Route path="/admin/teklifler" element={<AdminQuotes />} />
               <Route path="/admin/teklifler/:id" element={<AdminQuoteDetail />} />
