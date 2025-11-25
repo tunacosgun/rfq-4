@@ -21,6 +21,19 @@ const HomePage = () => {
     fetchData();
   }, []);
 
+  // Update favicon dynamically
+  useEffect(() => {
+    if (settings?.site_favicon_url) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      link.href = settings.site_favicon_url;
+    }
+  }, [settings]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
