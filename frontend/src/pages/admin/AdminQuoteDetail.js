@@ -4,8 +4,9 @@ import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
-import { ArrowLeft, CheckCircle, XCircle, Clock, Mail, Phone, Building2, MessageSquare, Package } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, Clock, Mail, Phone, Building2, MessageSquare, Package, FileText, Send, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
