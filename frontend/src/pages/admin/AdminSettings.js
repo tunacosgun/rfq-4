@@ -25,6 +25,12 @@ const AdminSettings = () => {
     logo_url: '',
     terms_and_conditions: '',
     bank_info: '',
+    hero_title: '',
+    hero_subtitle: '',
+    about_title: '',
+    about_description: '',
+    about_image_url: '',
+    features: '',
   });
 
   useEffect(() => {
