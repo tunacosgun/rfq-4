@@ -221,6 +221,6 @@ class PDFService:
             'onaylandi': 'Onaylandı',
             'reddedildi': 'Reddedildi'
         }
-        return status_map.get(status, status.title())
+        return status_map.get(status, 'Beklemede')
 
 pdf_service = PDFService()
