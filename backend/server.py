@@ -156,6 +156,13 @@ class CompanySettings(BaseModel):
     logo_url: str = ""
     terms_and_conditions: str = ""
     bank_info: str = ""
+    # Homepage sections
+    hero_title: str = "Teklif Alın, Kazanın"
+    hero_subtitle: str = "Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın"
+    about_title: str = "Hakkımızda"
+    about_description: str = ""
+    about_image_url: str = ""
+    features: List[str] = []
 
 # Helper functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
