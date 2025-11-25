@@ -168,6 +168,7 @@ class CategoryUpdate(BaseModel):
 
 class CompanySettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
+    # Genel Bilgiler
     company_name: str = "Şirket Adı"
     company_address: str = ""
     company_phone: str = ""
@@ -177,13 +178,57 @@ class CompanySettings(BaseModel):
     logo_url: str = ""
     terms_and_conditions: str = ""
     bank_info: str = ""
-    # Homepage sections
-    hero_title: str = "Teklif Alın, Kazanın"
-    hero_subtitle: str = "Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın"
+    
+    # Ana Sayfa
+    home_hero_title: str = "Teklif Alın, Kazanın"
+    home_hero_subtitle: str = "Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın"
+    home_features_title: str = "Neden Bizi Seçmelisiniz?"
+    home_features_subtitle: str = "Müşterilerimize sunduğumuz benzersiz avantajlar"
+    home_products_title: str = "Öne Çıkan Ürünler"
+    home_products_subtitle: str = "En popüler ürünlerimizi keşfedin"
+    home_cta_title: str = "Hemen Teklif Alın"
+    home_cta_subtitle: str = "Ürünlerimizi sepete ekleyin ve size özel fiyat teklifi almak için formu doldurun."
+    
+    # Ürünler Sayfası
+    products_hero_title: str = "Ürünlerimiz"
+    products_hero_subtitle: str = "Geniş ürün yelpazemizle ihtiyacınıza en uygun çözümleri keşfedin."
+    products_empty_text: str = "Aramanızla eşleşen ürün bulunamadı"
+    
+    # Özellikler Sayfası
+    features_hero_title: str = "Özelliklerimiz"
+    features_hero_subtitle: str = "Müşterilerimize en iyi hizmeti sunmak için sunduğumuz avantajları keşfedin."
+    features_cta_title: str = "Hemen Teklif Alın"
+    features_cta_subtitle: str = "Ürünlerimizi inceleyip size özel teklif almak için sepete ekleyin."
+    
+    # Hakkımızda Sayfası
+    about_hero_title: str = "Hakkımızda"
+    about_hero_subtitle: str = "Yılların deneyimi ve mükemmellik anlayışıyla, sektörün önde gelen firmalarından biriyiz."
     about_title: str = "Hakkımızda"
-    about_description: str = ""
+    about_description: str = "Sektörde uzun yıllara dayanan deneyimimiz ve mükemmellik anlayışımızla, müşterilerimize en kaliteli hizmeti sunmayı hedefliyoruz."
     about_image_url: str = ""
-    features: List[str] = []
+    about_stat1_number: str = "10+"
+    about_stat1_label: str = "Yıllık Deneyim"
+    about_stat2_number: str = "500+"
+    about_stat2_label: str = "Mutlu Müşteri"
+    about_stat3_number: str = "1000+"
+    about_stat3_label: str = "Tamamlanan Proje"
+    about_stat4_number: str = "98%"
+    about_stat4_label: str = "Müşteri Memnuniyeti"
+    about_mission: str = "Müşterilerimize en kaliteli ürünleri en uygun fiyatlarla sunarak, sektörde öncü olmak."
+    about_vision: str = "Global pazarda rekabetçi bir oyuncu olarak, sürdürülebilir büyüme sağlamak."
+    about_values: str = "Dürüstlük, kalite, müşteri odaklılık ve yenilikçilik temel değerlerimizdir."
+    
+    # İletişim Sayfası
+    contact_hero_title: str = "İletişime Geçin"
+    contact_hero_subtitle: str = "Sorularınız veya talepleriniz için bize ulaşabilirsiniz. Size yardımcı olmaktan mutluluk duyarız."
+    contact_form_title: str = "Mesaj Gönderin"
+    contact_form_subtitle: str = "Formu doldurarak bize ulaşabilirsiniz."
+    contact_work_hours: str = "Pazartesi - Cuma: 09:00 - 18:00\nCumartesi: 09:00 - 14:00"
+    
+    # Header & Footer
+    footer_description: str = "Profesyonel B2B teklif yönetim platformu. Hızlı, güvenilir ve modern çözümler sunuyoruz."
+    footer_newsletter_title: str = "Bülten"
+    footer_newsletter_subtitle: str = "Yeni ürünler ve kampanyalardan haberdar olmak için bültene kaydolun."
 
 # Helper functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
