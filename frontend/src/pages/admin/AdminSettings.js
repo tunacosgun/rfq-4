@@ -1284,7 +1284,7 @@ const AdminSettings = () => {
               </div>
 
               <div style={styles.formGroup}>
-                <label style={styles.label}>"Made by" Metni</label>
+                <label style={styles.label}>&quot;Made by&quot; Metni</label>
                 <Input
                   value={settings.footer_powered_by_text}
                   onChange={(e) => handleChange('footer_powered_by_text', e.target.value)}
