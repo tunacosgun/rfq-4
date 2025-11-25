@@ -267,10 +267,10 @@ const HomePage = () => {
           >
             <div>
               <h2 style={{ fontSize: '44px', fontWeight: '800', marginBottom: '8px', color: 'var(--text-primary)' }}>
-                Öne Çıkan Ürünler
+                {settings?.home_products_title || 'Öne Çıkan Ürünler'}
               </h2>
               <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
-                En popüler ürünlerimizi keşfedin
+                {settings?.home_products_subtitle || 'En popüler ürünlerimizi keşfedin'}
               </p>
             </div>
             <Link
