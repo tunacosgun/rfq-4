@@ -422,10 +422,10 @@ const HomePage = () => {
       >
         <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: '48px', fontWeight: '900', marginBottom: '24px', letterSpacing: '-1px' }}>
-            Hemen Teklif Alın
+            {settings?.home_cta_title || 'Hemen Teklif Alın'}
           </h2>
           <p style={{ fontSize: '20px', opacity: 0.95, marginBottom: '40px', lineHeight: '1.7' }}>
-            Ürünlerimizi sepete ekleyin ve size özel fiyat teklifi almak için formu doldurun.
+            {settings?.home_cta_subtitle || 'Ürünlerimizi sepete ekleyin ve size özel fiyat teklifi almak için formu doldurun.'}
           </p>
           <Link
             to="/urunler"
