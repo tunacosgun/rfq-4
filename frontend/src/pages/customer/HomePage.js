@@ -205,7 +205,7 @@ const HomePage = () => {
               </div>
             )}
             {settings?.company_phone && (
-              <div style={styles.contactCard} className="card">
+              <div style={styles.contactCard} className="card contact-card">
                 <Phone size={32} style={{ color: 'var(--primary-600)' }} />
                 <h3 style={styles.contactCardTitle}>Telefon</h3>
                 <p style={styles.contactCardText}>{settings.company_phone}</p>
