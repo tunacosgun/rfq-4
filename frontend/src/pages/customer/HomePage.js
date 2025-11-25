@@ -189,10 +189,10 @@ const HomePage = () => {
                 color: 'var(--text-primary)'
               }}
             >
-              Neden Bizi Seçmelisiniz?
+              {settings?.home_features_title || 'Neden Bizi Seçmelisiniz?'}
             </h2>
             <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
-              Müşterilerimize sunduğumuz benzersiz avantajlar
+              {settings?.home_features_subtitle || 'Müşterilerimize sunduğumuz benzersiz avantajlar'}
             </p>
           </div>
 
