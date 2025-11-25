@@ -469,6 +469,35 @@ const AdminSettings = () => {
               </div>
 
               <div style={styles.formGroup}>
+                <label style={styles.label}>
+                  Overlay Koyuluğu ({settings.home_hero_overlay_opacity || 80}%)
+                </label>
+                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)', minWidth: '60px' }}>Şeffaf</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={settings.home_hero_overlay_opacity || 80}
+                    onChange={(e) => handleChange('home_hero_overlay_opacity', parseInt(e.target.value))}
+                    disabled={settings.home_hero_disable_color}
+                    style={{
+                      flex: 1,
+                      height: '8px',
+                      borderRadius: '4px',
+                      outline: 'none',
+                      cursor: settings.home_hero_disable_color ? 'not-allowed' : 'pointer',
+                      opacity: settings.home_hero_disable_color ? 0.5 : 1
+                    }}
+                  />
+                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)', minWidth: '60px', textAlign: 'right' }}>Koyu</span>
+                </div>
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '8px', display: 'block' }}>
+                  0% = Tam şeffaf (yazı okunmaz), 50% = Hafif overlay (yazı okunur), 100% = Tam koyu
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
@@ -477,11 +506,11 @@ const AdminSettings = () => {
                     style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                   />
                   <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>
-                    Rengi Kapat (Sadece görsel kullan)
+                    Overlay'i Tamamen Kapat (Sadece görsel)
                   </span>
                 </label>
                 <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block', marginLeft: '32px' }}>
-                  İşaretlerseniz gradient overlay olmadan sadece görsel kullanılır.
+                  İşaretlerseniz hiç renk overlay olmadan sadece görsel kullanılır.
                 </small>
               </div>
 
