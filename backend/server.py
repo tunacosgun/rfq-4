@@ -439,6 +439,43 @@ async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admi
         logger.error(f"Email sending failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Email gönderilemedi: {str(e)}")
 
+# Customer Auth endpoints
+@api_router.post("/customer/register")
+async def customer_register(data: CustomerRegister):
+    """Register new customer"""
+    existing = await db.customers.find_one({"email": data.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email zaten kayıtlı")
+    
+    customer = Customer(
+        name=data.name,
+        email=data.email,
+        password_hash=get_password_hash(data.password),
+        company=data.company,
+        phone=data.phone
+    )
+    doc = customer.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.customers.insert_one(doc)
+    return {"message": "Kayıt başarılı", "customer_id": customer.id}
+
+@api_router.post("/customer/login")
+async def customer_login(data: CustomerLogin):
+    """Customer login"""
+    customer = await db.customers.find_one({"email": data.email}, {"_id": 0})
+    if not customer or not verify_password(data.password, customer["password_hash"]):
+        raise HTTPException(status_code=401, detail="Hatalı email veya şifre")
+    return {"success": True, "customer": {"id": customer["id"], "name": customer["name"], "email": customer["email"]}}
+
+@api_router.get("/customer/quotes/{customer_email}")
+async def get_customer_quotes(customer_email: str):
+    """Get customer's quotes"""
+    quotes = await db.quotes.find({"email": customer_email}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    for quote in quotes:
+        if isinstance(quote.get('created_at'), str):
+            quote['created_at'] = datetime.fromisoformat(quote['created_at'])
+    return quotes
+
 # Settings endpoints
 @api_router.get("/settings")
 async def get_settings():
