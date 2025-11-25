@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { FileText, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { FileText, Clock, CheckCircle, XCircle, Eye, Trash2 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 
