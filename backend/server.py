@@ -349,6 +349,50 @@ async def upload_file(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Dosya yüklenemedi: {str(e)}")
 
+# PDF and Email endpoints
+@api_router.get("/quotes/{quote_id}/pdf")
+async def generate_quote_pdf(quote_id: str, admin: dict = Depends(get_current_admin)):
+    """Generate PDF for quote"""
+    quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Teklif bulunamadı")
+    
+    try:
+        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'))
+        return Response(
+            content=pdf_data,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=teklif_{quote_id[:8]}.pdf"
+            }
+        )
+    except Exception as e:
+        logger.error(f"PDF generation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"PDF oluşturulamadı: {str(e)}")
+
+@api_router.post("/quotes/{quote_id}/send-email")
+async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admin)):
+    """Send quote PDF to customer via email"""
+    quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Teklif bulunamadı")
+    
+    try:
+        # Generate PDF
+        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'))
+        
+        # Send email with PDF attachment
+        success = email_service.send_quote_response(quote, pdf_data)
+        
+        if success:
+            return {"message": "Email başarıyla gönderildi", "sent_to": quote['email']}
+        else:
+            return {"message": "Email gönderilemedi (SMTP yapılandırılmamış)", "sent_to": quote['email']}
+            
+    except Exception as e:
+        logger.error(f"Email sending failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Email gönderilemedi: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
