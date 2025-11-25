@@ -361,6 +361,30 @@ const AdminQuoteDetail = () => {
             </div>
 
             <div className="card" style={styles.section}>
+              <h2 style={styles.sectionTitle}>PDF & Email</h2>
+              <div style={styles.actionsGrid}>
+                <Button
+                  onClick={downloadPDF}
+                  variant="outline"
+                  style={styles.pdfButton}
+                  data-testid="download-pdf-button"
+                >
+                  <FileText size={18} />
+                  PDF İndir
+                </Button>
+                <Button
+                  onClick={sendEmail}
+                  disabled={updating}
+                  style={{ ...styles.actionButton, background: '#3BB77E', color: 'white' }}
+                  data-testid="send-email-button"
+                >
+                  <Send size={18} />
+                  Email Gönder
+                </Button>
+              </div>
+            </div>
+
+            <div className="card" style={styles.section}>
               <h2 style={styles.sectionTitle}>Admin Notu</h2>
               <Textarea
                 value={adminNote}
