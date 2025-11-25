@@ -439,6 +439,16 @@ async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admi
         logger.error(f"Email sending failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Email gönderilemedi: {str(e)}")
 
+@api_router.delete("/quotes/{quote_id}")
+async def delete_quote(quote_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete a quote (Admin only)"""
+    result = await db.quotes.delete_one({"id": quote_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Teklif bulunamadı")
+    
+    return {"message": "Teklif başarıyla silindi", "deleted_id": quote_id}
+
+
 # Customer Auth endpoints
 @api_router.post("/customer/register")
 async def customer_register(data: CustomerRegister):
