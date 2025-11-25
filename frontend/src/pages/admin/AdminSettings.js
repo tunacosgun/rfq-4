@@ -193,6 +193,76 @@ const AdminSettings = () => {
                 />
               </div>
             </div>
+            </div>
+
+            <div className="card" style={styles.section}>
+              <h2 style={styles.sectionTitle}>
+                <Settings size={20} style={{ marginRight: '8px' }} />
+                Ana Sayfa İçerikleri
+              </h2>
+              
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hero Başlık</label>
+                <Input
+                  value={settings.hero_title}
+                  onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })}
+                  placeholder="Teklif Alın, Kazanın"
+                  data-testid="hero-title-input"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hero Alt Başlık</label>
+                <Input
+                  value={settings.hero_subtitle}
+                  onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
+                  placeholder="Ürünlerimizi inceleyin..."
+                  data-testid="hero-subtitle-input"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hakkımızda Başlık</label>
+                <Input
+                  value={settings.about_title}
+                  onChange={(e) => setSettings({ ...settings, about_title: e.target.value })}
+                  placeholder="Hakkımızda"
+                  data-testid="about-title-input"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hakkımızda Açıklama</label>
+                <Textarea
+                  value={settings.about_description}
+                  onChange={(e) => setSettings({ ...settings, about_description: e.target.value })}
+                  rows={5}
+                  placeholder="Şirketiniz hakkında bilgi..."
+                  data-testid="about-description-input"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hakkımızda Görsel URL</label>
+                <Input
+                  value={settings.about_image_url}
+                  onChange={(e) => setSettings({ ...settings, about_image_url: e.target.value })}
+                  placeholder="https://example.com/about.jpg"
+                  data-testid="about-image-input"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Özellikler (virgülle ayırın)</label>
+                <Textarea
+                  value={settings.features}
+                  onChange={(e) => setSettings({ ...settings, features: e.target.value })}
+                  rows={4}
+                  placeholder="Hızlı Teslimat, Güvenli Ödeme, 7/24 Destek"
+                  data-testid="features-input"
+                />
+              </div>
+            </div>
           </div>
 
           <Button
