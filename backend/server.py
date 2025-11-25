@@ -411,6 +411,23 @@ async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admi
         logger.error(f"Email sending failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Email gönderilemedi: {str(e)}")
 
+# Settings endpoints
+@api_router.get("/settings")
+async def get_settings(admin: dict = Depends(get_current_admin)):
+    """Get company settings"""
+    settings = await db.settings.find_one({}, {"_id": 0})
+    if not settings:
+        # Return default settings
+        return CompanySettings().model_dump()
+    return settings
+
+@api_router.post("/settings")
+async def update_settings(settings: CompanySettings, admin: dict = Depends(get_current_admin)):
+    """Update company settings"""
+    await db.settings.delete_many({})  # Remove old settings
+    await db.settings.insert_one(settings.model_dump())
+    return {"message": "Ayarlar kaydedildi"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
