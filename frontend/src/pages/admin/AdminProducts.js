@@ -195,6 +195,26 @@ const AdminProducts = () => {
                   <label style={styles.label}>Fiyat Aralığı</label>
                   <Input value={formData.price_range} onChange={(e) => setFormData({ ...formData, price_range: e.target.value })} placeholder="örn: 100-500 TL" data-testid="product-price-range-input" />
                 </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Varyantlar (virgülle ayırın)</label>
+                  <Input value={formData.variants} onChange={(e) => setFormData({ ...formData, variants: e.target.value })} placeholder="S, M, L, XL veya 1kg, 5kg, 10kg" data-testid="product-variants-input" />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Stok Miktarı</label>
+                  <Input type="number" value={formData.stock_quantity} onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })} min="0" placeholder="Opsiyonel" data-testid="product-stock-input" />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>
+                    <input 
+                      type="checkbox" 
+                      checked={formData.is_active} 
+                      onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })} 
+                      data-testid="product-active-checkbox"
+                      style={{ marginRight: '8px' }}
+                    />
+                    Ürün Aktif
+                  </label>
+                </div>
                 <div style={styles.dialogActions}>
                   <Button type="button" variant="outline" onClick={handleDialogClose}>İptal</Button>
                   <Button type="submit" data-testid="save-product-button">{editingProduct ? 'Güncelle' : 'Ekle'}</Button>
