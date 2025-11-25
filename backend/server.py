@@ -393,8 +393,11 @@ async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admi
         raise HTTPException(status_code=404, detail="Teklif bulunamadı")
     
     try:
+        # Get company settings
+        settings = await db.settings.find_one({}, {"_id": 0})
+        
         # Generate PDF
-        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'))
+        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'), settings)
         
         # Send email with PDF attachment
         success = email_service.send_quote_response(quote, pdf_data)
