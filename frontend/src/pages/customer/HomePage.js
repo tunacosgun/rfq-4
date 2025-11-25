@@ -283,7 +283,7 @@ const styles = {
   productName: { fontSize: '18px', fontWeight: '700', margin: 'var(--space-2) 0', color: 'var(--text-primary)' },
   productDesc: { fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 'var(--space-3)' },
   productPrice: { fontSize: '18px', fontWeight: '700', color: 'var(--primary-600)' },
-  addToCartBtn: { width: '100%', marginTop: 'var(--space-4)', background: 'var(--primary-600)', color: 'white', height: '44px', fontWeight: '600' },
+  addToCartBtn: { width: '100%', marginTop: 'var(--space-4)', background: 'var(--primary-600)', color: 'white', height: '44px', fontWeight: '600', transition: 'all 0.3s ease', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-lg)' },
   aboutSection: { padding: 'var(--space-20) 0', background: 'white' },
   aboutGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center' },
   aboutImage: { borderRadius: 'var(--radius-2xl)', overflow: 'hidden' },
