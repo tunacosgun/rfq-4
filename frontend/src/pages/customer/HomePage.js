@@ -173,7 +173,51 @@ const HomePage = () => {
       {/* Footer */}
       <footer style={styles.footer}>
         <div className="container">
-          <p style={styles.footerText}>© 2025 Teklif Sistemi. Tüm hakları saklıdır.</p>
+          <div style={styles.footerContent}>
+            <div style={styles.footerSection}>
+              <h3 style={styles.footerTitle}>
+                {settings?.company_name || 'Teklif Sistemi'}
+              </h3>
+              <p style={styles.footerDesc}>
+                Profesyonel teklif yönetim platformu
+              </p>
+            </div>
+
+            {settings && (
+              <>
+                <div style={styles.footerSection}>
+                  <h4 style={styles.footerHeading}>İletişim</h4>
+                  {settings.company_address && (
+                    <p style={styles.footerLink}>📍 {settings.company_address}</p>
+                  )}
+                  {settings.company_phone && (
+                    <p style={styles.footerLink}>📞 {settings.company_phone}</p>
+                  )}
+                  {settings.company_email && (
+                    <p style={styles.footerLink}>✉️ {settings.company_email}</p>
+                  )}
+                </div>
+
+                <div style={styles.footerSection}>
+                  <h4 style={styles.footerHeading}>Bilgiler</h4>
+                  {settings.company_website && (
+                    <a href={settings.company_website} style={styles.footerLink} target="_blank" rel="noopener noreferrer">
+                      🌐 Website
+                    </a>
+                  )}
+                  {settings.tax_number && (
+                    <p style={styles.footerLink}>🏢 Vergi No: {settings.tax_number}</p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+          
+          <div style={styles.footerBottom}>
+            <p style={styles.footerText}>
+              © 2025 {settings?.company_name || 'Teklif Sistemi'}. Tüm hakları saklıdır.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
