@@ -439,33 +439,49 @@ const HomePage = () => {
 
         {/* Footer */}
         <footer style={styles.footer}>
-          <div style={styles.container}>
+          <div className="container">
             <div style={styles.footerContent}>
               <div style={styles.footerSection}>
-                <h3 style={styles.footerTitle}>{settings?.company_name || 'Özmen Gıda'}</h3>
-                <p style={styles.footerDesc}>Kaliteli ürünler, güvenilir hizmet</p>
+                <h3 style={styles.footerTitle}>{settings?.company_name || 'RFQ Platform'}</h3>
+                <p style={styles.footerDesc}>Profesyonel teklif yönetim platformu. Hızlı, güvenilir ve kolay kullanım.</p>
+                <div style={styles.socialLinks}>
+                  <a href="#" style={styles.socialIcon}>📘</a>
+                  <a href="#" style={styles.socialIcon}>🐦</a>
+                  <a href="#" style={styles.socialIcon}>💼</a>
+                  <a href="#" style={styles.socialIcon}>📷</a>
+                </div>
               </div>
+              
+              <div style={styles.footerSection}>
+                <h4 style={styles.footerHeading}>Sayfalar</h4>
+                <Link to="/urunler" style={styles.footerLink}>Ürünler</Link>
+                <Link to="/ozellikler" style={styles.footerLink}>Özellikler</Link>
+                <Link to="/hakkimizda" style={styles.footerLink}>Hakkımızda</Link>
+                <Link to="/iletisim" style={styles.footerLink}>İletişim</Link>
+              </div>
+              
               {settings && (
-                <>
-                  <div style={styles.footerSection}>
-                    <h4 style={styles.footerHeading}>İletişim</h4>
-                    {settings.company_phone && <p style={styles.footerLink}>{settings.company_phone}</p>}
-                    {settings.company_email && <p style={styles.footerLink}>{settings.company_email}</p>}
-                  </div>
-                  <div style={styles.footerSection}>
-                    <h4 style={styles.footerHeading}>Bilgiler</h4>
-                    {settings.company_website && (
-                      <a href={settings.company_website} style={styles.footerLink} target="_blank" rel="noopener noreferrer">
-                        Website
-                      </a>
-                    )}
-                    {settings.tax_number && <p style={styles.footerLink}>Vergi No: {settings.tax_number}</p>}
-                  </div>
-                </>
+                <div style={styles.footerSection}>
+                  <h4 style={styles.footerHeading}>İletişim</h4>
+                  {settings.company_phone && <p style={styles.footerLink}>📞 {settings.company_phone}</p>}
+                  {settings.company_email && <p style={styles.footerLink}>✉️ {settings.company_email}</p>}
+                  {settings.company_address && <p style={styles.footerLink}>📍 {settings.company_address}</p>}
+                </div>
               )}
+              
+              <div style={styles.footerSection}>
+                <h4 style={styles.footerHeading}>Bülten</h4>
+                <p style={styles.footerDesc}>Yeni ürünler ve fırsatlardan haberdar olun</p>
+                <div style={styles.newsletterForm}>
+                  <Input placeholder="Email adresiniz" style={styles.newsletterInput} />
+                  <Button style={styles.newsletterBtn}>Abone Ol</Button>
+                </div>
+              </div>
             </div>
+            
             <div style={styles.footerBottom}>
-              <p style={styles.footerCopy}>© 2024 {settings?.company_name || 'Özmen Gıda'}. Tüm hakları saklıdır.</p>
+              <p style={styles.footerCopy}>© 2025 {settings?.company_name || 'RFQ Platform'}. Tüm hakları saklıdır.</p>
+              <p style={styles.footerCopy}>Made with ❤️ by Emergent</p>
             </div>
           </div>
         </footer>
