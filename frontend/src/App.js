@@ -12,6 +12,7 @@ import QuoteFormPage from './pages/customer/QuoteFormPage';
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminCategories from './pages/admin/AdminCategories';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminQuotes from './pages/admin/AdminQuotes';
 import AdminQuoteDetail from './pages/admin/AdminQuoteDetail';
