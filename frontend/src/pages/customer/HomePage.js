@@ -256,7 +256,7 @@ const styles = {
   logoImg: { height: '40px', width: 'auto' },
   brandName: { fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' },
   navLinks: { display: 'flex', gap: 'var(--space-8)' },
-  navLink: { fontSize: '15px', fontWeight: '500', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' },
+  navLink: { fontSize: '15px', fontWeight: '500', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'all 0.3s ease', position: 'relative', padding: '8px 0' },
   cartBtn: { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-3) var(--space-5)', background: 'var(--primary-600)', color: 'white', borderRadius: 'var(--radius-lg)', textDecoration: 'none', fontWeight: '600', fontSize: '15px', position: 'relative' },
   cartBadge: { position: 'absolute', top: '-6px', right: '-6px', background: '#EF4444', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '700', border: '2px solid white' },
   hero: { background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)', padding: 'var(--space-24) 0', color: 'white', textAlign: 'center' },
