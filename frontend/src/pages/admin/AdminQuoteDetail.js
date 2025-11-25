@@ -33,6 +33,16 @@ const AdminQuoteDetail = () => {
       });
       setQuote(response.data);
       setAdminNote(response.data.admin_note || '');
+      
+      // Initialize pricing from quote
+      if (response.data.pricing && response.data.pricing.length > 0) {
+        const pricingObj = {};
+        response.data.pricing.forEach(p => {
+          pricingObj[p.product_id] = p.unit_price;
+        });
+        setPricing(pricingObj);
+        setShowPricing(true);
+      }
     } catch (error) {
       toast.error('Teklif yüklenemedi');
       navigate('/admin/teklifler');
