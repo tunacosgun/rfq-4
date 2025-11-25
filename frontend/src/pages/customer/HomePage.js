@@ -255,6 +255,7 @@ const HomePage = () => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
 
