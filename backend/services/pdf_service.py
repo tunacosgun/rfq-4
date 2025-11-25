@@ -32,8 +32,8 @@ class PDFService:
             self.font_bold = 'DejaVu-Bold'
         except Exception as e:
             logger.warning(f"Could not load DejaVu font: {e}, using Helvetica")
-            self.font_name = 'Helvetica'
-            self.font_bold = 'Helvetica-Bold'
+            self.font_name = 'DejaVu'
+            self.font_bold = 'DejaVu-Bold'
         
         self.styles = getSampleStyleSheet()
         self._setup_custom_styles()
@@ -97,10 +97,10 @@ class PDFService:
         
         quote_info_table = Table(quote_info_data, colWidths=[40*mm, 80*mm])
         quote_info_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTNAME', (0, 0), (-1, -1), 'DejaVu'),
             ('FONTSIZE', (0, 0), (-1, -1), 10),
             ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#7E7E7E')),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 0), (0, -1), 'DejaVu-Bold'),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
         ]))
@@ -119,10 +119,10 @@ class PDFService:
         
         customer_table = Table(customer_data, colWidths=[40*mm, 120*mm])
         customer_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTNAME', (0, 0), (-1, -1), 'DejaVu'),
             ('FONTSIZE', (0, 0), (-1, -1), 10),
             ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#7E7E7E')),
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 0), (0, -1), 'DejaVu-Bold'),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
         ]))
         story.append(customer_table)
@@ -164,9 +164,9 @@ class PDFService:
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTNAME', (0, 0), (-1, 0), 'DejaVu-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTNAME', (0, 1), (-1, -1), 'DejaVu'),
             ('FONTSIZE', (0, 1), (-1, -1), 10),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
             ('TOPPADDING', (0, 0), (-1, -1), 8),
@@ -178,7 +178,7 @@ class PDFService:
         if pricing_data and total_amount > 0:
             products_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#FFF9E6')),
-                ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (0, -1), (-1, -1), 'DejaVu-Bold'),
                 ('FONTSIZE', (0, -1), (-1, -1), 12),
             ]))
         
