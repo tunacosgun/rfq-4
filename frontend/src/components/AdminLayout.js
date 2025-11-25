@@ -25,6 +25,7 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/kategoriler', label: 'Kategoriler', icon: FolderOpen },
     { path: '/admin/urunler', label: 'Ürünler', icon: PackageIcon },
     { path: '/admin/teklifler', label: 'Teklifler', icon: FileText },
+    { path: '/admin/ayarlar', label: 'Ayarlar', icon: Settings },
   ];
 
   if (!isAuthenticated) {
