@@ -392,14 +392,56 @@ const styles = {
     marginTop: '16px',
   },
   footer: {
-    background: '#253D4E',
+    background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
     color: 'white',
-    padding: '32px 0',
-    marginTop: '64px',
+    padding: '64px 0 24px',
+    marginTop: '80px',
+  },
+  footerContent: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '48px',
+    marginBottom: '48px',
+  },
+  footerSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  },
+  footerTitle: {
+    fontSize: '24px',
+    fontWeight: '700',
+    background: 'linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    marginBottom: '8px',
+  },
+  footerDesc: {
+    fontSize: '14px',
+    color: 'rgba(255, 255, 255, 0.7)',
+    lineHeight: '1.6',
+  },
+  footerHeading: {
+    fontSize: '16px',
+    fontWeight: '600',
+    color: 'white',
+    marginBottom: '8px',
+  },
+  footerLink: {
+    fontSize: '14px',
+    color: 'rgba(255, 255, 255, 0.7)',
+    textDecoration: 'none',
+    lineHeight: '1.8',
+    transition: 'color 0.2s',
+  },
+  footerBottom: {
+    paddingTop: '24px',
+    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
   },
   footerText: {
     textAlign: 'center',
-    opacity: 0.8,
+    fontSize: '14px',
+    color: 'rgba(255, 255, 255, 0.6)',
   },
 };
 
