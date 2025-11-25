@@ -276,7 +276,7 @@ const styles = {
   productCard: { display: 'flex', flexDirection: 'column', padding: 'var(--space-5)', height: '100%', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer' },
   productLink: { textDecoration: 'none', color: 'inherit', flex: 1, display: 'flex', flexDirection: 'column' },
   productImage: { width: '100%', height: '240px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 'var(--space-4)', background: 'var(--bg-secondary)' },
-  productImg: { width: '100%', height: '100%', objectFit: 'cover' },
+  productImg: { width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' },
   placeholderImg: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   productInfo: { flex: 1 },
   productCategory: { fontSize: '12px', fontWeight: '700', color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.5px' },
