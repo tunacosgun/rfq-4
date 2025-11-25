@@ -43,8 +43,9 @@ class PDFService:
         self.styles.add(ParagraphStyle(
             name='CustomTitle',
             parent=self.styles['Heading1'],
+            fontName=self.font_bold,
             fontSize=24,
-            textColor=colors.HexColor('#3BB77E'),
+            textColor=colors.HexColor('#0EA5E9'),
             spaceAfter=12,
             alignment=TA_CENTER
         ))
@@ -52,10 +53,27 @@ class PDFService:
         self.styles.add(ParagraphStyle(
             name='CustomHeading',
             parent=self.styles['Heading2'],
+            fontName=self.font_bold,
             fontSize=14,
             textColor=colors.HexColor('#253D4E'),
             spaceAfter=8,
             spaceBefore=12
+        ))
+        
+        self.styles.add(ParagraphStyle(
+            name='CustomNormal',
+            parent=self.styles['Normal'],
+            fontName=self.font_name,
+            fontSize=10,
+            textColor=colors.HexColor('#1E293B')
+        ))
+        
+        self.styles.add(ParagraphStyle(
+            name='CustomSmall',
+            parent=self.styles['Normal'],
+            fontName=self.font_name,
+            fontSize=9,
+            textColor=colors.HexColor('#64748B')
         ))
     
     def generate_quote_pdf(self, quote_data: dict, pricing_data: Optional[List[Dict]] = None) -> bytes:
