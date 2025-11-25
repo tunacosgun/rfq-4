@@ -86,7 +86,9 @@ const HomePage = () => {
       <section
         style={{
           background: settings?.home_hero_bg_image 
-            ? `linear-gradient(135deg, ${settings.home_hero_bg_color || '#22C55E'}CC 0%, ${settings.home_hero_bg_color || '#16A34A'}E6 100%), url(${settings.home_hero_bg_image})`
+            ? (settings?.home_hero_disable_color 
+                ? `url(${settings.home_hero_bg_image})` 
+                : `linear-gradient(135deg, ${settings.home_hero_bg_color || '#22C55E'}CC 0%, ${settings.home_hero_bg_color || '#16A34A'}E6 100%), url(${settings.home_hero_bg_image})`)
             : `linear-gradient(135deg, ${settings?.home_hero_bg_color || '#22C55E'} 0%, ${settings?.home_hero_bg_color || '#16A34A'} 100%)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
