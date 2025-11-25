@@ -21,6 +21,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminQuotes from './pages/admin/AdminQuotes';
 import AdminQuoteDetail from './pages/admin/AdminQuoteDetail';
 import AdminSettings from './pages/admin/AdminSettings';
+import ColorManagement from './pages/admin/ColorManagement';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
