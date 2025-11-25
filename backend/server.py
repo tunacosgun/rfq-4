@@ -184,8 +184,12 @@ class CompanySettings(BaseModel):
     home_hero_subtitle: str = "Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın"
     home_hero_bg_image: str = ""
     home_hero_bg_color: str = "#22C55E"
+    home_hero_text_color: str = "#FFFFFF"
     home_hero_disable_color: bool = False
     home_hero_overlay_opacity: int = 80
+    
+    # Favicon
+    site_favicon_url: str = ""
     home_features_title: str = "Neden Bizi Seçmelisiniz?"
     home_features_subtitle: str = "Müşterilerimize sunduğumuz benzersiz avantajlar"
     home_products_title: str = "Öne Çıkan Ürünler"
