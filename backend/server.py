@@ -182,6 +182,8 @@ class CompanySettings(BaseModel):
     # Ana Sayfa
     home_hero_title: str = "Teklif Alın, Kazanın"
     home_hero_subtitle: str = "Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın"
+    home_hero_bg_image: str = ""
+    home_hero_bg_color: str = "#22C55E"
     home_features_title: str = "Neden Bizi Seçmelisiniz?"
     home_features_subtitle: str = "Müşterilerimize sunduğumuz benzersiz avantajlar"
     home_products_title: str = "Öne Çıkan Ürünler"
