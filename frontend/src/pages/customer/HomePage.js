@@ -91,8 +91,8 @@ const HomePage = () => {
       {/* Hero */}
       <section id="hero" style={styles.hero}>
         <div className="container" style={styles.heroContent}>
-          <h1 style={styles.heroTitle}>{settings?.hero_title || 'Teklif Al\u0131n, Kazan\u0131n'}</h1>
-          <p style={styles.heroSubtitle}>{settings?.hero_subtitle || '\u00dcr\u00fcnlerimizi inceleyin, ihtiyac\u0131n\u0131za uygun teklifler al\u0131n'}</p>
+          <h1 style={styles.heroTitle}>{settings?.hero_title || 'Teklif Alın, Kazanın'}</h1>
+          <p style={styles.heroSubtitle}>{settings?.hero_subtitle || 'Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın'}</p>
         </div>
       </section>
 
