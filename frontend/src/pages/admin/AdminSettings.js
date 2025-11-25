@@ -155,9 +155,29 @@ const AdminSettings = () => {
         contact_form_title: '',
         contact_form_subtitle: '',
         contact_work_hours: '',
-        footer_description: '',
+        footer_company_description: '',
+        footer_copyright_text: '',
+        footer_powered_by_text: '',
+        footer_facebook_url: '',
+        footer_twitter_url: '',
+        footer_linkedin_url: '',
+        footer_instagram_url: '',
+        footer_quicklinks_title: '',
+        footer_menu_home: '',
+        footer_menu_products: '',
+        footer_menu_features: '',
+        footer_menu_about: '',
+        footer_menu_contact: '',
+        footer_contact_title: '',
         footer_newsletter_title: '',
-        footer_newsletter_subtitle: ''
+        footer_newsletter_subtitle: '',
+        footer_newsletter_button_text: '',
+        footer_bg_color: '',
+        footer_text_color: '',
+        footer_heading_color: '',
+        footer_link_color: '',
+        footer_link_hover_color: '',
+        footer_divider_color: ''
       };
       setSettings({ ...defaultSettings, ...response.data });
     } catch (error) {
