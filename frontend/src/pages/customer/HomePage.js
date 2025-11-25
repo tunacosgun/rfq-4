@@ -75,9 +75,9 @@ const HomePage = () => {
 
           <div style={styles.navLinks}>
             <a href="#anasayfa" onClick={() => scrollToSection('hero')} style={styles.navLink}>Ana Sayfa</a>
-            <a href="#urunler" onClick={() => scrollToSection('products')} style={styles.navLink}>\u00dcr\u00fcnler</a>
-            <a href="#hakkimizda" onClick={() => scrollToSection('about')} style={styles.navLink}>Hakk\u0131m\u0131zda</a>
-            <a href="#iletisim" onClick={() => scrollToSection('contact')} style={styles.navLink}>\u0130leti\u015fim</a>
+            <a href="#urunler" onClick={() => scrollToSection('products')} style={styles.navLink}>Ürünler</a>
+            <a href="#hakkimizda" onClick={() => scrollToSection('about')} style={styles.navLink}>Hakkımızda</a>
+            <a href="#iletisim" onClick={() => scrollToSection('contact')} style={styles.navLink}>İletişim</a>
           </div>
 
           <Link to="/teklif-sepeti" style={styles.cartBtn}>
