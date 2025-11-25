@@ -64,16 +64,45 @@ const HomePage = () => {
       {/* Header */}
       <header style={styles.header}>
         <div className="container" style={styles.headerContainer}>
-          <Link to="/" style={styles.logo}>
-            <Package size={32} />
-            <span style={styles.logoText}>Teklif Sistemi</span>
-          </Link>
-          <Link to="/teklif-sepeti" style={styles.cartButton} data-testid="cart-button">
-            <ShoppingCart size={24} />
-            {getCartCount() > 0 && (
-              <span style={styles.cartBadge} data-testid="cart-count">{getCartCount()}</span>
+          {/* Logo Section */}
+          <Link to="/" style={styles.logoSection}>
+            {settings?.logo_url ? (
+              <img src={settings.logo_url} alt="Logo" style={styles.logoImage} />
+            ) : (
+              <div style={styles.logoIcon}>
+                <Package size={28} />
+              </div>
             )}
+            <div style={styles.brandInfo}>
+              <span style={styles.brandName}>
+                {settings?.company_name || 'Teklif Sistemi'}
+              </span>
+              <span style={styles.brandTagline}>Profesyonel Teklif Platformu</span>
+            </div>
           </Link>
+
+          {/* Navigation */}
+          <nav style={styles.nav}>
+            <Link to="/" style={styles.navLink}>Ana Sayfa</Link>
+            <a href="#urunler" style={styles.navLink}>Ürünler</a>
+            <a href="#hakkimizda" style={styles.navLink}>Hakkımızda</a>
+            {settings?.company_email && (
+              <a href={`mailto:${settings.company_email}`} style={styles.navLink}>İletişim</a>
+            )}
+          </nav>
+
+          {/* Actions */}
+          <div style={styles.headerActions}>
+            <Link to="/teklif-sepeti" style={styles.cartButton} data-testid="cart-button">
+              <div style={styles.cartIcon}>
+                <ShoppingCart size={22} />
+                {getCartCount() > 0 && (
+                  <span style={styles.cartBadge} data-testid="cart-count">{getCartCount()}</span>
+                )}
+              </div>
+              <span style={styles.cartText}>Sepet</span>
+            </Link>
+          </div>
         </div>
       </header>
 
