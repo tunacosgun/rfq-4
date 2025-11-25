@@ -43,7 +43,7 @@ const ContactPage = () => {
 
     // Simulate form submission
     setTimeout(() => {
-      toast.success('Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
+      toast.success(settings?.contact_form_success_message || 'Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       setSubmitting(false);
     }, 1000);
