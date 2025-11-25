@@ -990,6 +990,44 @@ const styles = {
     fontSize: '14px',
     color: '#9ca3af'
   },
+  socialLinks: {
+    display: 'flex',
+    gap: '12px',
+    marginTop: '16px'
+  },
+  socialIcon: {
+    fontSize: '20px',
+    textDecoration: 'none',
+    transition: 'transform 0.3s ease',
+    ':hover': {
+      transform: 'scale(1.2)'
+    }
+  },
+  newsletterForm: {
+    display: 'flex',
+    gap: '8px',
+    marginTop: '12px'
+  },
+  newsletterInput: {
+    flex: 1,
+    padding: '8px 12px',
+    borderRadius: '4px',
+    border: '1px solid #374151',
+    background: '#374151',
+    color: 'white',
+    fontSize: '14px'
+  },
+  newsletterBtn: {
+    padding: '8px 16px',
+    background: 'rgb(59, 183, 126)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease'
+  },
 
   // Loading
   loadingScreen: {
