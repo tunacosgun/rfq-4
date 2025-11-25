@@ -197,7 +197,23 @@ const AdminSettings = () => {
         footer_heading_color: '',
         footer_link_color: '',
         footer_link_hover_color: '',
-        footer_divider_color: ''
+        footer_divider_color: '',
+        header_logo_url: '',
+        header_company_name: '',
+        header_menu_home: '',
+        header_menu_products: '',
+        header_menu_features: '',
+        header_menu_about: '',
+        header_menu_contact: '',
+        header_cart_button_text: '',
+        header_bg_color: '',
+        header_text_color: '',
+        header_link_color: '',
+        header_link_active_color: '',
+        header_link_hover_color: '',
+        header_scrolled_bg_color: '',
+        header_cart_button_bg: '',
+        header_cart_button_text_color: ''
       };
       setSettings({ ...defaultSettings, ...response.data });
     } catch (error) {
