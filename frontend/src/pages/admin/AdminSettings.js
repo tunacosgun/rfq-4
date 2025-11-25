@@ -26,6 +26,8 @@ const AdminSettings = () => {
     // Ana Sayfa
     home_hero_title: '',
     home_hero_subtitle: '',
+    home_hero_bg_image: '',
+    home_hero_bg_color: '',
     home_features_title: '',
     home_features_subtitle: '',
     home_products_title: '',
