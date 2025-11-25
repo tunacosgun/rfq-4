@@ -390,6 +390,18 @@ const AdminSettings = () => {
               </div>
 
               <div style={styles.formGroup}>
+                <label style={styles.label}>Favicon URL</label>
+                <Input
+                  value={settings.site_favicon_url}
+                  onChange={(e) => handleChange('site_favicon_url', e.target.value)}
+                  placeholder="https://example.com/favicon.ico"
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  Tarayıcı sekmesinde görünecek küçük ikon. 32x32 veya 64x64 .ico veya .png formatı önerilir.
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
                 <label style={styles.label}>Telefon</label>
                 <Input
                   value={settings.company_phone}
