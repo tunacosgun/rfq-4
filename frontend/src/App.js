@@ -5,6 +5,10 @@ import '@/App.css';
 
 // Customer pages
 import HomePage from './pages/customer/HomePage';
+import ProductsPage from './pages/customer/ProductsPage';
+import FeaturesPage from './pages/customer/FeaturesPage';
+import AboutPage from './pages/customer/AboutPage';
+import ContactPage from './pages/customer/ContactPage';
 import ProductDetailPage from './pages/customer/ProductDetailPage';
 import QuoteCartPage from './pages/customer/QuoteCartPage';
 import QuoteFormPage from './pages/customer/QuoteFormPage';
