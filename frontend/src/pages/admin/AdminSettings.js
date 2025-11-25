@@ -69,7 +69,9 @@ const AdminSettings = () => {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="loading"><div className="spinner"></div></div>
+        <div className="loading">
+          <div className="spinner"></div>
+        </div>
       </AdminLayout>
     );
   }
@@ -91,12 +93,14 @@ const AdminSettings = () => {
                 <Settings size={20} style={{ marginRight: '8px' }} />
                 Genel Bilgiler
               </h2>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Şirket Adı *</label>
                 <Input
                   value={settings.company_name}
-                  onChange={(e) => setSettings({ ...settings, company_name: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, company_name: e.target.value })
+                  }
                   required
                   data-testid="company-name-input"
                 />
@@ -106,7 +110,9 @@ const AdminSettings = () => {
                 <label style={styles.label}>Adres</label>
                 <Textarea
                   value={settings.company_address}
-                  onChange={(e) => setSettings({ ...settings, company_address: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, company_address: e.target.value })
+                  }
                   rows={3}
                   data-testid="company-address-input"
                 />
@@ -116,7 +122,9 @@ const AdminSettings = () => {
                 <label style={styles.label}>Telefon</label>
                 <Input
                   value={settings.company_phone}
-                  onChange={(e) => setSettings({ ...settings, company_phone: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, company_phone: e.target.value })
+                  }
                   data-testid="company-phone-input"
                 />
               </div>
@@ -126,7 +134,9 @@ const AdminSettings = () => {
                 <Input
                   type="email"
                   value={settings.company_email}
-                  onChange={(e) => setSettings({ ...settings, company_email: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, company_email: e.target.value })
+                  }
                   data-testid="company-email-input"
                 />
               </div>
@@ -135,7 +145,9 @@ const AdminSettings = () => {
                 <label style={styles.label}>Website</label>
                 <Input
                   value={settings.company_website}
-                  onChange={(e) => setSettings({ ...settings, company_website: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, company_website: e.target.value })
+                  }
                   data-testid="company-website-input"
                 />
               </div>
@@ -144,7 +156,9 @@ const AdminSettings = () => {
                 <label style={styles.label}>Vergi Numarası</label>
                 <Input
                   value={settings.tax_number}
-                  onChange={(e) => setSettings({ ...settings, tax_number: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, tax_number: e.target.value })
+                  }
                   data-testid="tax-number-input"
                 />
               </div>
@@ -155,18 +169,24 @@ const AdminSettings = () => {
                 <Settings size={20} style={{ marginRight: '8px' }} />
                 Logo & Ek Bilgiler
               </h2>
-              
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Logo URL</label>
                 <Input
                   value={settings.logo_url}
-                  onChange={(e) => setSettings({ ...settings, logo_url: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, logo_url: e.target.value })
+                  }
                   placeholder="https://example.com/logo.png"
                   data-testid="logo-url-input"
                 />
                 {settings.logo_url && (
                   <div style={styles.logoPreview}>
-                    <img src={settings.logo_url} alt="Logo" style={styles.logoImg} />
+                    <img
+                      src={settings.logo_url}
+                      alt="Logo"
+                      style={styles.logoImg}
+                    />
                   </div>
                 )}
               </div>
@@ -175,7 +195,9 @@ const AdminSettings = () => {
                 <label style={styles.label}>Banka Bilgileri</label>
                 <Textarea
                   value={settings.bank_info}
-                  onChange={(e) => setSettings({ ...settings, bank_info: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({ ...settings, bank_info: e.target.value })
+                  }
                   rows={4}
                   placeholder="Banka Adı: &#10;IBAN: &#10;Hesap Adı:"
                   data-testid="bank-info-input"
@@ -186,85 +208,107 @@ const AdminSettings = () => {
                 <label style={styles.label}>Şartlar ve Koşullar</label>
                 <Textarea
                   value={settings.terms_and_conditions}
-                  onChange={(e) => setSettings({ ...settings, terms_and_conditions: e.target.value })}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      terms_and_conditions: e.target.value,
+                    })
+                  }
                   rows={6}
                   placeholder="Tekliflerinizde görünecek şartlar ve koşullar..."
                   data-testid="terms-input"
                 />
               </div>
             </div>
+          </div>
+
+          <div className="card" style={styles.section}>
+            <h2 style={styles.sectionTitle}>
+              <Settings size={20} style={{ marginRight: '8px' }} />
+              Ana Sayfa İçerikleri
+            </h2>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Hero Başlık</label>
+              <Input
+                value={settings.hero_title}
+                onChange={(e) =>
+                  setSettings({ ...settings, hero_title: e.target.value })
+                }
+                placeholder="Teklif Alın, Kazanın"
+                data-testid="hero-title-input"
+              />
             </div>
 
-            <div className="card" style={styles.section}>
-              <h2 style={styles.sectionTitle}>
-                <Settings size={20} style={{ marginRight: '8px' }} />
-                Ana Sayfa İçerikleri
-              </h2>
-              
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Hero Başlık</label>
-                <Input
-                  value={settings.hero_title}
-                  onChange={(e) => setSettings({ ...settings, hero_title: e.target.value })}
-                  placeholder="Teklif Alın, Kazanın"
-                  data-testid="hero-title-input"
-                />
-              </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Hero Alt Başlık</label>
+              <Input
+                value={settings.hero_subtitle}
+                onChange={(e) =>
+                  setSettings({ ...settings, hero_subtitle: e.target.value })
+                }
+                placeholder="Ürünlerimizi inceleyin..."
+                data-testid="hero-subtitle-input"
+              />
+            </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Hero Alt Başlık</label>
-                <Input
-                  value={settings.hero_subtitle}
-                  onChange={(e) => setSettings({ ...settings, hero_subtitle: e.target.value })}
-                  placeholder="Ürünlerimizi inceleyin..."
-                  data-testid="hero-subtitle-input"
-                />
-              </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Hakkımızda Başlık</label>
+              <Input
+                value={settings.about_title}
+                onChange={(e) =>
+                  setSettings({ ...settings, about_title: e.target.value })
+                }
+                placeholder="Hakkımızda"
+                data-testid="about-title-input"
+              />
+            </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Hakkımızda Başlık</label>
-                <Input
-                  value={settings.about_title}
-                  onChange={(e) => setSettings({ ...settings, about_title: e.target.value })}
-                  placeholder="Hakkımızda"
-                  data-testid="about-title-input"
-                />
-              </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Hakkımızda Açıklama</label>
+              <Textarea
+                value={settings.about_description}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    about_description: e.target.value,
+                  })
+                }
+                rows={5}
+                placeholder="Şirketiniz hakkında bilgi..."
+                data-testid="about-description-input"
+              />
+            </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Hakkımızda Açıklama</label>
-                <Textarea
-                  value={settings.about_description}
-                  onChange={(e) => setSettings({ ...settings, about_description: e.target.value })}
-                  rows={5}
-                  placeholder="Şirketiniz hakkında bilgi..."
-                  data-testid="about-description-input"
-                />
-              </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Hakkımızda Görsel URL</label>
+              <Input
+                value={settings.about_image_url}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    about_image_url: e.target.value,
+                  })
+                }
+                placeholder="https://example.com/about.jpg"
+                data-testid="about-image-input"
+              />
+            </div>
 
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Hakkımızda Görsel URL</label>
-                <Input
-                  value={settings.about_image_url}
-                  onChange={(e) => setSettings({ ...settings, about_image_url: e.target.value })}
-                  placeholder="https://example.com/about.jpg"
-                  data-testid="about-image-input"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Özellikler (virgülle ayırın)</label>
-                <Textarea
-                  value={settings.features}
-                  onChange={(e) => setSettings({ ...settings, features: e.target.value })}
-                  rows={4}
-                  placeholder="Hızlı Teslimat, Güvenli Ödeme, 7/24 Destek"
-                  data-testid="features-input"
-                />
-              </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Özellikler (virgülle ayırın)</label>
+              <Textarea
+                value={settings.features}
+                onChange={(e) =>
+                  setSettings({ ...settings, features: e.target.value })
+                }
+                rows={4}
+                placeholder="Hızlı Teslimat, Güvenli Ödeme, 7/24 Destek"
+                data-testid="features-input"
+              />
             </div>
           </div>
-          
+
           <Button
             type="submit"
             disabled={saving}
