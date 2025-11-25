@@ -481,7 +481,7 @@ const HomePage = () => {
             
             <div style={styles.footerBottom}>
               <p style={styles.footerCopy}>© 2025 {settings?.company_name || 'RFQ Platform'}. Tüm hakları saklıdır.</p>
-              <p style={styles.footerCopy}>Made with ❤️ by Emergent</p>
+              
             </div>
           </div>
         </footer>
