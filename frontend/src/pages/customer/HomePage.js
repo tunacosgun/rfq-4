@@ -85,7 +85,11 @@ const HomePage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)',
+          background: settings?.home_hero_bg_image 
+            ? `linear-gradient(135deg, ${settings.home_hero_bg_color || '#22C55E'}CC 0%, ${settings.home_hero_bg_color || '#16A34A'}E6 100%), url(${settings.home_hero_bg_image})`
+            : `linear-gradient(135deg, ${settings?.home_hero_bg_color || '#22C55E'} 0%, ${settings?.home_hero_bg_color || '#16A34A'} 100%)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           color: 'white',
           padding: '140px 24px 100px',
           marginTop: '72px'
