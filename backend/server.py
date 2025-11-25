@@ -118,6 +118,7 @@ class Quote(BaseModel):
     phone: Optional[str] = None
     message: Optional[str] = None
     items: List[QuoteItem]
+    pricing: List[QuotePricing] = []
     file_url: Optional[str] = None
     status: QuoteStatus = QuoteStatus.BEKLEMEDE
     admin_note: Optional[str] = None
@@ -134,6 +135,12 @@ class QuoteCreate(BaseModel):
 class QuoteUpdate(BaseModel):
     status: Optional[QuoteStatus] = None
     admin_note: Optional[str] = None
+    pricing: Optional[List[QuotePricing]] = None
+
+class CategoryUpdate(BaseModel):
+    name: Optional[str] = None
+    slug: Optional[str] = None
+    icon: Optional[str] = None
 
 # Helper functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
