@@ -19,6 +19,8 @@ const AdminQuoteDetail = () => {
   const [loading, setLoading] = useState(true);
   const [adminNote, setAdminNote] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [pricing, setPricing] = useState({});
+  const [showPricing, setShowPricing] = useState(false);
 
   useEffect(() => {
     fetchQuote();
