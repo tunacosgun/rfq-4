@@ -1,53 +1,51 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from './components/ui/sonner';
+import '@/App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+// Customer pages
+import HomePage from './pages/customer/HomePage';
+import ProductDetailPage from './pages/customer/ProductDetailPage';
+import QuoteCartPage from './pages/customer/QuoteCartPage';
+import QuoteFormPage from './pages/customer/QuoteFormPage';
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+// Admin pages
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminQuotes from './pages/admin/AdminQuotes';
+import AdminQuoteDetail from './pages/admin/AdminQuoteDetail';
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+// Context
+import { QuoteCartProvider } from './context/QuoteCartContext';
+import { AdminAuthProvider } from './context/AdminAuthContext';
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <AdminAuthProvider>
+      <QuoteCartProvider>
+        <div className="App">
+          <BrowserRouter>
+            <Routes>
+              {/* Customer Routes */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/urun/:id" element={<ProductDetailPage />} />
+              <Route path="/teklif-sepeti" element={<QuoteCartPage />} />
+              <Route path="/teklif-gonder" element={<QuoteFormPage />} />
+
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/urunler" element={<AdminProducts />} />
+              <Route path="/admin/teklifler" element={<AdminQuotes />} />
+              <Route path="/admin/teklifler/:id" element={<AdminQuoteDetail />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster position="top-right" richColors />
+        </div>
+      </QuoteCartProvider>
+    </AdminAuthProvider>
   );
 }
 
