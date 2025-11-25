@@ -433,8 +433,17 @@ const styles = {
   productInfo: { flex: 1 },
   productName: { fontSize: '15px', fontWeight: '600', color: '#253D4E', marginBottom: '4px' },
   productQuantity: { fontSize: '14px', color: '#7E7E7E' },
+  pricingTable: { overflowX: 'auto' },
+  table: { width: '100%', borderCollapse: 'collapse', marginTop: '16px' },
+  tableHeaderRow: { background: '#F4F6FA' },
+  tableHeader: { padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#253D4E', borderBottom: '2px solid #ececec' },
+  tableRow: { borderBottom: '1px solid #ececec' },
+  tableTotalRow: { borderTop: '2px solid #3BB77E', background: '#F0FDF4' },
+  tableCell: { padding: '12px', fontSize: '14px', color: '#253D4E' },
+  saveButton: { background: '#3BB77E', color: 'white', width: '100%' },
   actionsGrid: { display: 'grid', gridTemplateColumns: '1fr', gap: '12px' },
   actionButton: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', fontWeight: '600' },
+  pdfButton: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', fontWeight: '600' },
   saveNoteButton: { width: '100%', marginTop: '12px', background: '#3BB77E', color: 'white' },
 };
 
