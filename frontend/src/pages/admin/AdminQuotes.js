@@ -165,12 +165,23 @@ const AdminQuotes = () => {
                       </p>
                     </td>
                     <td style={styles.tableCell}>
-                      <Link to={`/admin/teklifler/${quote.id}`}>
-                        <Button variant="outline" size="sm" data-testid={`view-quote-${quote.id}`}>
-                          <Eye size={16} style={{ marginRight: '6px' }} />
-                          Görüntüle
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <Link to={`/admin/teklifler/${quote.id}`}>
+                          <Button variant="outline" size="sm" data-testid={`view-quote-${quote.id}`}>
+                            <Eye size={16} style={{ marginRight: '6px' }} />
+                            Görüntüle
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(quote.id)}
+                          style={{ color: '#EF4444', borderColor: '#EF4444' }}
+                          data-testid={`delete-quote-${quote.id}`}
+                        >
+                          <Trash2 size={16} />
                         </Button>
-                      </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
