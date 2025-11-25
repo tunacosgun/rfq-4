@@ -125,8 +125,11 @@ const AdminProducts = () => {
       category: '',
       images: '',
       variation: '',
+      variants: '',
       min_order_quantity: 1,
       price_range: '',
+      stock_quantity: '',
+      is_active: true,
     });
     setEditingProduct(null);
   };
