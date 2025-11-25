@@ -455,13 +455,32 @@ const AdminSettings = () => {
                     value={settings.home_hero_bg_color || '#22C55E'}
                     onChange={(e) => handleChange('home_hero_bg_color', e.target.value)}
                     style={{ width: '60px', height: '44px', padding: '4px' }}
+                    disabled={settings.home_hero_disable_color}
                   />
                   <Input
                     value={settings.home_hero_bg_color}
                     onChange={(e) => handleChange('home_hero_bg_color', e.target.value)}
                     placeholder="#22C55E"
+                    disabled={settings.home_hero_disable_color}
                   />
                 </div>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={settings.home_hero_disable_color}
+                    onChange={(e) => handleChange('home_hero_disable_color', e.target.checked)}
+                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                  />
+                  <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>
+                    Rengi Kapat (Sadece görsel kullan)
+                  </span>
+                </label>
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block', marginLeft: '32px' }}>
+                  İşaretlerseniz gradient overlay olmadan sadece görsel kullanılır.
+                </small>
               </div>
 
               <h3 style={styles.subsectionTitle}>Özellikler Bölümü</h3>
