@@ -126,11 +126,11 @@ const HomePage = () => {
       {/* Products */}
       <section id="products" style={styles.productsSection}>
         <div className="container">
-          <h2 style={styles.sectionTitle}>\u00dcr\u00fcnlerimiz</h2>
+          <h2 style={styles.sectionTitle}>Ürünlerimiz</h2>
           {filteredProducts.length === 0 ? (
             <div style={styles.emptyState}>
               <Package size={64} style={{ color: 'var(--gray-400)' }} />
-              <p style={styles.emptyText}>\u00dcr\u00fcn bulunamad\u0131</p>
+              <p style={styles.emptyText}>Ürün bulunamadı</p>
             </div>
           ) : (
             <div className="grid grid-4">
