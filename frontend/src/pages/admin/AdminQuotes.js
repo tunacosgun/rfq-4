@@ -32,6 +32,20 @@ const AdminQuotes = () => {
     }
   };
 
+  const handleDelete = async (quoteId) => {
+    if (!window.confirm('Bu teklifi silmek istediğinizden emin misiniz?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/quotes/${quoteId}`, { headers: getAuthHeader() });
+      toast.success('Teklif başarıyla silindi');
+      fetchQuotes();
+    } catch (error) {
+      toast.error('Teklif silinemedi');
+    }
+  };
+
   const getStatusBadge = (status) => {
     const statusMap = {
       beklemede: { label: 'Beklemede', color: '#FDC040', icon: Clock },
