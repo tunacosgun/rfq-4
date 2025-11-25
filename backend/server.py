@@ -259,6 +259,26 @@ class CompanySettings(BaseModel):
     footer_link_color: str = "#9CA3AF"
     footer_link_hover_color: str = "#22C55E"
     footer_divider_color: str = "#374151"
+    
+    # Header / Navbar
+    header_logo_url: str = ""
+    header_company_name: str = "Özmen Gıda"
+    header_menu_home: str = "Ana Sayfa"
+    header_menu_products: str = "Ürünler"
+    header_menu_features: str = "Özellikler"
+    header_menu_about: str = "Hakkımızda"
+    header_menu_contact: str = "İletişim"
+    header_cart_button_text: str = "Sepet"
+    
+    # Header - Renkler
+    header_bg_color: str = "#FFFFFF"
+    header_text_color: str = "#374151"
+    header_link_color: str = "#374151"
+    header_link_active_color: str = "#22C55E"
+    header_link_hover_color: str = "#22C55E"
+    header_scrolled_bg_color: str = "#FFFFFFFA"
+    header_cart_button_bg: str = "#22C55E"
+    header_cart_button_text_color: str = "#FFFFFF"
 
 # Helper functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
