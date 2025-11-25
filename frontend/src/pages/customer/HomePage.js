@@ -103,7 +103,7 @@ const HomePage = () => {
             <div style={styles.searchBox}>
               <Search size={20} style={styles.searchIcon} />
               <Input
-                placeholder="\u00dcr\u00fcn ara..."
+                placeholder="Ürün ara..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={styles.searchInput}
@@ -114,7 +114,7 @@ const HomePage = () => {
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={styles.categorySelect}
             >
-              <option value="">T\u00fcm Kategoriler</option>
+              <option value="">Tüm Kategoriler</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.slug}>{cat.name}</option>
               ))}
