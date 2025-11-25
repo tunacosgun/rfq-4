@@ -732,6 +732,219 @@ const AdminSettings = () => {
             </div>
           )}
 
+          {/* Header */}
+          {activeTab === 'header' && (
+            <div style={styles.section}>
+              <h2 style={styles.sectionTitle}>Header / Navbar Ayarları</h2>
+              
+              <h3 style={styles.subsectionTitle}>Logo ve Branding</h3>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Logo URL</label>
+                <Input
+                  value={settings.header_logo_url}
+                  onChange={(e) => handleChange('header_logo_url', e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  Logo görseli linki. Boş bırakırsanız varsayılan ikon gösterilir.
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Şirket Adı</label>
+                <Input
+                  value={settings.header_company_name}
+                  onChange={(e) => handleChange('header_company_name', e.target.value)}
+                  placeholder="Özmen Gıda"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Menü Linkleri</h3>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ana Sayfa Link Metni</label>
+                  <Input
+                    value={settings.header_menu_home}
+                    onChange={(e) => handleChange('header_menu_home', e.target.value)}
+                    placeholder="Ana Sayfa"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ürünler Link Metni</label>
+                  <Input
+                    value={settings.header_menu_products}
+                    onChange={(e) => handleChange('header_menu_products', e.target.value)}
+                    placeholder="Ürünler"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Özellikler Link Metni</label>
+                  <Input
+                    value={settings.header_menu_features}
+                    onChange={(e) => handleChange('header_menu_features', e.target.value)}
+                    placeholder="Özellikler"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Hakkımızda Link Metni</label>
+                  <Input
+                    value={settings.header_menu_about}
+                    onChange={(e) => handleChange('header_menu_about', e.target.value)}
+                    placeholder="Hakkımızda"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>İletişim Link Metni</label>
+                  <Input
+                    value={settings.header_menu_contact}
+                    onChange={(e) => handleChange('header_menu_contact', e.target.value)}
+                    placeholder="İletişim"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Sepet Butonu Metni</label>
+                  <Input
+                    value={settings.header_cart_button_text}
+                    onChange={(e) => handleChange('header_cart_button_text', e.target.value)}
+                    placeholder="Sepet"
+                  />
+                </div>
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Renkler</h3>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Arkaplan Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.header_bg_color || '#FFFFFF'}
+                      onChange={(e) => handleChange('header_bg_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.header_bg_color}
+                      onChange={(e) => handleChange('header_bg_color', e.target.value)}
+                      placeholder="#FFFFFF"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Scroll Sonrası Arkaplan</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.header_scrolled_bg_color || '#FFFFFFFA'}
+                      onChange={(e) => handleChange('header_scrolled_bg_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.header_scrolled_bg_color}
+                      onChange={(e) => handleChange('header_scrolled_bg_color', e.target.value)}
+                      placeholder="#FFFFFFFA"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Metin/Link Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.header_link_color || '#374151'}
+                      onChange={(e) => handleChange('header_link_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.header_link_color}
+                      onChange={(e) => handleChange('header_link_color', e.target.value)}
+                      placeholder="#374151"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Aktif Link Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.header_link_active_color || '#22C55E'}
+                      onChange={(e) => handleChange('header_link_active_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.header_link_active_color}
+                      onChange={(e) => handleChange('header_link_active_color', e.target.value)}
+                      placeholder="#22C55E"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Link Hover Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.header_link_hover_color || '#22C55E'}
+                      onChange={(e) => handleChange('header_link_hover_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.header_link_hover_color}
+                      onChange={(e) => handleChange('header_link_hover_color', e.target.value)}
+                      placeholder="#22C55E"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Sepet Butonu Arkaplan</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.header_cart_button_bg || '#22C55E'}
+                      onChange={(e) => handleChange('header_cart_button_bg', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.header_cart_button_bg}
+                      onChange={(e) => handleChange('header_cart_button_bg', e.target.value)}
+                      placeholder="#22C55E"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Sepet Butonu Metin Rengi</label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <Input
+                    type="color"
+                    value={settings.header_cart_button_text_color || '#FFFFFF'}
+                    onChange={(e) => handleChange('header_cart_button_text_color', e.target.value)}
+                    style={{ width: '60px', height: '44px', padding: '4px' }}
+                  />
+                  <Input
+                    value={settings.header_cart_button_text_color}
+                    onChange={(e) => handleChange('header_cart_button_text_color', e.target.value)}
+                    placeholder="#FFFFFF"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Footer */}
           {activeTab === 'footer' && (
             <div style={styles.section}>
