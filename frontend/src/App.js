@@ -43,6 +43,7 @@ function App() {
               <Route path="/admin/urunler" element={<AdminProducts />} />
               <Route path="/admin/teklifler" element={<AdminQuotes />} />
               <Route path="/admin/teklifler/:id" element={<AdminQuoteDetail />} />
+              <Route path="/admin/ayarlar" element={<AdminSettings />} />
             </Routes>
           </BrowserRouter>
           <Toaster position="top-right" richColors />
