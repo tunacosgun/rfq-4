@@ -60,8 +60,11 @@ const AdminProducts = () => {
       category: formData.category,
       images: formData.images ? formData.images.split(',').map(i => i.trim()) : [],
       variation: formData.variation || null,
+      variants: formData.variants ? formData.variants.split(',').map(v => v.trim()) : [],
       min_order_quantity: parseInt(formData.min_order_quantity) || 1,
       price_range: formData.price_range || null,
+      stock_quantity: formData.stock_quantity ? parseInt(formData.stock_quantity) : null,
+      is_active: formData.is_active,
     };
 
     try {
