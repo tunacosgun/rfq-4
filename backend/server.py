@@ -79,8 +79,11 @@ class ProductCreate(BaseModel):
     images: List[str] = []
     category: str
     variation: Optional[str] = None
+    variants: List[str] = []
     min_order_quantity: Optional[int] = 1
     price_range: Optional[str] = None
+    stock_quantity: Optional[int] = None
+    is_active: bool = True
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -88,8 +91,11 @@ class ProductUpdate(BaseModel):
     images: Optional[List[str]] = None
     category: Optional[str] = None
     variation: Optional[str] = None
+    variants: Optional[List[str]] = None
     min_order_quantity: Optional[int] = None
     price_range: Optional[str] = None
+    stock_quantity: Optional[int] = None
+    is_active: Optional[bool] = None
 
 class QuoteItem(BaseModel):
     product_id: str
