@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../context/AdminAuthContext';
-import { LayoutDashboard, Package as PackageIcon, FileText, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package as PackageIcon, FileText, LogOut, FolderOpen } from 'lucide-react';
 import { Button } from './ui/button';
 
 const AdminLayout = ({ children }) => {
