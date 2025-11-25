@@ -370,7 +370,10 @@ async def generate_quote_pdf(quote_id: str, admin: dict = Depends(get_current_ad
         raise HTTPException(status_code=404, detail="Teklif bulunamadı")
     
     try:
-        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'))
+        # Get company settings
+        settings = await db.settings.find_one({}, {"_id": 0})
+        
+        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'), settings)
         return Response(
             content=pdf_data,
             media_type="application/pdf",
