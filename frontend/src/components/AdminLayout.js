@@ -22,6 +22,7 @@ const AdminLayout = ({ children }) => {
 
   const menuItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/admin/kategoriler', label: 'Kategoriler', icon: FolderOpen },
     { path: '/admin/urunler', label: 'Ürünler', icon: PackageIcon },
     { path: '/admin/teklifler', label: 'Teklifler', icon: FileText },
   ];
