@@ -145,7 +145,7 @@ const HomePage = () => {
           ) : (
             <div className="grid grid-4">
               {filteredProducts.map((product) => (
-                <div key={product.id} className="card" style={styles.productCard}>
+                <div key={product.id} className="card product-card" style={styles.productCard}>
                   <Link to={`/urun/${product.id}`} style={styles.productLink}>
                     <div style={styles.productImage}>
                       {product.images?.[0] ? (
