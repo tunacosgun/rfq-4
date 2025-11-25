@@ -656,7 +656,13 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    fontWeight: '700'
+    fontWeight: '700',
+    padding: '12px 24px',
+    borderRadius: '8px',
+    border: 'none',
+    fontSize: '15px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
   },
   tabs: {
     display: 'flex',
