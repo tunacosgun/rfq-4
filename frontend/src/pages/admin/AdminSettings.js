@@ -728,7 +728,7 @@ const AdminSettings = () => {
           {/* İletişim */}
           {activeTab === 'contact' && (
             <div style={styles.section}>
-              <h2 style={styles.sectionTitle}>İletişim Sayfası</h2>
+              <h2 style={styles.sectionTitle}>İletişim Sayfası Ayarları</h2>
               
               <h3 style={styles.subsectionTitle}>Hero Bölümü</h3>
               <div style={styles.formGroup}>
@@ -750,7 +750,35 @@ const AdminSettings = () => {
                 />
               </div>
 
-              <h3 style={styles.subsectionTitle}>Form Bölümü</h3>
+              <h3 style={styles.subsectionTitle}>İletişim Kartları</h3>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Telefon Kartı Başlık</label>
+                  <Input
+                    value={settings.contact_phone_card_title}
+                    onChange={(e) => handleChange('contact_phone_card_title', e.target.value)}
+                    placeholder="Telefon"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>E-posta Kartı Başlık</label>
+                  <Input
+                    value={settings.contact_email_card_title}
+                    onChange={(e) => handleChange('contact_email_card_title', e.target.value)}
+                    placeholder="E-posta"
+                  />
+                </div>
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Adres Kartı Başlık</label>
+                <Input
+                  value={settings.contact_address_card_title}
+                  onChange={(e) => handleChange('contact_address_card_title', e.target.value)}
+                  placeholder="Adres"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>İletişim Formu</h3>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Form Başlık</label>
                 <Input
@@ -768,6 +796,139 @@ const AdminSettings = () => {
                 />
               </div>
 
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ad Soyad - Label</label>
+                  <Input
+                    value={settings.contact_form_name_label}
+                    onChange={(e) => handleChange('contact_form_name_label', e.target.value)}
+                    placeholder="Adınız Soyadınız *"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Ad Soyad - Placeholder</label>
+                  <Input
+                    value={settings.contact_form_name_placeholder}
+                    onChange={(e) => handleChange('contact_form_name_placeholder', e.target.value)}
+                    placeholder="Örn: Ahmet Yılmaz"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>E-posta - Label</label>
+                  <Input
+                    value={settings.contact_form_email_label}
+                    onChange={(e) => handleChange('contact_form_email_label', e.target.value)}
+                    placeholder="E-posta Adresiniz *"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>E-posta - Placeholder</label>
+                  <Input
+                    value={settings.contact_form_email_placeholder}
+                    onChange={(e) => handleChange('contact_form_email_placeholder', e.target.value)}
+                    placeholder="Örn: ahmet@example.com"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Telefon - Label</label>
+                  <Input
+                    value={settings.contact_form_phone_label}
+                    onChange={(e) => handleChange('contact_form_phone_label', e.target.value)}
+                    placeholder="Telefon Numaranız"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Telefon - Placeholder</label>
+                  <Input
+                    value={settings.contact_form_phone_placeholder}
+                    onChange={(e) => handleChange('contact_form_phone_placeholder', e.target.value)}
+                    placeholder="Örn: 0532 123 45 67"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Konu - Label</label>
+                  <Input
+                    value={settings.contact_form_subject_label}
+                    onChange={(e) => handleChange('contact_form_subject_label', e.target.value)}
+                    placeholder="Konu *"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Konu - Placeholder</label>
+                  <Input
+                    value={settings.contact_form_subject_placeholder}
+                    onChange={(e) => handleChange('contact_form_subject_placeholder', e.target.value)}
+                    placeholder="Mesajınızın konusu"
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Mesaj - Label</label>
+                  <Input
+                    value={settings.contact_form_message_label}
+                    onChange={(e) => handleChange('contact_form_message_label', e.target.value)}
+                    placeholder="Mesajınız *"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Mesaj - Placeholder</label>
+                  <Input
+                    value={settings.contact_form_message_placeholder}
+                    onChange={(e) => handleChange('contact_form_message_placeholder', e.target.value)}
+                    placeholder="Mesajınızı buraya yazın..."
+                  />
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Gönder Butonu Metni</label>
+                  <Input
+                    value={settings.contact_form_button_text}
+                    onChange={(e) => handleChange('contact_form_button_text', e.target.value)}
+                    placeholder="Mesaj Gönder"
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Gönderiliyor Metni</label>
+                  <Input
+                    value={settings.contact_form_button_sending}
+                    onChange={(e) => handleChange('contact_form_button_sending', e.target.value)}
+                    placeholder="Gönderiliyor..."
+                  />
+                </div>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Başarı Mesajı</label>
+                <Input
+                  value={settings.contact_form_success_message}
+                  onChange={(e) => handleChange('contact_form_success_message', e.target.value)}
+                  placeholder="Mesajınız başarıyla gönderildi..."
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Yan Bilgi Kartları</h3>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Çalışma Saatleri - Başlık</label>
+                <Input
+                  value={settings.contact_work_hours_title}
+                  onChange={(e) => handleChange('contact_work_hours_title', e.target.value)}
+                  placeholder="Çalışma Saatleri"
+                />
+              </div>
+
               <div style={styles.formGroup}>
                 <label style={styles.label}>Çalışma Saatleri</label>
                 <textarea
@@ -779,6 +940,107 @@ const AdminSettings = () => {
                 />
               </div>
 
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hızlı İletişim - Başlık</label>
+                <Input
+                  value={settings.contact_quick_contact_title}
+                  onChange={(e) => handleChange('contact_quick_contact_title', e.target.value)}
+                  placeholder="Hızlı İletişim"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Hızlı İletişim - Açıklama</label>
+                <textarea
+                  value={settings.contact_quick_contact_description}
+                  onChange={(e) => handleChange('contact_quick_contact_description', e.target.value)}
+                  placeholder="Acil durumlar için telefon veya e-posta ile..."
+                  rows={3}
+                  style={styles.textarea}
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Ara Butonu Metni</label>
+                <Input
+                  value={settings.contact_call_button_text}
+                  onChange={(e) => handleChange('contact_call_button_text', e.target.value)}
+                  placeholder="Hemen Ara"
+                />
+              </div>
+
+              <h3 style={styles.subsectionTitle}>Renkler</h3>
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Kart Arkaplan Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.contact_card_bg_color || '#FFFFFF'}
+                      onChange={(e) => handleChange('contact_card_bg_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.contact_card_bg_color}
+                      onChange={(e) => handleChange('contact_card_bg_color', e.target.value)}
+                      placeholder="#FFFFFF"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Kart İkon Arkaplan Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.contact_card_icon_bg_color || '#22C55E'}
+                      onChange={(e) => handleChange('contact_card_icon_bg_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.contact_card_icon_bg_color}
+                      onChange={(e) => handleChange('contact_card_icon_bg_color', e.target.value)}
+                      placeholder="#22C55E"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.gridTwo}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Buton Arkaplan Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.contact_button_bg_color || '#22C55E'}
+                      onChange={(e) => handleChange('contact_button_bg_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.contact_button_bg_color}
+                      onChange={(e) => handleChange('contact_button_bg_color', e.target.value)}
+                      placeholder="#22C55E"
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Buton Metin Rengi</label>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Input
+                      type="color"
+                      value={settings.contact_button_text_color || '#FFFFFF'}
+                      onChange={(e) => handleChange('contact_button_text_color', e.target.value)}
+                      style={{ width: '60px', height: '44px', padding: '4px' }}
+                    />
+                    <Input
+                      value={settings.contact_button_text_color}
+                      onChange={(e) => handleChange('contact_button_text_color', e.target.value)}
+                      placeholder="#FFFFFF"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
