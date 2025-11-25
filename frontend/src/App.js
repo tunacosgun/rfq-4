@@ -16,6 +16,7 @@ import AdminCategories from './pages/admin/AdminCategories';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminQuotes from './pages/admin/AdminQuotes';
 import AdminQuoteDetail from './pages/admin/AdminQuoteDetail';
+import AdminSettings from './pages/admin/AdminSettings';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
