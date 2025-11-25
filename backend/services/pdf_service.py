@@ -76,7 +76,7 @@ class PDFService:
             textColor=colors.HexColor('#64748B')
         ))
     
-    def generate_quote_pdf(self, quote_data: dict, pricing_data: Optional[List[Dict]] = None) -> bytes:
+    def generate_quote_pdf(self, quote_data: dict, pricing_data: Optional[List[Dict]] = None, company_settings: Optional[dict] = None) -> bytes:
         """Generate professional quote PDF"""
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20*mm, bottomMargin=20*mm)
