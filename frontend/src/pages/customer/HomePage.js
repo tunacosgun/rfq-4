@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingCart, Search, Package } from 'lucide-react';
+import { ShoppingCart, Search, Package, Check, Mail, Phone, MapPin } from 'lucide-react';
 import { useQuoteCart } from '../../context/QuoteCartContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -34,7 +34,7 @@ const HomePage = () => {
       setCategories(categoriesRes.data);
       setSettings(settingsRes.data);
     } catch (error) {
-      toast.error('Ürünler yüklenemedi');
+      toast.error('Veri yüklenemedi');
     } finally {
       setLoading(false);
     }
@@ -51,145 +51,109 @@ const HomePage = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   if (loading) {
-    return (
-      <div className="loading">
-        <div className="spinner"></div>
-      </div>
-    );
+    return <div className="loading"><div className="spinner"></div></div>;
   }
 
   return (
-    <div data-testid="home-page">
-      {/* Header */}
-      <header style={styles.header}>
-        <div className="container" style={styles.headerContainer}>
-          {/* Logo Section */}
-          <Link to="/" style={styles.logoSection}>
+    <div style={styles.page}>
+      {/* Navbar */}
+      <nav style={styles.navbar}>
+        <div className="container" style={styles.navContainer}>
+          <Link to="/" style={styles.logo}>
             {settings?.logo_url ? (
-              <img src={settings.logo_url} alt="Logo" style={styles.logoImage} />
+              <img src={settings.logo_url} alt="Logo" style={styles.logoImg} />
             ) : (
-              <div style={styles.logoIcon}>
-                <Package size={28} />
-              </div>
+              <Package size={32} style={{ color: 'var(--primary-600)' }} />
             )}
-            <div style={styles.brandInfo}>
-              <span style={styles.brandName}>
-                {settings?.company_name || 'Teklif Sistemi'}
-              </span>
-              <span style={styles.brandTagline}>Profesyonel Teklif Platformu</span>
-            </div>
+            <span style={styles.brandName}>{settings?.company_name || 'RFQ Platform'}</span>
           </Link>
 
-          {/* Navigation */}
-          <nav style={styles.nav}>
-            <Link to="/" style={styles.navLink}>Ana Sayfa</Link>
-            <a href="#urunler" style={styles.navLink}>Ürünler</a>
-            <a href="#hakkimizda" style={styles.navLink}>Hakkımızda</a>
-            {settings?.company_email && (
-              <a href={`mailto:${settings.company_email}`} style={styles.navLink}>İletişim</a>
-            )}
-          </nav>
-
-          {/* Actions */}
-          <div style={styles.headerActions}>
-            <Link to="/teklif-sepeti" style={styles.cartButton} data-testid="cart-button">
-              <div style={styles.cartIcon}>
-                <ShoppingCart size={22} />
-                {getCartCount() > 0 && (
-                  <span style={styles.cartBadge} data-testid="cart-count">{getCartCount()}</span>
-                )}
-              </div>
-              <span style={styles.cartText}>Sepet</span>
-            </Link>
+          <div style={styles.navLinks}>
+            <a href="#anasayfa" onClick={() => scrollToSection('hero')} style={styles.navLink}>Ana Sayfa</a>
+            <a href="#urunler" onClick={() => scrollToSection('products')} style={styles.navLink}>\u00dcr\u00fcnler</a>
+            <a href="#hakkimizda" onClick={() => scrollToSection('about')} style={styles.navLink}>Hakk\u0131m\u0131zda</a>
+            <a href="#iletisim" onClick={() => scrollToSection('contact')} style={styles.navLink}>\u0130leti\u015fim</a>
           </div>
+
+          <Link to="/teklif-sepeti" style={styles.cartBtn}>
+            <ShoppingCart size={20} />
+            <span>Sepet</span>
+            {getCartCount() > 0 && <span style={styles.cartBadge}>{getCartCount()}</span>}
+          </Link>
         </div>
-      </header>
+      </nav>
 
       {/* Hero */}
-      <section style={styles.hero}>
+      <section id="hero" style={styles.hero}>
         <div className="container" style={styles.heroContent}>
-          <h1 style={styles.heroTitle}>Teklif Alın, Kazanın</h1>
-          <p style={styles.heroSubtitle}>
-            Ürünlerimizi inceleyin, ihtiyacınıza uygun teklifler alın
-          </p>
+          <h1 style={styles.heroTitle}>{settings?.hero_title || 'Teklif Al\u0131n, Kazan\u0131n'}</h1>
+          <p style={styles.heroSubtitle}>{settings?.hero_subtitle || '\u00dcr\u00fcnlerimizi inceleyin, ihtiyac\u0131n\u0131za uygun teklifler al\u0131n'}</p>
         </div>
       </section>
 
-      {/* Search and Filters */}
-      <section style={styles.filtersSection}>
+      {/* Search & Filters */}
+      <section style={styles.filterSection}>
         <div className="container">
           <div style={styles.filters}>
             <div style={styles.searchBox}>
-              <Search style={styles.searchIcon} size={20} />
+              <Search size={20} style={styles.searchIcon} />
               <Input
-                type="text"
-                placeholder="Ürün ara..."
+                placeholder="\u00dcr\u00fcn ara..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={styles.searchInput}
-                data-testid="search-input"
               />
             </div>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={styles.categorySelect}
-              data-testid="category-filter"
             >
-              <option value="">Tüm Kategoriler</option>
+              <option value="">T\u00fcm Kategoriler</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.slug}>
-                  {cat.name}
-                </option>
+                <option key={cat.id} value={cat.slug}>{cat.name}</option>
               ))}
             </select>
           </div>
         </div>
       </section>
 
-      {/* Products Grid */}
-      <section style={styles.productsSection}>
+      {/* Products */}
+      <section id="products" style={styles.productsSection}>
         <div className="container">
+          <h2 style={styles.sectionTitle}>\u00dcr\u00fcnlerimiz</h2>
           {filteredProducts.length === 0 ? (
             <div style={styles.emptyState}>
-              <Package size={64} style={{ color: '#7E7E7E' }} />
-              <p style={styles.emptyText}>Ürün bulunamadı</p>
+              <Package size={64} style={{ color: 'var(--gray-400)' }} />
+              <p style={styles.emptyText}>\u00dcr\u00fcn bulunamad\u0131</p>
             </div>
           ) : (
             <div className="grid grid-4">
               {filteredProducts.map((product) => (
-                <div key={product.id} style={styles.productCard} className="card" data-testid={`product-card-${product.id}`}>
+                <div key={product.id} className="card" style={styles.productCard}>
                   <Link to={`/urun/${product.id}`} style={styles.productLink}>
                     <div style={styles.productImage}>
-                      {product.images && product.images[0] ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          style={styles.productImg}
-                        />
+                      {product.images?.[0] ? (
+                        <img src={product.images[0]} alt={product.name} style={styles.productImg} />
                       ) : (
-                        <div style={styles.placeholderImage}>
-                          <Package size={48} style={{ color: '#7E7E7E' }} />
+                        <div style={styles.placeholderImg}>
+                          <Package size={48} style={{ color: 'var(--gray-400)' }} />
                         </div>
                       )}
                     </div>
                     <div style={styles.productInfo}>
                       <span style={styles.productCategory}>{product.category}</span>
                       <h3 style={styles.productName}>{product.name}</h3>
-                      <p style={styles.productDescription}>
-                        {product.description.substring(0, 80)}...
-                      </p>
-                      {product.price_range && (
-                        <p style={styles.priceRange}>{product.price_range}</p>
-                      )}
+                      <p style={styles.productDesc}>{product.description.substring(0, 80)}...</p>
+                      {product.price_range && <p style={styles.productPrice}>{product.price_range}</p>}
                     </div>
                   </Link>
-                  <Button
-                    onClick={() => handleAddToCart(product)}
-                    style={styles.addButton}
-                    data-testid={`add-to-cart-${product.id}`}
-                  >
+                  <Button onClick={() => handleAddToCart(product)} style={styles.addToCartBtn}>
                     Sepete Ekle
                   </Button>
                 </div>
@@ -199,53 +163,84 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* About */}
+      {settings?.about_description && (
+        <section id="about" style={styles.aboutSection}>
+          <div className="container">
+            <div style={styles.aboutGrid}>
+              {settings.about_image_url && (
+                <div style={styles.aboutImage}>
+                  <img src={settings.about_image_url} alt="Hakkımızda" style={styles.aboutImg} />
+                </div>
+              )}
+              <div style={styles.aboutContent}>
+                <h2 style={styles.sectionTitle}>{settings.about_title || 'Hakkımızda'}</h2>
+                <p style={styles.aboutText}>{settings.about_description}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Contact */}
+      <section id="contact" style={styles.contactSection}>
+        <div className="container">
+          <h2 style={styles.sectionTitle}>\u0130leti\u015fim</h2>
+          <div style={styles.contactGrid}>
+            {settings?.company_address && (
+              <div style={styles.contactCard} className="card">
+                <MapPin size={32} style={{ color: 'var(--primary-600)' }} />
+                <h3 style={styles.contactCardTitle}>Adres</h3>
+                <p style={styles.contactCardText}>{settings.company_address}</p>
+              </div>
+            )}
+            {settings?.company_phone && (
+              <div style={styles.contactCard} className="card">
+                <Phone size={32} style={{ color: 'var(--primary-600)' }} />
+                <h3 style={styles.contactCardTitle}>Telefon</h3>
+                <p style={styles.contactCardText}>{settings.company_phone}</p>
+              </div>
+            )}
+            {settings?.company_email && (
+              <div style={styles.contactCard} className="card">
+                <Mail size={32} style={{ color: 'var(--primary-600)' }} />
+                <h3 style={styles.contactCardTitle}>E-posta</h3>
+                <p style={styles.contactCardText}>{settings.company_email}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer style={styles.footer}>
         <div className="container">
           <div style={styles.footerContent}>
             <div style={styles.footerSection}>
-              <h3 style={styles.footerTitle}>
-                {settings?.company_name || 'Teklif Sistemi'}
-              </h3>
-              <p style={styles.footerDesc}>
-                Profesyonel teklif yönetim platformu
-              </p>
+              <h3 style={styles.footerTitle}>{settings?.company_name || 'RFQ Platform'}</h3>
+              <p style={styles.footerDesc}>Profesyonel teklif yönetim platformu</p>
             </div>
-
             {settings && (
               <>
                 <div style={styles.footerSection}>
                   <h4 style={styles.footerHeading}>İletişim</h4>
-                  {settings.company_address && (
-                    <p style={styles.footerLink}>📍 {settings.company_address}</p>
-                  )}
-                  {settings.company_phone && (
-                    <p style={styles.footerLink}>📞 {settings.company_phone}</p>
-                  )}
-                  {settings.company_email && (
-                    <p style={styles.footerLink}>✉️ {settings.company_email}</p>
-                  )}
+                  {settings.company_phone && <p style={styles.footerLink}>{settings.company_phone}</p>}
+                  {settings.company_email && <p style={styles.footerLink}>{settings.company_email}</p>}
                 </div>
-
                 <div style={styles.footerSection}>
                   <h4 style={styles.footerHeading}>Bilgiler</h4>
                   {settings.company_website && (
                     <a href={settings.company_website} style={styles.footerLink} target="_blank" rel="noopener noreferrer">
-                      🌐 Website
+                      Website
                     </a>
                   )}
-                  {settings.tax_number && (
-                    <p style={styles.footerLink}>🏢 Vergi No: {settings.tax_number}</p>
-                  )}
+                  {settings.tax_number && <p style={styles.footerLink}>Vergi No: {settings.tax_number}</p>}
                 </div>
               </>
             )}
           </div>
-          
           <div style={styles.footerBottom}>
-            <p style={styles.footerText}>
-              © 2025 {settings?.company_name || 'Teklif Sistemi'}. Tüm hakları saklıdır.
-            </p>
+            <p style={styles.footerCopy}>© 2025 {settings?.company_name || 'RFQ Platform'}. Tüm hakları saklıdır.</p>
           </div>
         </div>
       </footer>
@@ -254,328 +249,61 @@ const HomePage = () => {
 };
 
 const styles = {
-  header: {
-    background: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(10px)',
-    borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
-    padding: '0',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-  },
-  headerContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: '80px',
-  },
-  logoSection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-    textDecoration: 'none',
-    transition: 'transform 0.2s',
-  },
-  logoImage: {
-    height: '48px',
-    width: 'auto',
-    objectFit: 'contain',
-  },
-  logoIcon: {
-    width: '48px',
-    height: '48px',
-    background: 'linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)',
-    borderRadius: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)',
-  },
-  brandInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2px',
-  },
-  brandName: {
-    fontSize: '20px',
-    fontWeight: '700',
-    color: '#0F172A',
-    fontFamily: 'Plus Jakarta Sans, sans-serif',
-    lineHeight: 1,
-  },
-  brandTagline: {
-    fontSize: '12px',
-    color: '#64748B',
-    fontWeight: '500',
-  },
-  nav: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '32px',
-  },
-  navLink: {
-    fontSize: '15px',
-    fontWeight: '500',
-    color: '#475569',
-    textDecoration: 'none',
-    transition: 'all 0.2s',
-    position: 'relative',
-    padding: '8px 0',
-  },
-  headerActions: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-  },
-  cartButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '12px 24px',
-    background: 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
-    color: 'white',
-    textDecoration: 'none',
-    borderRadius: '12px',
-    transition: 'all 0.3s',
-    boxShadow: '0 4px 14px rgba(14, 165, 233, 0.3)',
-    fontWeight: '600',
-  },
-  cartIcon: {
-    position: 'relative',
-  },
-  cartText: {
-    fontSize: '15px',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: '-6px',
-    right: '-6px',
-    background: 'linear-gradient(135deg, #EC4899 0%, #EF4444 100%)',
-    color: 'white',
-    borderRadius: '50%',
-    width: '20px',
-    height: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '11px',
-    fontWeight: '700',
-    border: '2px solid white',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-  },
-  hero: {
-    background: 'linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)',
-    padding: '120px 0 100px',
-    color: 'white',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  heroContent: {
-    textAlign: 'center',
-    position: 'relative',
-    zIndex: 1,
-  },
-  heroTitle: {
-    fontSize: '56px',
-    fontWeight: '800',
-    marginBottom: '24px',
-    fontFamily: 'Plus Jakarta Sans, sans-serif',
-    lineHeight: 1.1,
-    textShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-  },
-  heroSubtitle: {
-    fontSize: '22px',
-    opacity: 0.95,
-    fontWeight: '400',
-    maxWidth: '600px',
-    margin: '0 auto',
-    lineHeight: 1.6,
-  },
-  filtersSection: {
-    padding: '40px 0',
-    background: 'var(--bg-secondary)',
-    borderBottom: '1px solid var(--border-light)',
-  },
-  filters: {
-    display: 'flex',
-    gap: '16px',
-    flexWrap: 'wrap',
-  },
-  searchBox: {
-    flex: 1,
-    position: 'relative',
-    minWidth: '320px',
-  },
-  searchIcon: {
-    position: 'absolute',
-    left: '18px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    color: 'var(--text-tertiary)',
-  },
-  searchInput: {
-    paddingLeft: '52px',
-    height: '48px',
-    borderRadius: 'var(--radius-lg)',
-    border: '2px solid var(--border)',
-    fontSize: '15px',
-  },
-  categorySelect: {
-    minWidth: '220px',
-    height: '48px',
-    borderRadius: 'var(--radius-lg)',
-    border: '2px solid var(--border)',
-    fontSize: '15px',
-    fontWeight: '500',
-  },
-  productsSection: {
-    padding: '64px 0',
-  },
-  productCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    cursor: 'pointer',
-  },
-  productLink: {
-    textDecoration: 'none',
-    color: 'inherit',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  productImage: {
-    width: '100%',
-    height: '260px',
-    overflow: 'hidden',
-    borderRadius: 'var(--radius-lg)',
-    marginBottom: '20px',
-    background: 'var(--bg-secondary)',
-    position: 'relative',
-  },
-  productImg: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    transition: 'transform 0.4s ease',
-  },
-  placeholderImage: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%)',
-  },
-  productInfo: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  productCategory: {
-    fontSize: '12px',
-    color: 'var(--primary)',
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    marginBottom: '8px',
-  },
-  productName: {
-    fontSize: '19px',
-    fontWeight: '700',
-    margin: '0 0 12px',
-    color: 'var(--text-primary)',
-    fontFamily: 'Plus Jakarta Sans, sans-serif',
-    lineHeight: 1.3,
-  },
-  productDescription: {
-    fontSize: '14px',
-    color: 'var(--text-secondary)',
-    lineHeight: '1.7',
-    flex: 1,
-  },
-  priceRange: {
-    fontSize: '18px',
-    color: 'var(--primary)',
-    fontWeight: '700',
-    marginTop: '16px',
-  },
-  addButton: {
-    width: '100%',
-    marginTop: '20px',
-    background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)',
-    color: 'white',
-    height: '48px',
-    fontSize: '15px',
-    fontWeight: '600',
-    borderRadius: 'var(--radius-lg)',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 4px 14px rgba(14, 165, 233, 0.3)',
-  },
-  emptyState: {
-    textAlign: 'center',
-    padding: '80px 20px',
-  },
-  emptyText: {
-    fontSize: '18px',
-    color: '#7E7E7E',
-    marginTop: '16px',
-  },
-  footer: {
-    background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
-    color: 'white',
-    padding: '64px 0 24px',
-    marginTop: '80px',
-  },
-  footerContent: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '48px',
-    marginBottom: '48px',
-  },
-  footerSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  },
-  footerTitle: {
-    fontSize: '24px',
-    fontWeight: '700',
-    background: 'linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    marginBottom: '8px',
-  },
-  footerDesc: {
-    fontSize: '14px',
-    color: 'rgba(255, 255, 255, 0.7)',
-    lineHeight: '1.6',
-  },
-  footerHeading: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: 'white',
-    marginBottom: '8px',
-  },
-  footerLink: {
-    fontSize: '14px',
-    color: 'rgba(255, 255, 255, 0.7)',
-    textDecoration: 'none',
-    lineHeight: '1.8',
-    transition: 'color 0.2s',
-  },
-  footerBottom: {
-    paddingTop: '24px',
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-  },
-  footerText: {
-    textAlign: 'center',
-    fontSize: '14px',
-    color: 'rgba(255, 255, 255, 0.6)',
-  },
+  page: { background: 'var(--bg-secondary)' },
+  navbar: { background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', borderBottom: '1px solid var(--border-light)', position: 'sticky', top: 0, zIndex: 100, boxShadow: 'var(--shadow-sm)' },
+  navContainer: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '72px' },
+  logo: { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', textDecoration: 'none' },
+  logoImg: { height: '40px', width: 'auto' },
+  brandName: { fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)' },
+  navLinks: { display: 'flex', gap: 'var(--space-8)' },
+  navLink: { fontSize: '15px', fontWeight: '500', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' },
+  cartBtn: { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-3) var(--space-5)', background: 'var(--primary-600)', color: 'white', borderRadius: 'var(--radius-lg)', textDecoration: 'none', fontWeight: '600', fontSize: '15px', position: 'relative' },
+  cartBadge: { position: 'absolute', top: '-6px', right: '-6px', background: '#EF4444', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '700', border: '2px solid white' },
+  hero: { background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)', padding: 'var(--space-24) 0', color: 'white', textAlign: 'center' },
+  heroContent: { maxWidth: '800px', margin: '0 auto' },
+  heroTitle: { fontSize: '56px', fontWeight: '800', marginBottom: 'var(--space-6)', lineHeight: 1.1 },
+  heroSubtitle: { fontSize: '20px', fontWeight: '400', opacity: 0.95, lineHeight: 1.6 },
+  filterSection: { padding: 'var(--space-8) 0', background: 'white', borderBottom: '1px solid var(--border-light)' },
+  filters: { display: 'flex', gap: 'var(--space-4)' },
+  searchBox: { flex: 1, position: 'relative' },
+  searchIcon: { position: 'absolute', left: 'var(--space-4)', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' },
+  searchInput: { paddingLeft: '48px', height: '48px', fontSize: '15px' },
+  categorySelect: { minWidth: '220px', height: '48px', fontSize: '15px', fontWeight: '500' },
+  productsSection: { padding: 'var(--space-16) 0' },
+  sectionTitle: { fontSize: '36px', fontWeight: '700', marginBottom: 'var(--space-10)', textAlign: 'center', color: 'var(--text-primary)' },
+  emptyState: { textAlign: 'center', padding: 'var(--space-20)' },
+  emptyText: { fontSize: '18px', color: 'var(--text-secondary)', marginTop: 'var(--space-4)' },
+  productCard: { display: 'flex', flexDirection: 'column', padding: 'var(--space-5)', height: '100%' },
+  productLink: { textDecoration: 'none', color: 'inherit', flex: 1, display: 'flex', flexDirection: 'column' },
+  productImage: { width: '100%', height: '240px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 'var(--space-4)', background: 'var(--bg-secondary)' },
+  productImg: { width: '100%', height: '100%', objectFit: 'cover' },
+  placeholderImg: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  productInfo: { flex: 1 },
+  productCategory: { fontSize: '12px', fontWeight: '700', color: 'var(--primary-600)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  productName: { fontSize: '18px', fontWeight: '700', margin: 'var(--space-2) 0', color: 'var(--text-primary)' },
+  productDesc: { fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 'var(--space-3)' },
+  productPrice: { fontSize: '18px', fontWeight: '700', color: 'var(--primary-600)' },
+  addToCartBtn: { width: '100%', marginTop: 'var(--space-4)', background: 'var(--primary-600)', color: 'white', height: '44px', fontWeight: '600' },
+  aboutSection: { padding: 'var(--space-20) 0', background: 'white' },
+  aboutGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center' },
+  aboutImage: { borderRadius: 'var(--radius-2xl)', overflow: 'hidden' },
+  aboutImg: { width: '100%', height: 'auto' },
+  aboutContent: { padding: 'var(--space-8)' },
+  aboutText: { fontSize: '16px', color: 'var(--text-secondary)', lineHeight: 1.8 },
+  contactSection: { padding: 'var(--space-20) 0', background: 'var(--bg-secondary)' },
+  contactGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-6)' },
+  contactCard: { padding: 'var(--space-8)', textAlign: 'center' },
+  contactCardTitle: { fontSize: '18px', fontWeight: '600', margin: 'var(--space-4) 0 var(--space-2)', color: 'var(--text-primary)' },
+  contactCardText: { fontSize: '15px', color: 'var(--text-secondary)' },
+  footer: { background: '#171717', color: 'white', padding: 'var(--space-16) 0 var(--space-8)' },
+  footerContent: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-12)', marginBottom: 'var(--space-8)' },
+  footerSection: {},
+  footerTitle: { fontSize: '20px', fontWeight: '700', marginBottom: 'var(--space-3)' },
+  footerDesc: { fontSize: '14px', color: 'rgba(255,255,255,0.7)' },
+  footerHeading: { fontSize: '16px', fontWeight: '600', marginBottom: 'var(--space-3)' },
+  footerLink: { fontSize: '14px', color: 'rgba(255,255,255,0.7)', display: 'block', marginBottom: 'var(--space-2)', textDecoration: 'none' },
+  footerBottom: { paddingTop: 'var(--space-8)', borderTop: '1px solid rgba(255,255,255,0.1)' },
+  footerCopy: { textAlign: 'center', fontSize: '14px', color: 'rgba(255,255,255,0.6)' },
 };
 
 export default HomePage;
