@@ -394,8 +394,9 @@ const styles = {
     lineHeight: 1.6,
   },
   filtersSection: {
-    padding: '32px 0',
-    background: '#F4F6FA',
+    padding: '40px 0',
+    background: 'var(--bg-secondary)',
+    borderBottom: '1px solid var(--border-light)',
   },
   filters: {
     display: 'flex',
