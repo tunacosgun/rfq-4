@@ -66,8 +66,11 @@ class Product(BaseModel):
     images: List[str] = []
     category: str
     variation: Optional[str] = None
+    variants: List[str] = []  # e.g., ["S", "M", "L", "XL"]
     min_order_quantity: Optional[int] = 1
     price_range: Optional[str] = None
+    stock_quantity: Optional[int] = None
+    is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ProductCreate(BaseModel):
