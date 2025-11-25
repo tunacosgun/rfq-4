@@ -11,7 +11,8 @@ import {
   X,
   Bell,
   Settings,
-  User
+  User,
+  Palette
 } from 'lucide-react';
 import { Button } from './ui/button';
 
