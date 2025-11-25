@@ -145,6 +145,18 @@ class CategoryUpdate(BaseModel):
     slug: Optional[str] = None
     icon: Optional[str] = None
 
+class CompanySettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    company_name: str = "Şirket Adı"
+    company_address: str = ""
+    company_phone: str = ""
+    company_email: str = ""
+    company_website: str = ""
+    tax_number: str = ""
+    logo_url: str = ""
+    terms_and_conditions: str = ""
+    bank_info: str = ""
+
 # Helper functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
