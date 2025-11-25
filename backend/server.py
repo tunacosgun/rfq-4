@@ -140,6 +140,27 @@ class QuoteUpdate(BaseModel):
     admin_note: Optional[str] = None
     pricing: Optional[List[QuotePricing]] = None
 
+class Customer(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    password_hash: str
+    company: Optional[str] = None
+    phone: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CustomerRegister(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+    company: Optional[str] = None
+    phone: Optional[str] = None
+
+class CustomerLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     slug: Optional[str] = None
