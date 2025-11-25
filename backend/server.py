@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Depends, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -14,6 +15,8 @@ import secrets
 import bcrypt
 import base64
 from enum import Enum
+from services.email_service import email_service
+from services.pdf_service import pdf_service
 
 
 ROOT_DIR = Path(__file__).parent
