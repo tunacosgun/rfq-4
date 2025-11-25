@@ -413,8 +413,8 @@ async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admi
 
 # Settings endpoints
 @api_router.get("/settings")
-async def get_settings(admin: dict = Depends(get_current_admin)):
-    """Get company settings"""
+async def get_settings():
+    """Get company settings (public)"""
     settings = await db.settings.find_one({}, {"_id": 0})
     if not settings:
         # Return default settings
