@@ -200,6 +200,26 @@ async def create_category(category: Category, admin: dict = Depends(get_current_
     await db.categories.insert_one(category.model_dump())
     return category
 
+@api_router.put("/categories/{category_id}", response_model=Category)
+async def update_category(category_id: str, category_update: CategoryUpdate, admin: dict = Depends(get_current_admin)):
+    category = await db.categories.find_one({"id": category_id}, {"_id": 0})
+    if not category:
+        raise HTTPException(status_code=404, detail="Kategori bulunamadı")
+    
+    update_data = {k: v for k, v in category_update.model_dump().items() if v is not None}
+    if update_data:
+        await db.categories.update_one({"id": category_id}, {"$set": update_data})
+        category.update(update_data)
+    
+    return Category(**category)
+
+@api_router.delete("/categories/{category_id}")
+async def delete_category(category_id: str, admin: dict = Depends(get_current_admin)):
+    result = await db.categories.delete_one({"id": category_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Kategori bulunamadı")
+    return {"message": "Kategori silindi"}
+
 # Product endpoints
 @api_router.get("/products", response_model=List[Product])
 async def get_products(category: Optional[str] = None):
