@@ -69,10 +69,40 @@ const AdminSettings = () => {
     contact_form_subtitle: '',
     contact_work_hours: '',
     
-    // Footer
-    footer_description: '',
+    // Footer - Genel
+    footer_company_description: '',
+    footer_copyright_text: '',
+    footer_powered_by_text: '',
+    
+    // Footer - Sosyal Medya
+    footer_facebook_url: '',
+    footer_twitter_url: '',
+    footer_linkedin_url: '',
+    footer_instagram_url: '',
+    
+    // Footer - Hızlı Erişim
+    footer_quicklinks_title: '',
+    footer_menu_home: '',
+    footer_menu_products: '',
+    footer_menu_features: '',
+    footer_menu_about: '',
+    footer_menu_contact: '',
+    
+    // Footer - İletişim
+    footer_contact_title: '',
+    
+    // Footer - Bülten
     footer_newsletter_title: '',
-    footer_newsletter_subtitle: ''
+    footer_newsletter_subtitle: '',
+    footer_newsletter_button_text: '',
+    
+    // Footer - Renkler
+    footer_bg_color: '',
+    footer_text_color: '',
+    footer_heading_color: '',
+    footer_link_color: '',
+    footer_link_hover_color: '',
+    footer_divider_color: ''
   });
 
   useEffect(() => {
