@@ -159,7 +159,8 @@ const AdminSettings = () => {
     { id: 'products', label: 'Ürünler Sayfası', icon: ShoppingBag },
     { id: 'features', label: 'Özellikler', icon: Award },
     { id: 'about', label: 'Hakkımızda', icon: Users },
-    { id: 'contact', label: 'İletişim', icon: Phone }
+    { id: 'contact', label: 'İletişim', icon: Phone },
+    { id: 'footer', label: 'Footer', icon: Layout }
   ];
 
   if (loading) {
