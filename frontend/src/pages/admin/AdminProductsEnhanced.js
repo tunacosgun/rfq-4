@@ -86,6 +86,41 @@ const AdminProductsEnhanced = () => {
     }
   }, [searchTerm, selectedCategory, sortBy, sortOrder, showLowStock]);
 
+  const handleImageUpload = async (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length === 0) return;
+
+    setUploadingImage(true);
+
+    try {
+      const uploadPromises = selectedFiles.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${backendUrl}/api/upload-file`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+        return data.url;
+      });
+
+      const imageUrls = await Promise.all(uploadPromises);
+      setUploadedImages((prev) => [...prev, ...imageUrls]);
+      toast.success(`${imageUrls.length} resim yüklendi`);
+    } catch (error) {
+      toast.error('Resim yüklenirken hata oluştu');
+      console.error(error);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const removeUploadedImage = (url) => {
+    setUploadedImages((prev) => prev.filter((img) => img !== url));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -94,9 +129,13 @@ const AdminProductsEnhanced = () => {
       return;
     }
 
+    // Combine URL images and uploaded images
+    const urlImages = formData.images ? formData.images.split(',').map(i => i.trim()).filter(i => i) : [];
+    const allImages = [...urlImages, ...uploadedImages];
+
     const payload = {
       ...formData,
-      images: formData.images ? formData.images.split(',').map(i => i.trim()) : [],
+      images: allImages,
       stock_quantity: formData.stock_quantity ? parseInt(formData.stock_quantity) : null,
       alis_fiyati: formData.alis_fiyati ? parseFloat(formData.alis_fiyati) : null,
       minimum_stok: formData.minimum_stok ? parseInt(formData.minimum_stok) : null,
