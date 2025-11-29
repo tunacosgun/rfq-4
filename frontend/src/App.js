@@ -60,8 +60,14 @@ function App() {
               <Route path="/admin/teklifler/:id" element={<AdminQuoteDetail />} />
               <Route path="/admin/kampanyalar" element={<AdminCampaigns />} />
               <Route path="/admin/araclar" element={<AdminVehicles />} />
+              <Route path="/admin/musteriler" element={<AdminCustomers />} />
               <Route path="/admin/ayarlar" element={<AdminSettings />} />
               <Route path="/admin/renkler" element={<ColorManagement />} />
+              
+              {/* Customer Routes */}
+              <Route path="/musteri-giris" element={<CustomerLogin />} />
+              <Route path="/musteri-kayit" element={<CustomerRegister />} />
+              <Route path="/musteri-panel" element={<CustomerPanel />} />
             </Routes>
           </BrowserRouter>
           <Toaster position="top-right" richColors />
