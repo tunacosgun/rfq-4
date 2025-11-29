@@ -124,6 +124,7 @@ const HomePage = () => {
           position: 'relative',
           overflow: 'hidden'
         }}
+        className="hero-section"
       >
         <div style={{ 
           position: 'absolute', 
