@@ -75,7 +75,7 @@ const CustomerLogin = () => {
 
   return (
     <div style={styles.container}>
-      <Header />
+      <Header settings={settings} />
       
       <div style={styles.content}>
         <div style={styles.card}>
