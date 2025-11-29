@@ -414,11 +414,14 @@ const QuoteFormPage = () => {
                       onChange={handleChange}
                       placeholder="ornek@email.com"
                       required
+                      disabled={isAuthenticated}
                       style={{ 
                         height: '48px', 
                         fontSize: '15px',
                         border: '1px solid rgba(34, 30, 145, 0.2)',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        backgroundColor: isAuthenticated ? '#f3f4f6' : 'white',
+                        cursor: isAuthenticated ? 'not-allowed' : 'text'
                       }}
                     />
                   </div>
