@@ -117,8 +117,9 @@ const CustomerPanel = () => {
     <div style={styles.container}>
       <Header />
       
-      <div style={styles.content}>
-        <div style={styles.wrapper}>
+      <div style={styles.contentWrapper}>
+        <div style={styles.content}>
+          <div style={styles.wrapper}>
           {/* User Info Card */}
           <div style={styles.userCard}>
             <div style={styles.userHeader}>
