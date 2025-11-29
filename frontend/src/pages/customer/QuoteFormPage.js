@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Package, Upload, CheckCircle, Send, User, Mail, Phone, Building, MessageSquare, Shield, Zap, Star } from 'lucide-react';
 import { useQuoteCart } from '../../context/QuoteCartContext';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
@@ -16,6 +17,7 @@ const API = `${BACKEND_URL}/api`;
 const QuoteFormPage = () => {
   const navigate = useNavigate();
   const { cart, clearCart, getCartCount } = useQuoteCart();
+  const { customer, isAuthenticated } = useCustomerAuth();
   const [settings, setSettings] = useState(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -32,6 +34,19 @@ const QuoteFormPage = () => {
   useEffect(() => {
     fetchSettings();
   }, []);
+
+  // Auto-fill form if customer is logged in
+  useEffect(() => {
+    if (isAuthenticated && customer) {
+      setFormData(prev => ({
+        ...prev,
+        customer_name: customer.name || '',
+        email: customer.email || '',
+        phone: customer.phone || '',
+        company: customer.company || prev.company, // Keep current value if customer has no company
+      }));
+    }
+  }, [isAuthenticated, customer]);
 
   const fetchSettings = async () => {
     try {
