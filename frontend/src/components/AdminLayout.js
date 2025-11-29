@@ -12,7 +12,8 @@ import {
   Bell,
   Settings,
   User,
-  Palette
+  Palette,
+  Truck
 } from 'lucide-react';
 import { Button } from './ui/button';
 
