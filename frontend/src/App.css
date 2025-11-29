@@ -332,12 +332,25 @@ input:focus, textarea:focus, select:focus {
   p, span, div {
     word-wrap: break-word;
     overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   /* Button adjustments */
   .btn {
     padding: 12px 20px;
     font-size: 14px;
+  }
+
+  /* Sections padding */
+  section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Images and media */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
   }
 }
 
@@ -348,4 +361,8 @@ input:focus, textarea:focus, select:focus {
 
   h1 { font-size: 28px !important; }
   h2 { font-size: 24px !important; }
+  
+  section {
+    padding: 40px 12px !important;
+  }
 }
