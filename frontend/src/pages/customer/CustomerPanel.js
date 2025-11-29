@@ -289,6 +289,7 @@ const styles = {
   contentWrapper: {
     flex: 1,
     background: '#F9FAFB',
+    marginTop: '72px', // Header height
   },
   loading: {
     flex: 1,
@@ -298,6 +299,7 @@ const styles = {
     fontSize: '18px',
     color: '#6B7280',
     minHeight: '60vh',
+    paddingTop: '72px',
   },
   content: {
     maxWidth: '1400px',
