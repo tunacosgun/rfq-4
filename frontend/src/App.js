@@ -24,6 +24,10 @@ import AdminSettings from './pages/admin/AdminSettings';
 import ColorManagement from './pages/admin/ColorManagement';
 import AdminCampaigns from './pages/admin/AdminCampaigns';
 import AdminVehicles from './pages/admin/AdminVehicles';
+import AdminCustomers from './pages/admin/AdminCustomers';
+import CustomerLogin from './pages/customer/CustomerLogin';
+import CustomerRegister from './pages/customer/CustomerRegister';
+import CustomerPanel from './pages/customer/CustomerPanel';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
