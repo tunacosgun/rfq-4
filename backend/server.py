@@ -144,7 +144,7 @@ class Quote(BaseModel):
     message: Optional[str] = None
     items: List[QuoteItem]
     pricing: List[QuotePricing] = []
-    file_url: Optional[str] = None
+    attachments: List[str] = []  # URLs of uploaded files
     status: QuoteStatus = QuoteStatus.BEKLEMEDE
     admin_note: Optional[str] = None
     customer_id: Optional[str] = None  # Link to customer account
