@@ -166,3 +166,7 @@ agent_communication:
     message: "Starting comprehensive test of admin product image upload functionality. Will test login, navigation, image upload with preview, multiple images, removal functionality, and form submission."
   - agent: "testing"
     message: "✅ COMPREHENSIVE TESTING COMPLETED SUCCESSFULLY! All image upload features are working perfectly. Admin can login, navigate to products, upload images with instant blob URL previews, manage multiple images, remove images, and successfully create products. The functionality meets all requirements specified in the test scenario."
+  - agent: "testing"
+    message: "🔍 TESTING PRODUCT IMAGE DISPLAY AND MOBILE RESPONSIVENESS: Testing both issues requested - product image visibility on homepage/products pages and mobile responsive overflow problems."
+  - agent: "testing"
+    message: "📊 TEST RESULTS: 1) Product Images: ❌ PARTIAL ISSUES - 4 broken images on products page, but /uploads/ and external images working. Test products 'TEST', 'teest', 'Test Resim Ürünü Başarılı' all found and visible. 2) Mobile Responsive: ❌ CRITICAL ISSUE - Homepage has horizontal overflow (752px vs 375px), Products page is fine. Homepage needs CSS fixes for mobile viewport."
