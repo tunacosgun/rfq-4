@@ -173,8 +173,9 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '80px 20px',
+    padding: '120px 20px 80px',
     background: '#F9FAFB',
+    marginTop: '72px', // Header height
   },
   card: {
     background: 'white',
