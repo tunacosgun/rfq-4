@@ -502,6 +502,77 @@ const AdminProductsEnhanced = () => {
                   />
                 </div>
 
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>veya Resim Yükle</label>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploadingImage}
+                    style={{
+                      ...styles.input,
+                      cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                      backgroundColor: uploadingImage ? '#f3f4f6' : 'white'
+                    }}
+                  />
+                  {uploadingImage && (
+                    <p style={{ fontSize: '13px', color: '#3BB77E', marginTop: '8px' }}>
+                      Yükleniyor...
+                    </p>
+                  )}
+                  {uploadedImages.length > 0 && (
+                    <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                      {uploadedImages.map((url, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            position: 'relative',
+                            width: '100px',
+                            height: '100px',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            border: '2px solid #E5E7EB'
+                          }}
+                        >
+                          <img
+                            src={`${backendUrl}${url}`}
+                            alt={`Upload ${index + 1}`}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeUploadedImage(url)}
+                            style={{
+                              position: 'absolute',
+                              top: '4px',
+                              right: '4px',
+                              background: '#DC2626',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '24px',
+                              height: '24px',
+                              cursor: 'pointer',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontWeight: 'bold'
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: '20px', marginTop: '20px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>
                     Stok Bilgileri
