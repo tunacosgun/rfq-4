@@ -687,10 +687,12 @@ async def get_campaigns(admin: dict = Depends(get_current_admin)):
 async def get_active_campaign():
     """Get currently active campaign (public)"""
     now = datetime.now(timezone.utc)
+    now_iso = now.isoformat()
+    
     campaigns = await db.campaigns.find({
         "aktif": True,
-        "baslangic_tarihi": {"$lte": now},
-        "bitis_tarihi": {"$gte": now}
+        "baslangic_tarihi": {"$lte": now_iso},
+        "bitis_tarihi": {"$gte": now_iso}
     }, {"_id": 0}).to_list(1)
     
     if not campaigns:
