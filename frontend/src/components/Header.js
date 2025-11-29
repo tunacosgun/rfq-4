@@ -218,35 +218,161 @@ const Header = ({ settings }) => {
               </Link>
             </div>
 
-            {/* Cart, Customer Login & Mobile Menu */}
+            {/* Cart, Customer Login/Badge & Mobile Menu */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Link
-                to="/musteri-giris"
-                className="desktop-nav"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 18px',
-                  border: `2px solid ${headerCartButtonBg}`,
-                  color: headerCartButtonBg,
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = headerCartButtonBg;
-                  e.currentTarget.style.color = headerCartButtonTextColor;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = headerCartButtonBg;
-                }}
-              >
-                Müşteri Girişi
-              </Link>
+              {/* Customer Login or User Badge */}
+              {isAuthenticated && customer ? (
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="desktop-nav"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      background: headerCartButtonBg,
+                      color: headerCartButtonTextColor,
+                      borderRadius: '10px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        background: headerCartButtonTextColor,
+                        color: headerCartButtonBg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: '700',
+                        fontSize: '14px',
+                      }}
+                    >
+                      {customer.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span>{customer.name.split(' ')[0]}</span>
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  {showUserMenu && (
+                    <>
+                      <div
+                        style={{
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          zIndex: 998,
+                        }}
+                        onClick={() => setShowUserMenu(false)}
+                      />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 8px)',
+                          right: 0,
+                          background: 'white',
+                          borderRadius: '10px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          minWidth: '200px',
+                          zIndex: 999,
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <Link
+                          to="/musteri-panel"
+                          onClick={() => setShowUserMenu(false)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 16px',
+                            color: '#374151',
+                            textDecoration: 'none',
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#F3F4F6';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <User size={18} />
+                          <span style={{ fontWeight: '500' }}>Panelim</span>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            toast.success('Çıkış yapıldı');
+                            navigate('/');
+                            setShowUserMenu(false);
+                          }}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 16px',
+                            color: '#DC2626',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                            borderTop: '1px solid #E5E7EB',
+                            textAlign: 'left',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#FEE2E2';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <LogOut size={18} />
+                          <span style={{ fontWeight: '500' }}>Çıkış Yap</span>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to="/musteri-giris"
+                  className="desktop-nav"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 18px',
+                    border: `2px solid ${headerCartButtonBg}`,
+                    color: headerCartButtonBg,
+                    borderRadius: '10px',
+                    textDecoration: 'none',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = headerCartButtonBg;
+                    e.currentTarget.style.color = headerCartButtonTextColor;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = headerCartButtonBg;
+                  }}
+                >
+                  Müşteri Girişi
+                </Link>
+              )}
               
               <Link
                 to="/teklif-sepeti"
