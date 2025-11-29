@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { FileText, Download, LogOut, User, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 const CustomerPanel = () => {
   const navigate = useNavigate();
-  const [customer, setCustomer] = useState(null);
+  const { customer, logout, isAuthenticated, loading: authLoading } = useCustomerAuth();
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,17 +17,16 @@ const CustomerPanel = () => {
 
   useEffect(() => {
     // Check if customer is logged in
-    const customerData = localStorage.getItem('customer');
-    if (!customerData) {
+    if (!authLoading && !isAuthenticated) {
       toast.error('Lütfen giriş yapın');
       navigate('/musteri-giris');
       return;
     }
 
-    const parsedCustomer = JSON.parse(customerData);
-    setCustomer(parsedCustomer);
-    fetchQuotes(parsedCustomer.email);
-  }, [navigate]);
+    if (customer) {
+      fetchQuotes(customer.email);
+    }
+  }, [customer, isAuthenticated, authLoading, navigate]);
 
   const fetchQuotes = async (email) => {
     try {
