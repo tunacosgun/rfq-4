@@ -727,6 +727,9 @@ const HomePage = () => {
           transition: all 0.3s ease;
         }
       `}</style>
+
+      {/* Campaign Popup */}
+      <CampaignPopup />
     </div>
   );
 };
