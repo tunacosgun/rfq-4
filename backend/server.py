@@ -74,6 +74,11 @@ class Product(BaseModel):
     price_range: Optional[str] = None
     stock_quantity: Optional[int] = None
     is_active: bool = True
+    # New stock management fields
+    alis_fiyati: Optional[float] = None
+    birim: Optional[str] = None  # kg, kutu, adet, etc.
+    minimum_stok: Optional[int] = None
+    is_featured: Optional[bool] = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ProductCreate(BaseModel):
@@ -87,6 +92,11 @@ class ProductCreate(BaseModel):
     price_range: Optional[str] = None
     stock_quantity: Optional[int] = None
     is_active: bool = True
+    # New stock management fields
+    alis_fiyati: Optional[float] = None
+    birim: Optional[str] = None
+    minimum_stok: Optional[int] = None
+    is_featured: Optional[bool] = False
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -99,6 +109,11 @@ class ProductUpdate(BaseModel):
     price_range: Optional[str] = None
     stock_quantity: Optional[int] = None
     is_active: Optional[bool] = None
+    # New stock management fields
+    alis_fiyati: Optional[float] = None
+    birim: Optional[str] = None
+    minimum_stok: Optional[int] = None
+    is_featured: Optional[bool] = None
 
 class QuoteItem(BaseModel):
     product_id: str
