@@ -237,8 +237,18 @@ input:focus, textarea:focus, select:focus {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { 
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+}
+
 @media (max-width: 640px) {
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4 { 
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
 }
 
 /* Loading */
