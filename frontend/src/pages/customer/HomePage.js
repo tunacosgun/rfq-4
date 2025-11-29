@@ -482,9 +482,13 @@ const HomePage = () => {
                     >
                       {product.images?.[0] ? (
                         <img
-                          src={product.images[0]}
+                          src={product.images[0].startsWith('http') ? product.images[0] : `${BACKEND_URL}${product.images[0]}`}
                           alt={product.name}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#221E91" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>';
+                          }}
                         />
                       ) : (
                         <Package size={56} color="#221E91" />
