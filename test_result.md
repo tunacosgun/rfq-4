@@ -150,6 +150,36 @@ frontend:
         agent: "testing"
         comment: "✅ Image upload functionality working excellently! All features tested successfully: 1) Instant image preview with blob URLs 2) Multiple image upload support 3) Upload progress indicators ('Yükleniyor...') 4) Success notifications ('X resim yüklendi') 5) Image removal with X buttons 6) Preview grid layout (100x100px) 7) Form validation and submission 8) Product creation with images. Minor: Modal doesn't auto-close but product is created successfully."
 
+  - task: "Product Image Display on Customer Pages"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/customer/HomePage.js, /app/frontend/src/pages/customer/ProductsPage.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing product image display on homepage and products page. Checking if /uploads/ paths are properly combined with backend URL and if external images load correctly."
+      - working: false
+        agent: "testing"
+        comment: "❌ PARTIAL ISSUES FOUND: 1) Homepage: All 7 images loading correctly (1 uploaded, 6 external) 2) Products page: 21/25 images loading, 4 broken external images 3) Test products 'TEST', 'teest', 'Test Resim Ürünü Başarılı' all found and visible 4) /uploads/ path images working with backend URL combination 5) External ozmengida.com images mostly working but some broken URLs. Issue: Some external image URLs are returning 404 errors."
+
+  - task: "Mobile Responsive Design"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/customer/HomePage.js, /app/frontend/src/pages/customer/ProductsPage.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing mobile responsiveness at 375px width. Checking for horizontal overflow on homepage and products page."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL MOBILE ISSUE: Homepage has horizontal overflow (body scroll width: 752px vs window width: 375px). Products page is responsive and fits properly (375px). The homepage hero section, stats section, or other components are causing the overflow. CSS media queries need adjustment for mobile viewport."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
