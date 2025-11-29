@@ -305,8 +305,7 @@ const styles = {
     padding: '60px 20px',
   },
   wrapper: {
-    maxWidth: '1200px',
-    margin: '0 auto',
+    width: '100%',
   },
   userCard: {
     background: 'white',
