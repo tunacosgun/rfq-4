@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Award } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Menu, X, Award, User, LogOut } from 'lucide-react';
 import { useQuoteCart } from '../context/QuoteCartContext';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
+import { toast } from 'sonner';
 
 const Header = ({ settings }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { getCartCount } = useQuoteCart();
+  const { customer, logout, isAuthenticated } = useCustomerAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
