@@ -23,6 +23,7 @@ import AdminQuoteDetail from './pages/admin/AdminQuoteDetail';
 import AdminSettings from './pages/admin/AdminSettings';
 import ColorManagement from './pages/admin/ColorManagement';
 import AdminCampaigns from './pages/admin/AdminCampaigns';
+import AdminVehicles from './pages/admin/AdminVehicles';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
