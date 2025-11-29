@@ -226,6 +226,7 @@ const AdminProductsEnhanced = () => {
       is_active: true,
       is_featured: false,
     });
+    setUploadedImages([]);
   };
 
   const handleCloseModal = () => {
