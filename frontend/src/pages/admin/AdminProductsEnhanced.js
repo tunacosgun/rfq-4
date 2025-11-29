@@ -91,6 +91,13 @@ const AdminProductsEnhanced = () => {
     const selectedFiles = Array.from(e.target.files);
     if (selectedFiles.length === 0) return;
 
+    // Create instant previews using object URLs
+    const previewUrls = selectedFiles.map(file => ({
+      url: URL.createObjectURL(file),
+      file: file
+    }));
+    setImagePreviews((prev) => [...prev, ...previewUrls]);
+
     setUploadingImage(true);
 
     try {
@@ -113,6 +120,8 @@ const AdminProductsEnhanced = () => {
     } catch (error) {
       toast.error('Resim yüklenirken hata oluştu');
       console.error(error);
+      // Remove previews on error
+      setImagePreviews((prev) => prev.filter(p => !previewUrls.some(pu => pu.url === p.url)));
     } finally {
       setUploadingImage(false);
     }
