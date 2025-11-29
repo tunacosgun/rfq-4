@@ -87,10 +87,17 @@ const ProductDetailPage = () => {
           <div style={styles.imageSection}>
             {product.images && product.images[0] ? (
               <img
-                src={product.images[0]}
+                src={product.images[0].startsWith('http') ? product.images[0] : `${BACKEND_URL}${product.images[0]}`}
                 alt={product.name}
                 style={styles.productImage}
                 data-testid="product-image"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  const placeholder = document.createElement('div');
+                  placeholder.style.cssText = 'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);min-height:500px;';
+                  placeholder.innerHTML = '<svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#7E7E7E" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>';
+                  e.target.parentElement.replaceChild(placeholder, e.target);
+                }}
               />
             ) : (
               <div style={styles.placeholderImage}>
