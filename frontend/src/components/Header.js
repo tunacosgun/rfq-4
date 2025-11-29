@@ -184,17 +184,6 @@ const Header = ({ settings }) => {
                 {settings?.header_menu_products || 'Ürünler'}
               </Link>
               <Link
-                to="/ozellikler"
-                className={`header-nav-link ${isActive('/ozellikler') ? 'active' : ''}`}
-                style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  textDecoration: 'none'
-                }}
-              >
-                {settings?.header_menu_features || 'Özellikler'}
-              </Link>
-              <Link
                 to="/hakkimizda"
                 className={`header-nav-link ${isActive('/hakkimizda') ? 'active' : ''}`}
                 style={{
