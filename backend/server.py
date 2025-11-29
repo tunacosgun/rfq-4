@@ -791,6 +791,129 @@ async def delete_campaign(campaign_id: str, admin: dict = Depends(get_current_ad
         raise HTTPException(status_code=404, detail="Kampanya bulunamadı")
     return {"message": "Kampanya silindi"}
 
+# Vehicle endpoints
+@api_router.get("/vehicles", response_model=List[Vehicle])
+async def get_vehicles(admin: dict = Depends(get_current_admin)):
+    """Get all vehicles"""
+    vehicles = await db.vehicles.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    for vehicle in vehicles:
+        if isinstance(vehicle.get('created_at'), str):
+            vehicle['created_at'] = datetime.fromisoformat(vehicle['created_at'])
+        for date_field in ['bakim_tarihi', 'muayene_tarihi', 'kasko_tarihi', 'sigorta_tarihi']:
+            if vehicle.get(date_field) and isinstance(vehicle[date_field], str):
+                vehicle[date_field] = datetime.fromisoformat(vehicle[date_field])
+    return vehicles
+
+@api_router.get("/vehicles/{vehicle_id}", response_model=Vehicle)
+async def get_vehicle(vehicle_id: str, admin: dict = Depends(get_current_admin)):
+    """Get vehicle by ID"""
+    vehicle = await db.vehicles.find_one({"id": vehicle_id}, {"_id": 0})
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Araç bulunamadı")
+    
+    if isinstance(vehicle.get('created_at'), str):
+        vehicle['created_at'] = datetime.fromisoformat(vehicle['created_at'])
+    for date_field in ['bakim_tarihi', 'muayene_tarihi', 'kasko_tarihi', 'sigorta_tarihi']:
+        if vehicle.get(date_field) and isinstance(vehicle[date_field], str):
+            vehicle[date_field] = datetime.fromisoformat(vehicle[date_field])
+    
+    return vehicle
+
+@api_router.post("/vehicles", response_model=Vehicle)
+async def create_vehicle(vehicle_data: VehicleCreate, admin: dict = Depends(get_current_admin)):
+    """Create new vehicle"""
+    vehicle = Vehicle(**vehicle_data.model_dump())
+    doc = vehicle.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    # Convert date fields to ISO format
+    for date_field in ['bakim_tarihi', 'muayene_tarihi', 'kasko_tarihi', 'sigorta_tarihi']:
+        if doc.get(date_field):
+            doc[date_field] = doc[date_field].isoformat()
+    
+    await db.vehicles.insert_one(doc)
+    return vehicle
+
+@api_router.put("/vehicles/{vehicle_id}", response_model=Vehicle)
+async def update_vehicle(vehicle_id: str, vehicle_update: VehicleUpdate, admin: dict = Depends(get_current_admin)):
+    """Update vehicle"""
+    vehicle = await db.vehicles.find_one({"id": vehicle_id}, {"_id": 0})
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Araç bulunamadı")
+    
+    update_data = {k: v for k, v in vehicle_update.model_dump().items() if v is not None}
+    if update_data:
+        # Convert date fields to ISO format if present
+        for date_field in ['bakim_tarihi', 'muayene_tarihi', 'kasko_tarihi', 'sigorta_tarihi']:
+            if date_field in update_data and update_data[date_field]:
+                update_data[date_field] = update_data[date_field].isoformat()
+        
+        await db.vehicles.update_one({"id": vehicle_id}, {"$set": update_data})
+        vehicle.update(update_data)
+    
+    # Convert string dates back to datetime for response
+    if isinstance(vehicle.get('created_at'), str):
+        vehicle['created_at'] = datetime.fromisoformat(vehicle['created_at'])
+    for date_field in ['bakim_tarihi', 'muayene_tarihi', 'kasko_tarihi', 'sigorta_tarihi']:
+        if vehicle.get(date_field) and isinstance(vehicle[date_field], str):
+            vehicle[date_field] = datetime.fromisoformat(vehicle[date_field])
+    
+    return Vehicle(**vehicle)
+
+@api_router.delete("/vehicles/{vehicle_id}")
+async def delete_vehicle(vehicle_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete vehicle"""
+    result = await db.vehicles.delete_one({"id": vehicle_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Araç bulunamadı")
+    return {"message": "Araç silindi"}
+
+@api_router.get("/vehicles/warnings/all")
+async def get_vehicle_warnings(admin: dict = Depends(get_current_admin)):
+    """Get vehicles with upcoming or overdue maintenance dates"""
+    vehicles = await db.vehicles.find({}, {"_id": 0}).to_list(1000)
+    now = datetime.now(timezone.utc)
+    warning_threshold = 30  # 30 days
+    
+    warnings = []
+    for vehicle in vehicles:
+        vehicle_warnings = []
+        
+        for date_field in ['bakim_tarihi', 'muayene_tarihi', 'kasko_tarihi', 'sigorta_tarihi']:
+            if vehicle.get(date_field):
+                date_str = vehicle[date_field]
+                date_obj = datetime.fromisoformat(date_str) if isinstance(date_str, str) else date_str
+                
+                days_until = (date_obj - now).days
+                
+                if days_until < 0:
+                    status = "overdue"
+                    color = "red"
+                elif days_until <= warning_threshold:
+                    status = "warning"
+                    color = "yellow"
+                else:
+                    status = "ok"
+                    color = "green"
+                
+                vehicle_warnings.append({
+                    "field": date_field,
+                    "date": date_str,
+                    "days_until": days_until,
+                    "status": status,
+                    "color": color
+                })
+        
+        if vehicle_warnings:
+            warnings.append({
+                "vehicle_id": vehicle["id"],
+                "plaka": vehicle["plaka"],
+                "marka_model": vehicle["marka_model"],
+                "warnings": vehicle_warnings
+            })
+    
+    return warnings
+
 # Include the router in the main app
 app.include_router(api_router)
 
