@@ -412,6 +412,11 @@ input:focus, textarea:focus, select:focus {
     padding: 80px 16px 60px !important;
     margin-top: 52px !important;
   }
+  
+  /* Hero section h1 - force smaller on mobile */
+  .hero-section h1 {
+    font-size: 26px !important;
+  }
 }
 
 @media (max-width: 480px) {
