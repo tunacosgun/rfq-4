@@ -272,6 +272,7 @@ const CustomerPanel = () => {
             )}
           </div>
         </div>
+        </div>
       </div>
 
       <Footer />
@@ -284,6 +285,9 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
+  },
+  contentWrapper: {
+    flex: 1,
     background: '#F9FAFB',
   },
   loading: {
@@ -293,10 +297,12 @@ const styles = {
     justifyContent: 'center',
     fontSize: '18px',
     color: '#6B7280',
+    minHeight: '60vh',
   },
   content: {
-    flex: 1,
-    padding: '40px 20px',
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '60px 20px',
   },
   wrapper: {
     maxWidth: '1200px',
