@@ -67,10 +67,41 @@ const QuoteFormPage = () => {
     });
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  const handleFileUpload = async (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length === 0) return;
+
+    setUploadingFile(true);
+
+    try {
+      const uploadPromises = selectedFiles.map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await axios.post(`${API}/upload-file`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        return {
+          url: response.data.url,
+          filename: response.data.filename,
+          size: response.data.size,
+        };
+      });
+
+      const uploadedFiles = await Promise.all(uploadPromises);
+      setFiles((prev) => [...prev, ...uploadedFiles]);
+      toast.success(`${uploadedFiles.length} dosya yüklendi`);
+    } catch (error) {
+      toast.error('Dosya yüklenirken hata oluştu');
+      console.error(error);
+    } finally {
+      setUploadingFile(false);
     }
+  };
+
+  const removeFile = (index) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -100,8 +131,8 @@ const QuoteFormPage = () => {
           product_name: item.name,
           quantity: item.quantity,
         })),
-        attachments: file ? [file.name] : [],
-        customer_id: isAuthenticated && customer ? customer.id : null, // Link to customer account
+        attachments: files.map(f => f.url),
+        customer_id: isAuthenticated && customer ? customer.id : null,
       };
 
       const response = await axios.post(`${API}/quotes`, quoteData);
@@ -109,6 +140,7 @@ const QuoteFormPage = () => {
       if (response.status === 200 || response.status === 201) {
         setSubmitted(true);
         clearCart();
+        setFiles([]);
         toast.success('Teklif talebiniz başarıyla gönderildi!');
         
         setTimeout(() => {
