@@ -184,6 +184,7 @@ const AdminProductsEnhanced = () => {
       is_active: product.is_active,
       is_featured: product.is_featured || false,
     });
+    setUploadedImages([]); // Clear uploaded images when editing
     setShowModal(true);
   };
 
