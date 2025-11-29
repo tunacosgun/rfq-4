@@ -242,7 +242,10 @@ const AdminProductsEnhanced = () => {
       is_active: true,
       is_featured: false,
     });
+    // Clean up object URLs
+    imagePreviews.forEach(preview => URL.revokeObjectURL(preview.url));
     setUploadedImages([]);
+    setImagePreviews([]);
   };
 
   const handleCloseModal = () => {
