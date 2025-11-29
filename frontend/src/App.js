@@ -17,7 +17,7 @@ import QuoteFormPage from './pages/customer/QuoteFormPage';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCategories from './pages/admin/AdminCategories';
-import AdminProducts from './pages/admin/AdminProducts';
+import AdminProducts from './pages/admin/AdminProductsEnhanced';
 import AdminQuotes from './pages/admin/AdminQuotes';
 import AdminQuoteDetail from './pages/admin/AdminQuoteDetail';
 import AdminSettings from './pages/admin/AdminSettings';
