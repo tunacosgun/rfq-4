@@ -127,8 +127,14 @@ const AdminProductsEnhanced = () => {
     }
   };
 
-  const removeUploadedImage = (url) => {
-    setUploadedImages((prev) => prev.filter((img) => img !== url));
+  const removeUploadedImage = (index) => {
+    // Remove from both previews and uploaded images
+    const previewToRemove = imagePreviews[index];
+    if (previewToRemove) {
+      URL.revokeObjectURL(previewToRemove.url); // Clean up memory
+      setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    }
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
