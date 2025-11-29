@@ -83,6 +83,7 @@ const ProductsPage = () => {
           position: 'relative',
           overflow: 'hidden'
         }}
+        className="hero-section"
       >
         <div style={{ 
           position: 'absolute', 
