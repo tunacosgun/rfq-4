@@ -53,6 +53,7 @@ function App() {
               <Route path="/admin/urunler" element={<AdminProducts />} />
               <Route path="/admin/teklifler" element={<AdminQuotes />} />
               <Route path="/admin/teklifler/:id" element={<AdminQuoteDetail />} />
+              <Route path="/admin/kampanyalar" element={<AdminCampaigns />} />
               <Route path="/admin/ayarlar" element={<AdminSettings />} />
               <Route path="/admin/renkler" element={<ColorManagement />} />
             </Routes>
