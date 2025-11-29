@@ -447,11 +447,14 @@ const QuoteFormPage = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="0532 123 45 67"
+                      disabled={isAuthenticated}
                       style={{ 
                         height: '48px', 
                         fontSize: '15px',
                         border: '1px solid rgba(34, 30, 145, 0.2)',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        backgroundColor: isAuthenticated ? '#f3f4f6' : 'white',
+                        cursor: isAuthenticated ? 'not-allowed' : 'text'
                       }}
                     />
                   </div>
