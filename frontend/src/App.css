@@ -314,23 +314,63 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Mobile Responsive Fixes */
+@media (max-width: 1024px) {
+  /* Header responsive */
+  nav {
+    height: auto !important;
+  }
+  
+  nav > div > div {
+    height: 56px !important;
+  }
+  
+  nav img[alt="Logo"] {
+    height: 36px !important;
+  }
+  
+  nav span {
+    font-size: 18px !important;
+  }
+}
+
 @media (max-width: 768px) {
   body {
     font-size: 14px;
   }
 
-  /* Hero Section Responsive */
-  .hero-title {
-    font-size: 32px !important;
-    letter-spacing: -0.5px !important;
+  /* Header */
+  nav > div {
+    padding: 0 16px !important;
+  }
+  
+  nav > div > div {
+    height: 52px !important;
+  }
+  
+  nav img[alt="Logo"] {
+    height: 32px !important;
+  }
+  
+  nav span {
+    font-size: 16px !important;
   }
 
-  h1 { font-size: 32px !important; }
-  h2 { font-size: 28px !important; }
-  h3 { font-size: 24px !important; }
-  h4 { font-size: 20px !important; }
-  h5 { font-size: 18px !important; }
-  h6 { font-size: 16px !important; }
+  /* Hero Section Responsive */
+  .hero-title {
+    font-size: 28px !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  h1 { 
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+  }
+  h2 { font-size: 24px !important; }
+  h3 { font-size: 20px !important; }
+  h4 { font-size: 18px !important; }
+  h5 { font-size: 16px !important; }
+  h6 { font-size: 14px !important; }
 
   /* Container padding reduction on mobile */
   .container,
@@ -351,10 +391,9 @@ input:focus, textarea:focus, select:focus {
     font-size: 14px;
   }
 
-  /* Sections padding */
+  /* Sections padding - reduce excessive padding */
   section {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding: 50px 16px !important;
   }
 
   /* Images and media */
@@ -362,15 +401,33 @@ input:focus, textarea:focus, select:focus {
     max-width: 100% !important;
     height: auto !important;
   }
+  
+  /* Product grid - force single column */
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 480px) {
-  .hero-title {
-    font-size: 28px !important;
+  /* Header */
+  nav > div > div {
+    height: 48px !important;
+  }
+  
+  nav img[alt="Logo"] {
+    height: 28px !important;
+  }
+  
+  nav span {
+    font-size: 14px !important;
   }
 
-  h1 { font-size: 28px !important; }
-  h2 { font-size: 24px !important; }
+  .hero-title {
+    font-size: 24px !important;
+  }
+
+  h1 { font-size: 24px !important; }
+  h2 { font-size: 20px !important; }
   
   section {
     padding: 40px 12px !important;
