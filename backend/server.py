@@ -196,6 +196,42 @@ class CampaignUpdate(BaseModel):
     bitis_tarihi: Optional[datetime] = None
     aktif: Optional[bool] = None
 
+class Vehicle(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    plaka: str
+    marka_model: str
+    kilometre: Optional[int] = None
+    hat_depo: Optional[str] = None
+    not_: Optional[str] = None
+    bakim_tarihi: Optional[datetime] = None
+    muayene_tarihi: Optional[datetime] = None
+    kasko_tarihi: Optional[datetime] = None
+    sigorta_tarihi: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class VehicleCreate(BaseModel):
+    plaka: str
+    marka_model: str
+    kilometre: Optional[int] = None
+    hat_depo: Optional[str] = None
+    not_: Optional[str] = None
+    bakim_tarihi: Optional[datetime] = None
+    muayene_tarihi: Optional[datetime] = None
+    kasko_tarihi: Optional[datetime] = None
+    sigorta_tarihi: Optional[datetime] = None
+
+class VehicleUpdate(BaseModel):
+    plaka: Optional[str] = None
+    marka_model: Optional[str] = None
+    kilometre: Optional[int] = None
+    hat_depo: Optional[str] = None
+    not_: Optional[str] = None
+    bakim_tarihi: Optional[datetime] = None
+    muayene_tarihi: Optional[datetime] = None
+    kasko_tarihi: Optional[datetime] = None
+    sigorta_tarihi: Optional[datetime] = None
+
 class CompanySettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
     # Genel Bilgiler
