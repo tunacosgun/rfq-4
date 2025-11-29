@@ -213,8 +213,36 @@ const Header = ({ settings }) => {
               </Link>
             </div>
 
-            {/* Cart & Mobile Menu */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Cart, Customer Login & Mobile Menu */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Link
+                to="/musteri-giris"
+                className="desktop-nav"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 18px',
+                  border: `2px solid ${headerCartButtonBg}`,
+                  color: headerCartButtonBg,
+                  borderRadius: '10px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = headerCartButtonBg;
+                  e.currentTarget.style.color = headerCartButtonTextColor;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = headerCartButtonBg;
+                }}
+              >
+                Müşteri Girişi
+              </Link>
+              
               <Link
                 to="/teklif-sepeti"
                 style={{
