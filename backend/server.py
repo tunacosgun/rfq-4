@@ -166,6 +166,36 @@ class CategoryUpdate(BaseModel):
     slug: Optional[str] = None
     icon: Optional[str] = None
 
+class Campaign(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    baslik: str
+    aciklama: str
+    buton_yazisi: str
+    buton_linki: str
+    baslangic_tarihi: datetime
+    bitis_tarihi: datetime
+    aktif: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class CampaignCreate(BaseModel):
+    baslik: str
+    aciklama: str
+    buton_yazisi: str
+    buton_linki: str
+    baslangic_tarihi: datetime
+    bitis_tarihi: datetime
+    aktif: bool = True
+
+class CampaignUpdate(BaseModel):
+    baslik: Optional[str] = None
+    aciklama: Optional[str] = None
+    buton_yazisi: Optional[str] = None
+    buton_linki: Optional[str] = None
+    baslangic_tarihi: Optional[datetime] = None
+    bitis_tarihi: Optional[datetime] = None
+    aktif: Optional[bool] = None
+
 class CompanySettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
     # Genel Bilgiler
