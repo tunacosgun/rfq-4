@@ -32,11 +32,13 @@ import CustomerPanel from './pages/customer/CustomerPanel';
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
+import { CustomerAuthProvider } from './context/CustomerAuthContext';
 
 function App() {
   return (
     <AdminAuthProvider>
-      <QuoteCartProvider>
+      <CustomerAuthProvider>
+        <QuoteCartProvider>
         <div className="App">
           <BrowserRouter>
             <Routes>
