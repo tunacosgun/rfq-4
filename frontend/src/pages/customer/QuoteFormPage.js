@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Package, Upload, CheckCircle, Send, User, Mail, Phone, Building, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Package, Upload, CheckCircle, Send, User, Mail, Phone, Building, MessageSquare, Shield, Zap, Star } from 'lucide-react';
 import { useQuoteCart } from '../../context/QuoteCartContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -116,16 +116,24 @@ const QuoteFormPage = () => {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)' }}>
         <Header settings={settings} />
         
-        <section style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 60px' }}>
-          <div className="card" style={{ maxWidth: '600px', padding: '60px 40px', textAlign: 'center' }}>
+        <section style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '140px 24px 60px' }}>
+          <div className="card" style={{ 
+            maxWidth: '600px', 
+            padding: '60px 40px', 
+            textAlign: 'center',
+            background: 'white',
+            borderRadius: '16px',
+            border: '1px solid rgba(34, 30, 145, 0.1)',
+            boxShadow: '0 8px 32px rgba(34, 30, 145, 0.15)'
+          }}>
             <div
               style={{
                 width: '80px',
                 height: '80px',
-                background: 'var(--primary-100)',
+                background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
@@ -133,22 +141,40 @@ const QuoteFormPage = () => {
                 margin: '0 auto 24px'
               }}
             >
-              <CheckCircle size={40} color="var(--primary-600)" />
+              <CheckCircle size={40} color="white" />
             </div>
-            <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '16px', color: 'var(--text-primary)' }}>
+            <div style={{ 
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              background: 'rgba(34, 30, 145, 0.1)',
+              color: '#221E91',
+              borderRadius: '6px',
+              fontSize: '14px',
+              fontWeight: '600',
+              marginBottom: '16px'
+            }}>
+              <Star size={14} />
+              TALEP GÖNDERİLDİ
+            </div>
+            <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '16px', color: '#221E91' }}>
               Teklif Talebiniz Alındı!
             </h1>
-            <p style={{ fontSize: '16px', color: 'var(--text-secondary)', marginBottom: '32px', lineHeight: '1.6' }}>
+            <p style={{ fontSize: '16px', color: '#666', marginBottom: '32px', lineHeight: '1.6' }}>
               Teklif talebiniz başarıyla kaydedildi. En kısa sürede size dönüş yapacağız.
             </p>
             <Button
               onClick={() => navigate('/')}
               style={{
-                background: 'var(--primary-600)',
+                background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
                 color: 'white',
                 padding: '14px 32px',
                 fontSize: '16px',
-                fontWeight: '700'
+                fontWeight: '700',
+                border: 'none',
+                borderRadius: '10px',
+                boxShadow: '0 4px 12px rgba(34, 30, 145, 0.3)'
               }}
             >
               Ana Sayfaya Dön
@@ -162,19 +188,30 @@ const QuoteFormPage = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)' }}>
       <Header settings={settings} />
 
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)',
+          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
           color: 'white',
-          padding: '120px 24px 60px',
-          marginTop: '72px'
+          padding: '140px 24px 60px',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0,
+          background: 'radial-gradient(circle at 30% 50%, rgba(224, 108, 27, 0.15) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }}></div>
+        
+        <div style={{ maxWidth: '1280px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <Link
             to="/teklif-sepeti"
             style={{
@@ -187,7 +224,11 @@ const QuoteFormPage = () => {
               fontSize: '15px',
               fontWeight: '600',
               opacity: 0.9,
-              transition: 'all 0.2s'
+              transition: 'all 0.2s',
+              padding: '8px 16px',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '8px',
+              backdropFilter: 'blur(10px)'
             }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = 0.9)}
@@ -195,17 +236,43 @@ const QuoteFormPage = () => {
             <ArrowLeft size={20} />
             Sepete Dön
           </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
             <div
               style={{
-                padding: '12px',
-                background: 'rgba(255,255,255,0.2)',
-                borderRadius: '12px'
+                padding: '16px',
+                background: 'rgba(224, 108, 27, 0.2)',
+                borderRadius: '16px',
+                border: '1px solid rgba(224, 108, 27, 0.3)'
               }}
             >
-              <Send size={32} />
+              <Send size={32} color="#e06c1b" />
             </div>
-            <h1 style={{ fontSize: '48px', fontWeight: '900', margin: 0 }}>Teklif Gönder</h1>
+            <div>
+              <div style={{ 
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 12px',
+                background: 'rgba(255,255,255,0.15)',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '8px',
+                backdropFilter: 'blur(10px)'
+              }}>
+                <Zap size={14} />
+                TEKLİF FORMU
+              </div>
+              <h1 style={{ fontSize: '48px', fontWeight: '900', margin: 0, lineHeight: 1.1 }}>
+                <span style={{ 
+                  background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  Teklif Gönder
+                </span>
+              </h1>
+            </div>
           </div>
           <p style={{ fontSize: '18px', opacity: 0.95 }}>
             Bilgilerinizi doldurun, en kısa sürede size özel fiyatlandırma ile dönüş yapalım.
@@ -219,9 +286,31 @@ const QuoteFormPage = () => {
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '32px' }} className="form-grid">
               {/* Form Fields */}
-              <div className="card" style={{ padding: '40px' }}>
-                <h2 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px' }}>İletişim Bilgileri</h2>
-                <p style={{ fontSize: '15px', color: 'var(--text-secondary)', marginBottom: '32px' }}>
+              <div className="card" style={{ 
+                padding: '40px',
+                background: 'white',
+                borderRadius: '16px',
+                border: '1px solid rgba(34, 30, 145, 0.1)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }}>
+                <div style={{ 
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  background: 'rgba(224, 108, 27, 0.1)',
+                  color: '#e06c1b',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  marginBottom: '16px'
+                }}>
+                  <User size={14} />
+                  İLETİŞİM BİLGİLERİ
+                </div>
+                
+                <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '8px', color: '#221E91' }}>İletişim Bilgileri</h2>
+                <p style={{ fontSize: '15px', color: '#666', marginBottom: '32px' }}>
                   Lütfen aşağıdaki formu doldurun. * ile işaretli alanlar zorunludur.
                 </p>
 
@@ -235,7 +324,7 @@ const QuoteFormPage = () => {
                         fontSize: '14px',
                         fontWeight: '600',
                         marginBottom: '8px',
-                        color: 'var(--text-primary)'
+                        color: '#221E91'
                       }}
                     >
                       <User size={16} />
@@ -247,7 +336,12 @@ const QuoteFormPage = () => {
                       onChange={handleChange}
                       placeholder="Örn: Ahmet Yılmaz"
                       required
-                      style={{ height: '48px', fontSize: '15px' }}
+                      style={{ 
+                        height: '48px', 
+                        fontSize: '15px',
+                        border: '1px solid rgba(34, 30, 145, 0.2)',
+                        borderRadius: '8px'
+                      }}
                     />
                   </div>
 
@@ -260,7 +354,7 @@ const QuoteFormPage = () => {
                         fontSize: '14px',
                         fontWeight: '600',
                         marginBottom: '8px',
-                        color: 'var(--text-primary)'
+                        color: '#221E91'
                       }}
                     >
                       <Building size={16} />
@@ -271,7 +365,12 @@ const QuoteFormPage = () => {
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="Örn: ABC Ticaret Ltd."
-                      style={{ height: '48px', fontSize: '15px' }}
+                      style={{ 
+                        height: '48px', 
+                        fontSize: '15px',
+                        border: '1px solid rgba(34, 30, 145, 0.2)',
+                        borderRadius: '8px'
+                      }}
                     />
                   </div>
 
@@ -284,7 +383,7 @@ const QuoteFormPage = () => {
                         fontSize: '14px',
                         fontWeight: '600',
                         marginBottom: '8px',
-                        color: 'var(--text-primary)'
+                        color: '#221E91'
                       }}
                     >
                       <Mail size={16} />
@@ -297,7 +396,12 @@ const QuoteFormPage = () => {
                       onChange={handleChange}
                       placeholder="ornek@email.com"
                       required
-                      style={{ height: '48px', fontSize: '15px' }}
+                      style={{ 
+                        height: '48px', 
+                        fontSize: '15px',
+                        border: '1px solid rgba(34, 30, 145, 0.2)',
+                        borderRadius: '8px'
+                      }}
                     />
                   </div>
 
@@ -310,7 +414,7 @@ const QuoteFormPage = () => {
                         fontSize: '14px',
                         fontWeight: '600',
                         marginBottom: '8px',
-                        color: 'var(--text-primary)'
+                        color: '#221E91'
                       }}
                     >
                       <Phone size={16} />
@@ -322,7 +426,12 @@ const QuoteFormPage = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="0532 123 45 67"
-                      style={{ height: '48px', fontSize: '15px' }}
+                      style={{ 
+                        height: '48px', 
+                        fontSize: '15px',
+                        border: '1px solid rgba(34, 30, 145, 0.2)',
+                        borderRadius: '8px'
+                      }}
                     />
                   </div>
 
@@ -335,7 +444,7 @@ const QuoteFormPage = () => {
                         fontSize: '14px',
                         fontWeight: '600',
                         marginBottom: '8px',
-                        color: 'var(--text-primary)'
+                        color: '#221E91'
                       }}
                     >
                       <MessageSquare size={16} />
@@ -347,7 +456,12 @@ const QuoteFormPage = () => {
                       onChange={handleChange}
                       placeholder="Varsa özel taleplerinizi buraya yazabilirsiniz..."
                       rows={4}
-                      style={{ fontSize: '15px', lineHeight: '1.6' }}
+                      style={{ 
+                        fontSize: '15px', 
+                        lineHeight: '1.6',
+                        border: '1px solid rgba(34, 30, 145, 0.2)',
+                        borderRadius: '8px'
+                      }}
                     />
                   </div>
 
@@ -360,7 +474,7 @@ const QuoteFormPage = () => {
                         fontSize: '14px',
                         fontWeight: '600',
                         marginBottom: '8px',
-                        color: 'var(--text-primary)'
+                        color: '#221E91'
                       }}
                     >
                       <Upload size={16} />
@@ -372,14 +486,15 @@ const QuoteFormPage = () => {
                       style={{
                         width: '100%',
                         padding: '12px',
-                        border: '1px solid var(--border-light)',
-                        borderRadius: 'var(--radius-md)',
+                        border: '1px solid rgba(34, 30, 145, 0.2)',
+                        borderRadius: '8px',
                         fontSize: '14px',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        background: 'white'
                       }}
                     />
                     {file && (
-                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                      <p style={{ fontSize: '13px', color: '#666', marginTop: '8px' }}>
                         Seçili: {file.name}
                       </p>
                     )}
@@ -389,8 +504,30 @@ const QuoteFormPage = () => {
 
               {/* Order Summary */}
               <div style={{ position: 'sticky', top: '100px', height: 'fit-content' }}>
-                <div className="card" style={{ padding: '32px' }}>
-                  <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px' }}>Sipariş Özeti</h3>
+                <div className="card" style={{ 
+                  padding: '32px',
+                  background: 'white',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(34, 30, 145, 0.1)',
+                  boxShadow: '0 8px 32px rgba(34, 30, 145, 0.15)'
+                }}>
+                  <div style={{ 
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '6px 12px',
+                    background: 'rgba(34, 30, 145, 0.1)',
+                    color: '#221E91',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    marginBottom: '16px'
+                  }}>
+                    <Package size={14} />
+                    SİPARİŞ ÖZETİ
+                  </div>
+                  
+                  <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '24px', color: '#221E91' }}>Sipariş Özeti</h3>
                   
                   <div style={{ marginBottom: '24px' }}>
                     {cart.map((item, index) => (
@@ -399,7 +536,7 @@ const QuoteFormPage = () => {
                         style={{
                           paddingBottom: '16px',
                           marginBottom: '16px',
-                          borderBottom: index < cart.length - 1 ? '1px solid var(--border-light)' : 'none'
+                          borderBottom: index < cart.length - 1 ? '1px solid rgba(34, 30, 145, 0.1)' : 'none'
                         }}
                       >
                         <div style={{ display: 'flex', gap: '12px' }}>
@@ -407,13 +544,14 @@ const QuoteFormPage = () => {
                             style={{
                               width: '60px',
                               height: '60px',
-                              background: 'var(--gray-100)',
+                              background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)',
                               borderRadius: '8px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               overflow: 'hidden',
-                              flexShrink: 0
+                              flexShrink: 0,
+                              border: '1px solid rgba(34, 30, 145, 0.1)'
                             }}
                           >
                             {item.images?.[0] ? (
@@ -423,13 +561,13 @@ const QuoteFormPage = () => {
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                               />
                             ) : (
-                              <Package size={24} color="var(--text-tertiary)" />
+                              <Package size={24} color="#221E91" />
                             )}
                           </div>
                           <div style={{ flex: 1 }}>
-                            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{item.name}</h4>
-                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                              Adet: {item.quantity}
+                            <h4 style={{ fontSize: '14px', fontWeight: '700', marginBottom: '4px', color: '#221E91' }}>{item.name}</h4>
+                            <p style={{ fontSize: '13px', color: '#666' }}>
+                              Adet: <strong style={{ color: '#221E91' }}>{item.quantity}</strong>
                             </p>
                           </div>
                         </div>
@@ -440,21 +578,38 @@ const QuoteFormPage = () => {
                   <div
                     style={{
                       padding: '16px',
-                      background: 'var(--primary-50)',
-                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, rgba(34, 30, 145, 0.05) 0%, rgba(224, 108, 27, 0.05) 100%)',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(34, 30, 145, 0.1)',
                       marginBottom: '24px'
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Toplam Ürün</span>
-                      <span style={{ fontSize: '14px', fontWeight: '700' }}>{getCartCount()}</span>
+                      <span style={{ fontSize: '14px', color: '#666' }}>Toplam Ürün</span>
+                      <span style={{ fontSize: '14px', fontWeight: '700', color: '#221E91' }}>{getCartCount()}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Toplam Adet</span>
-                      <span style={{ fontSize: '14px', fontWeight: '700' }}>
+                      <span style={{ fontSize: '14px', color: '#666' }}>Toplam Adet</span>
+                      <span style={{ fontSize: '14px', fontWeight: '700', color: '#221E91' }}>
                         {cart.reduce((sum, item) => sum + item.quantity, 0)}
                       </span>
                     </div>
+                  </div>
+
+                  <div style={{ 
+                    marginBottom: '24px', 
+                    padding: '16px', 
+                    background: 'rgba(34, 30, 145, 0.03)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(34, 30, 145, 0.1)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <Shield size={16} color="#221E91" />
+                      <span style={{ fontSize: '14px', fontWeight: '700', color: '#221E91' }}>Güvenli İletişim</span>
+                    </div>
+                    <p style={{ fontSize: '13px', color: '#666', lineHeight: '1.5', margin: 0 }}>
+                      Bilgileriniz güvende! Size en kısa sürede dönüş yapacağız.
+                    </p>
                   </div>
 
                   <Button
@@ -462,7 +617,7 @@ const QuoteFormPage = () => {
                     disabled={loading}
                     style={{
                       width: '100%',
-                      background: 'var(--primary-600)',
+                      background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
                       color: 'white',
                       height: '56px',
                       fontSize: '17px',
@@ -470,7 +625,23 @@ const QuoteFormPage = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '12px'
+                      gap: '12px',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 8px 20px rgba(34, 30, 145, 0.3)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 12px 24px rgba(34, 30, 145, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!loading) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 8px 20px rgba(34, 30, 145, 0.3)';
+                      }
                     }}
                   >
                     {loading ? 'Gönderiliyor...' : 'Teklif Talebini Gönder'}
@@ -489,6 +660,12 @@ const QuoteFormPage = () => {
         @media (max-width: 1024px) {
           .form-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .card {
+            padding: 24px !important;
           }
         }
       `}</style>

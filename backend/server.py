@@ -269,7 +269,7 @@ class CompanySettings(BaseModel):
     # Footer - Genel
     footer_company_description: str = "Profesyonel B2B teklif yönetim platformu. Hızlı, güvenilir ve modern çözümler sunuyoruz."
     footer_copyright_text: str = "© 2025 RFQ Platform. Tüm hakları saklıdır."
-    footer_powered_by_text: str = "Made with ❤️ by Emergent"
+    footer_powered_by_text: str = "Tunahan Cosgun"
     
     # Footer - Sosyal Medya
     footer_facebook_url: str = "#"

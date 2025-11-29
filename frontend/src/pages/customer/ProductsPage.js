@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Package, Search, Filter, ArrowRight, ShoppingCart } from 'lucide-react';
+import { Package, Search, Filter, ArrowRight, ShoppingCart, Star, Grid, List, Zap } from 'lucide-react';
 import { useQuoteCart } from '../../context/QuoteCartContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -19,6 +19,7 @@ const ProductsPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const { addToCart } = useQuoteCart();
 
   useEffect(() => {
@@ -51,7 +52,8 @@ const ProductsPage = () => {
   };
 
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -61,7 +63,7 @@ const ProductsPage = () => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
         <div style={{ textAlign: 'center' }}>
           <div className="spinner" style={{ margin: '0 auto 16px' }}></div>
-          <p>Yüklenıyor...</p>
+          <p>Yükleniyor...</p>
         </div>
       </div>
     );
@@ -74,23 +76,60 @@ const ProductsPage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%)',
+          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
           color: 'white',
           padding: '140px 24px 80px',
-          textAlign: 'center'
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0,
+          background: 'radial-gradient(circle at 30% 50%, rgba(224, 108, 27, 0.15) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }}></div>
+        
+        <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ 
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '12px 24px',
+            background: 'rgba(224, 108, 27, 0.15)',
+            border: '1px solid rgba(224, 108, 27, 0.3)',
+            borderRadius: '50px',
+            marginBottom: '32px',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <Package size={18} fill="currentColor" />
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              ÜRÜN KATALOĞU
+            </span>
+          </div>
+          
           <h1
             style={{
               fontSize: '56px',
               fontWeight: '900',
               marginBottom: '24px',
               letterSpacing: '-1px',
-              lineHeight: '1.1'
+              lineHeight: '1.1',
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
-            Ürünlerimiz
+            <span style={{ 
+              background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              display: 'block'
+            }}>
+              Ürünlerimiz
+            </span>
           </h1>
           <p style={{ fontSize: '20px', opacity: 0.95, lineHeight: '1.6' }}>
             Geniş ürün yelpazemizle ihtiyacınıza en uygun çözümleri keşfedin.
@@ -99,9 +138,18 @@ const ProductsPage = () => {
       </section>
 
       {/* Filter Section */}
-      <section style={{ background: 'white', padding: '32px 24px', borderBottom: '1px solid var(--border-light)' }}>
+      <section style={{ 
+        background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)', 
+        padding: '40px 24px', 
+        borderBottom: '1px solid rgba(34, 30, 145, 0.1)' 
+      }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ 
+            display: 'flex', 
+            gap: '16px', 
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}>
             <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
               <Search
                 size={20}
@@ -110,16 +158,24 @@ const ProductsPage = () => {
                   left: '16px',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color: 'var(--text-tertiary)'
+                  color: '#666'
                 }}
               />
               <Input
                 placeholder="Ürün ara..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ paddingLeft: '48px', height: '48px', fontSize: '16px' }}
+                style={{ 
+                  paddingLeft: '48px', 
+                  height: '48px', 
+                  fontSize: '16px',
+                  border: '1px solid rgba(34, 30, 145, 0.2)',
+                  borderRadius: '10px',
+                  background: 'white'
+                }}
               />
             </div>
+            
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -127,11 +183,12 @@ const ProductsPage = () => {
                 minWidth: '220px',
                 height: '48px',
                 fontSize: '16px',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--border-light)',
+                borderRadius: '10px',
+                border: '1px solid rgba(34, 30, 145, 0.2)',
                 padding: '0 16px',
                 background: 'white',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontWeight: '500'
               }}
             >
               <option value="">Tüm Kategoriler</option>
@@ -141,20 +198,64 @@ const ProductsPage = () => {
                 </option>
               ))}
             </select>
+
+            {/* View Mode Toggle */}
+            <div style={{ 
+              display: 'flex', 
+              border: '1px solid rgba(34, 30, 145, 0.2)',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              background: 'white'
+            }}>
+              <button
+                onClick={() => setViewMode('grid')}
+                style={{
+                  padding: '12px 16px',
+                  background: viewMode === 'grid' ? '#221E91' : 'transparent',
+                  color: viewMode === 'grid' ? 'white' : '#221E91',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontWeight: '600'
+                }}
+              >
+                <Grid size={18} />
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                style={{
+                  padding: '12px 16px',
+                  background: viewMode === 'list' ? '#221E91' : 'transparent',
+                  color: viewMode === 'list' ? 'white' : '#221E91',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontWeight: '600'
+                }}
+              >
+                <List size={18} />
+                List
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Products Section */}
-      <section style={{ padding: '80px 24px', background: 'var(--bg-secondary)', flex: 1 }}>
+      <section style={{ padding: '80px 24px', background: 'white', flex: 1 }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           {filteredProducts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-              <Package size={64} color="var(--text-tertiary)" style={{ margin: '0 auto 16px' }} />
-              <h3 style={{ fontSize: '24px', color: 'var(--text-primary)', marginBottom: '12px' }}>
+              <Package size={64} color="#666" style={{ margin: '0 auto 16px' }} />
+              <h3 style={{ fontSize: '24px', color: '#221E91', marginBottom: '12px' }}>
                 Ürün Bulunamadı
               </h3>
-              <p style={{ fontSize: '16px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
+              <p style={{ fontSize: '16px', color: '#666', marginBottom: '24px' }}>
                 Aramanızla eşleşen ürün bulunamadı.
               </p>
               <Button
@@ -162,20 +263,49 @@ const ProductsPage = () => {
                   setSearchTerm('');
                   setSelectedCategory('');
                 }}
-                style={{ background: 'var(--primary-600)', color: 'white' }}
+                style={{ 
+                  background: 'linear-gradient(135deg, #221E91, #1a1775)',
+                  color: 'white',
+                  padding: '12px 24px',
+                  fontWeight: '700'
+                }}
               >
                 Filtreleri Temizle
               </Button>
             </div>
           ) : (
             <>
-              <div style={{ marginBottom: '32px' }}>
-                <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>{filteredProducts.length}</strong> ürün bulundu
-                </p>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                marginBottom: '32px',
+                flexWrap: 'wrap',
+                gap: '16px'
+              }}>
+                <div>
+                  <p style={{ fontSize: '18px', color: '#666' }}>
+                    <strong style={{ color: '#221E91' }}>{filteredProducts.length}</strong> ürün bulundu
+                  </p>
+                </div>
+                
+                <div style={{ 
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  background: 'rgba(34, 30, 145, 0.1)',
+                  color: '#221E91',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>
+                  <Zap size={16} />
+                  HIZLI TEKLİF AL
+                </div>
               </div>
 
-              <div className="grid grid-4" style={{ gap: '24px' }}>
+              <div className={viewMode === 'grid' ? "grid grid-4" : "list-view"} style={{ gap: '24px' }}>
                 {filteredProducts.map((product) => (
                   <div
                     key={product.id}
@@ -183,45 +313,79 @@ const ProductsPage = () => {
                     style={{
                       padding: '0',
                       overflow: 'hidden',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      background: 'white',
+                      borderRadius: '16px',
+                      border: '1px solid rgba(34, 30, 145, 0.1)',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                      ...(viewMode === 'list' && {
+                        display: 'flex',
+                        height: '200px'
+                      })
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-8px)';
-                      e.currentTarget.style.boxShadow = 'var(--shadow-xl)';
+                      e.currentTarget.style.boxShadow = '0 20px 40px rgba(34, 30, 145, 0.15)';
+                      e.currentTarget.style.borderColor = 'rgba(224, 108, 27, 0.3)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '';
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+                      e.currentTarget.style.borderColor = 'rgba(34, 30, 145, 0.1)';
                     }}
                   >
-                    <Link to={`/urun/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link 
+                      to={`/urun/${product.id}`} 
+                      style={{ 
+                        textDecoration: 'none', 
+                        color: 'inherit',
+                        ...(viewMode === 'list' && {
+                          display: 'flex',
+                          flex: 1
+                        })
+                      }}
+                    >
                       <div
                         style={{
-                          width: '100%',
-                          height: '240px',
-                          background: 'var(--gray-100)',
+                          width: viewMode === 'grid' ? '100%' : '200px',
+                          height: viewMode === 'grid' ? '240px' : '100%',
+                          background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          overflow: 'hidden'
+                          overflow: 'hidden',
+                          flexShrink: 0
                         }}
                       >
                         {product.images?.[0] ? (
                           <img
                             src={product.images[0]}
                             alt={product.name}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            style={{ 
+                              width: '100%', 
+                              height: '100%', 
+                              objectFit: 'cover' 
+                            }}
                           />
                         ) : (
-                          <Package size={56} color="var(--text-tertiary)" />
+                          <Package size={56} color="#221E91" />
                         )}
                       </div>
-                      <div style={{ padding: '24px' }}>
+                    </Link>
+                    
+                    <div style={{ 
+                      padding: '24px',
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
                         <span
                           style={{
                             fontSize: '12px',
                             fontWeight: '700',
-                            color: 'var(--primary-600)',
+                            color: '#e06c1b',
                             textTransform: 'uppercase',
                             letterSpacing: '0.5px'
                           }}
@@ -230,10 +394,10 @@ const ProductsPage = () => {
                         </span>
                         <h3
                           style={{
-                            fontSize: '20px',
+                            fontSize: viewMode === 'grid' ? '20px' : '24px',
                             fontWeight: '700',
                             margin: '8px 0 12px',
-                            color: 'var(--text-primary)'
+                            color: '#221E91'
                           }}
                         >
                           {product.name}
@@ -241,45 +405,62 @@ const ProductsPage = () => {
                         <p
                           style={{
                             fontSize: '14px',
-                            color: 'var(--text-secondary)',
+                            color: '#666',
                             lineHeight: '1.6',
-                            marginBottom: '16px'
+                            marginBottom: '16px',
+                            ...(viewMode === 'list' && {
+                              maxWidth: '600px'
+                            })
                           }}
                         >
-                          {product.description?.substring(0, 90)}...
+                          {product.description?.substring(0, viewMode === 'grid' ? 90 : 200)}...
                         </p>
+                      </div>
+                      
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center',
+                        marginTop: 'auto'
+                      }}>
                         {product.price_range && (
                           <p
                             style={{
                               fontSize: '18px',
-                              fontWeight: '700',
-                              color: 'var(--primary-600)',
-                              marginBottom: '16px'
+                              fontWeight: '800',
+                              color: '#221E91',
+                              margin: 0
                             }}
                           >
                             {product.price_range}
                           </p>
                         )}
+                        
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleAddToCart(product);
+                          }}
+                          style={{
+                            background: 'linear-gradient(135deg, #221E91, #1a1775)',
+                            color: 'white',
+                            height: '48px',
+                            fontWeight: '700',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            border: 'none',
+                            borderRadius: '10px',
+                            padding: '0 20px',
+                            minWidth: viewMode === 'grid' ? '100%' : 'auto',
+                            marginTop: viewMode === 'grid' ? '16px' : '0'
+                          }}
+                        >
+                          <ShoppingCart size={20} />
+                          Sepete Ekle
+                        </Button>
                       </div>
-                    </Link>
-                    <div style={{ padding: '0 24px 24px' }}>
-                      <Button
-                        onClick={() => handleAddToCart(product)}
-                        style={{
-                          width: '100%',
-                          background: 'var(--primary-600)',
-                          color: 'white',
-                          height: '48px',
-                          fontWeight: '700',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px'
-                        }}
-                      >
-                        <ShoppingCart size={20} />
-                        Sepete Ekle
-                      </Button>
                     </div>
                   </div>
                 ))}
@@ -290,6 +471,53 @@ const ProductsPage = () => {
       </section>
 
       <Footer settings={settings} />
+
+      <style>{`
+        @media (max-width: 1200px) {
+          .grid-4 {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+        
+        @media (max-width: 900px) {
+          .grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          
+          .list-view .card {
+            flex-direction: column;
+            height: auto !important;
+          }
+          
+          .list-view .card > a > div {
+            width: 100% !important;
+            height: 240px !important;
+          }
+        }
+        
+        @media (max-width: 600px) {
+          .grid-4 {
+            grid-template-columns: 1fr;
+          }
+        }
+        
+        .grid {
+          display: grid;
+        }
+        
+        .grid-4 {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .list-view {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .card {
+          transition: all 0.3s ease;
+        }
+      `}</style>
     </div>
   );
 };

@@ -303,7 +303,7 @@ const Footer = ({ settings }) => {
               {settings?.footer_copyright_text || `© 2025 ${settings?.company_name || 'RFQ Platform'}. Tüm hakları saklıdır.`}
             </p>
             <p style={{ fontSize: '14px', color: footerTextColor }}>
-              {settings?.footer_powered_by_text || 'Made with ❤️ by Emergent'}
+              {settings?.footer_powered_by_text || 'Made with by Tunahan Cosgun'}
             </p>
           </div>
         </div>
