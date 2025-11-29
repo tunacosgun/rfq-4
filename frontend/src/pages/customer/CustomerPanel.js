@@ -12,8 +12,26 @@ const CustomerPanel = () => {
   const { customer, logout, isAuthenticated, loading: authLoading } = useCustomerAuth();
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [settings, setSettings] = useState(null);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+  // Fetch settings
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/settings`);
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error('Settings could not be loaded');
+    }
+  };
 
   useEffect(() => {
     // Check if customer is logged in
