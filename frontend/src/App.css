@@ -406,6 +406,12 @@ input:focus, textarea:focus, select:focus {
   .grid-4 {
     grid-template-columns: 1fr !important;
   }
+  
+  /* Hero section mobile padding */
+  .hero-section {
+    padding: 80px 16px 60px !important;
+    margin-top: 52px !important;
+  }
 }
 
 @media (max-width: 480px) {
