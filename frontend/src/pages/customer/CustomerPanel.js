@@ -124,7 +124,7 @@ const CustomerPanel = () => {
   if (loading) {
     return (
       <div style={styles.container}>
-        <Header />
+        <Header settings={settings} />
         <div style={styles.loading}>Yükleniyor...</div>
         <Footer />
       </div>
@@ -133,7 +133,7 @@ const CustomerPanel = () => {
 
   return (
     <div style={styles.container}>
-      <Header />
+      <Header settings={settings} />
       
       <div style={styles.contentWrapper}>
         <div style={styles.content}>
