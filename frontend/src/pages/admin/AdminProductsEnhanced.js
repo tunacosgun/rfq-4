@@ -543,9 +543,9 @@ const AdminProductsEnhanced = () => {
                       Yükleniyor...
                     </p>
                   )}
-                  {uploadedImages.length > 0 && (
+                  {imagePreviews.length > 0 && (
                     <div style={{ marginTop: '12px', display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                      {uploadedImages.map((url, index) => (
+                      {imagePreviews.map((preview, index) => (
                         <div
                           key={index}
                           style={{
@@ -558,8 +558,8 @@ const AdminProductsEnhanced = () => {
                           }}
                         >
                           <img
-                            src={`${backendUrl}${url}`}
-                            alt={`Upload ${index + 1}`}
+                            src={preview.url}
+                            alt={`Preview ${index + 1}`}
                             style={{
                               width: '100%',
                               height: '100%',
@@ -568,7 +568,7 @@ const AdminProductsEnhanced = () => {
                           />
                           <button
                             type="button"
-                            onClick={() => removeUploadedImage(url)}
+                            onClick={() => removeUploadedImage(index)}
                             style={{
                               position: 'absolute',
                               top: '4px',
