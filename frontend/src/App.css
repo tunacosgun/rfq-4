@@ -245,9 +245,11 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 640px) {
-  .grid-2, .grid-3, .grid-4 { 
+  .grid-2, .grid-3, .grid-4, 
+  .grid.grid-2, .grid.grid-3, .grid.grid-4 { 
     grid-template-columns: 1fr !important;
     gap: 16px !important;
+    display: grid !important;
   }
 }
 
