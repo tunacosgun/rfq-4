@@ -41,8 +41,8 @@ const CustomerLogin = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Store customer data in localStorage
-        localStorage.setItem('customer', JSON.stringify(data.customer));
+        // Use context login
+        login(data.customer);
         toast.success('Giriş başarılı!');
         navigate('/musteri-panel');
       } else {
