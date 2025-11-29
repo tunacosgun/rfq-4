@@ -540,21 +540,59 @@ const QuoteFormPage = () => {
                     </label>
                     <input
                       type="file"
-                      onChange={handleFileChange}
+                      multiple
+                      onChange={handleFileUpload}
+                      disabled={uploadingFile}
                       style={{
                         width: '100%',
                         padding: '12px',
                         border: '1px solid rgba(34, 30, 145, 0.2)',
                         borderRadius: '8px',
                         fontSize: '14px',
-                        cursor: 'pointer',
-                        background: 'white'
+                        cursor: uploadingFile ? 'not-allowed' : 'pointer',
+                        background: uploadingFile ? '#f3f4f6' : 'white'
                       }}
                     />
-                    {file && (
+                    {uploadingFile && (
                       <p style={{ fontSize: '13px', color: '#666', marginTop: '8px' }}>
-                        Seçili: {file.name}
+                        Yükleniyor...
                       </p>
+                    )}
+                    {files.length > 0 && (
+                      <div style={{ marginTop: '12px' }}>
+                        {files.map((file, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              padding: '8px 12px',
+                              background: '#f3f4f6',
+                              borderRadius: '6px',
+                              marginBottom: '8px'
+                            }}
+                          >
+                            <span style={{ fontSize: '13px', color: '#374151' }}>
+                              📎 {file.filename}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => removeFile(index)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#DC2626',
+                                cursor: 'pointer',
+                                fontSize: '18px',
+                                padding: '0 4px'
+                              }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
