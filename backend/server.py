@@ -791,6 +791,31 @@ async def get_customer_quotes_by_id(customer_id: str, admin: dict = Depends(get_
     
     return {"customer": customer, "quotes": quotes}
 
+# File Upload endpoints
+@api_router.post("/upload-file")
+async def upload_file(file: UploadFile = File(...)):
+    """Upload a file (for quotes or other purposes)"""
+    try:
+        # Generate unique filename
+        file_ext = Path(file.filename).suffix
+        unique_filename = f"{uuid.uuid4()}{file_ext}"
+        file_path = UPLOAD_DIR / unique_filename
+        
+        # Save file
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Return URL
+        file_url = f"/uploads/{unique_filename}"
+        return {
+            "success": True,
+            "url": file_url,
+            "filename": file.filename,
+            "size": file.size
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
+
 # Settings endpoints
 @api_router.get("/settings")
 async def get_settings():
