@@ -167,14 +167,14 @@ const styles = {
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
-    background: '#F9FAFB',
   },
   content: {
     flex: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '40px 20px',
+    padding: '80px 20px',
+    background: '#F9FAFB',
   },
   card: {
     background: 'white',
