@@ -130,7 +130,7 @@ const CustomerRegister = () => {
             <div style={styles.formGroup}>
               <label style={styles.label}>
                 <Building size={18} />
-                Şirket Adı
+                Şirket Adı *
               </label>
               <input
                 type="text"
@@ -138,13 +138,14 @@ const CustomerRegister = () => {
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 style={styles.input}
                 placeholder="Şirket A.Ş."
+                required
               />
             </div>
 
             <div style={styles.formGroup}>
               <label style={styles.label}>
                 <Phone size={18} />
-                Telefon
+                Telefon *
               </label>
               <input
                 type="tel"
@@ -152,6 +153,7 @@ const CustomerRegister = () => {
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 style={styles.input}
                 placeholder="0532 123 45 67"
+                required
               />
             </div>
 
