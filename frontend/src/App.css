@@ -402,9 +402,14 @@ input:focus, textarea:focus, select:focus {
     height: auto !important;
   }
   
-  /* Product grid - force single column */
-  .grid-4 {
+  /* Product grid - force single column on mobile */
+  .grid.grid-4 {
     grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  
+  .grid-4 > * {
+    max-width: 100% !important;
   }
   
   /* Hero section mobile padding */
