@@ -43,7 +43,7 @@ const CustomerPanel = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('customer');
+    logout();
     toast.success('Çıkış yapıldı');
     navigate('/');
   };
