@@ -33,6 +33,7 @@ const AdminProductsEnhanced = () => {
   });
 
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
