@@ -157,6 +157,8 @@ class QuoteCreate(BaseModel):
     phone: Optional[str] = None
     message: Optional[str] = None
     items: List[QuoteItem]
+    attachments: List[str] = []  # URLs of uploaded files
+    customer_id: Optional[str] = None
 
 class QuoteUpdate(BaseModel):
     status: Optional[QuoteStatus] = None
