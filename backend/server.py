@@ -479,15 +479,56 @@ async def delete_category(category_id: str, admin: dict = Depends(get_current_ad
 
 # Product endpoints
 @api_router.get("/products", response_model=List[Product])
-async def get_products(category: Optional[str] = None):
+async def get_products(
+    category: Optional[str] = None,
+    search: Optional[str] = None,
+    sort_by: Optional[str] = None,
+    sort_order: Optional[str] = "asc",
+    low_stock: Optional[bool] = None
+):
     query = {}
     if category:
         query["category"] = category
-    products = await db.products.find(query, {"_id": 0}).to_list(1000)
+    
+    if search:
+        query["$or"] = [
+            {"name": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}}
+        ]
+    
+    if low_stock:
+        # Find products where stock_quantity <= minimum_stok
+        query["$expr"] = {"$lte": ["$stock_quantity", "$minimum_stok"]}
+    
+    # Sorting
+    sort_field = sort_by if sort_by else "created_at"
+    sort_direction = 1 if sort_order == "asc" else -1
+    
+    products = await db.products.find(query, {"_id": 0}).sort(sort_field, sort_direction).to_list(1000)
     for product in products:
         if isinstance(product.get('created_at'), str):
             product['created_at'] = datetime.fromisoformat(product['created_at'])
     return products
+
+@api_router.get("/products/low-stock/list")
+async def get_low_stock_products(admin: dict = Depends(get_current_admin)):
+    """Get products with low stock (stock_quantity <= minimum_stok)"""
+    products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    low_stock_products = []
+    
+    for product in products:
+        stock_qty = product.get('stock_quantity', 0)
+        min_stock = product.get('minimum_stok', 0)
+        
+        if min_stock and stock_qty is not None and stock_qty <= min_stock:
+            if isinstance(product.get('created_at'), str):
+                product['created_at'] = datetime.fromisoformat(product['created_at'])
+            
+            product['stock_status'] = 'critical' if stock_qty == 0 else 'low'
+            product['stock_difference'] = min_stock - stock_qty
+            low_stock_products.append(product)
+    
+    return low_stock_products
 
 @api_router.get("/products/{product_id}", response_model=Product)
 async def get_product(product_id: str):
