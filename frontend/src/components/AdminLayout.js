@@ -13,7 +13,8 @@ import {
   Settings,
   User,
   Palette,
-  Truck
+  Truck,
+  Users
 } from 'lucide-react';
 import { Button } from './ui/button';
 
