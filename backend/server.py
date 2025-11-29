@@ -745,6 +745,45 @@ async def get_customer_quotes(customer_email: str):
             quote['created_at'] = datetime.fromisoformat(quote['created_at'])
     return quotes
 
+# Admin Customer Management endpoints
+@api_router.get("/admin/customers")
+async def get_all_customers(admin: dict = Depends(get_current_admin)):
+    """Get all customers with their quote statistics"""
+    customers = await db.customers.find({}, {"_id": 0, "password_hash": 0}).sort("created_at", -1).to_list(1000)
+    
+    # Add quote statistics for each customer
+    for customer in customers:
+        if isinstance(customer.get('created_at'), str):
+            customer['created_at'] = datetime.fromisoformat(customer['created_at'])
+        
+        # Count quotes for this customer
+        quote_count = await db.quotes.count_documents({"email": customer["email"]})
+        customer['quote_count'] = quote_count
+        
+        # Get latest quote
+        latest_quote = await db.quotes.find_one(
+            {"email": customer["email"]}, 
+            {"_id": 0},
+            sort=[("created_at", -1)]
+        )
+        customer['latest_quote_date'] = latest_quote.get('created_at') if latest_quote else None
+    
+    return customers
+
+@api_router.get("/admin/customers/{customer_id}/quotes")
+async def get_customer_quotes_by_id(customer_id: str, admin: dict = Depends(get_current_admin)):
+    """Get all quotes for a specific customer"""
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    
+    quotes = await db.quotes.find({"email": customer["email"]}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    for quote in quotes:
+        if isinstance(quote.get('created_at'), str):
+            quote['created_at'] = datetime.fromisoformat(quote['created_at'])
+    
+    return {"customer": customer, "quotes": quotes}
+
 # Settings endpoints
 @api_router.get("/settings")
 async def get_settings():
