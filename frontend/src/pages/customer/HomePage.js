@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import CampaignPopup from '../../components/CampaignPopup';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
