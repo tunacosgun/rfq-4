@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Mail, Lock } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
+import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useCustomerAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -15,6 +17,13 @@ const CustomerLogin = () => {
   const [loading, setLoading] = useState(false);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/musteri-panel');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
