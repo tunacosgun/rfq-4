@@ -200,7 +200,10 @@ const AdminProductsEnhanced = () => {
       is_active: product.is_active,
       is_featured: product.is_featured || false,
     });
+    // Clean up object URLs
+    imagePreviews.forEach(preview => URL.revokeObjectURL(preview.url));
     setUploadedImages([]); // Clear uploaded images when editing
+    setImagePreviews([]);
     setShowModal(true);
   };
 
