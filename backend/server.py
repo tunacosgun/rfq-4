@@ -140,6 +140,7 @@ class Quote(BaseModel):
     file_url: Optional[str] = None
     status: QuoteStatus = QuoteStatus.BEKLEMEDE
     admin_note: Optional[str] = None
+    customer_id: Optional[str] = None  # Link to customer account
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class QuoteCreate(BaseModel):
