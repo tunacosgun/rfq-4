@@ -186,8 +186,11 @@ metadata:
   test_sequence: 1
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus: 
+    - "Product Image Display on Customer Pages"
+    - "Mobile Responsive Design"
+  stuck_tasks: 
+    - "Mobile Responsive Design"
   test_all: false
   test_priority: "high_first"
 
