@@ -75,6 +75,7 @@ function App() {
           <Toaster position="top-right" richColors />
         </div>
       </QuoteCartProvider>
+      </CustomerAuthProvider>
     </AdminAuthProvider>
   );
 }
