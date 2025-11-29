@@ -100,6 +100,7 @@ const QuoteFormPage = () => {
           quantity: item.quantity,
         })),
         attachments: file ? [file.name] : [],
+        customer_id: isAuthenticated && customer ? customer.id : null, // Link to customer account
       };
 
       const response = await axios.post(`${API}/quotes`, quoteData);
