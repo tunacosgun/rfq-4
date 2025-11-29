@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, Mail, Lock, User, Building, Phone } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -16,8 +16,26 @@ const CustomerRegister = () => {
     phone: '',
   });
   const [loading, setLoading] = useState(false);
+  const [settings, setSettings] = useState(null);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+  // Fetch settings
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/settings`);
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error('Settings could not be loaded');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
