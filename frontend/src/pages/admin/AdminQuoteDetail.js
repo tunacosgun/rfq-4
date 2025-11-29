@@ -243,6 +243,50 @@ const AdminQuoteDetail = () => {
               </div>
             )}
 
+            {quote.attachments && quote.attachments.length > 0 && (
+              <div className="card" style={styles.section}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                  <FileText size={18} style={{ color: '#3BB77E' }} />
+                  <h2 style={styles.sectionTitle}>Eklenen Dosyalar</h2>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {quote.attachments.map((fileUrl, index) => (
+                    <a
+                      key={index}
+                      href={`${BACKEND_URL}${fileUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '12px',
+                        background: '#f3f4f6',
+                        borderRadius: '8px',
+                        textDecoration: 'none',
+                        color: '#374151',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#e5e7eb';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#f3f4f6';
+                      }}
+                    >
+                      <FileText size={16} style={{ color: '#3BB77E' }} />
+                      <span style={{ fontSize: '14px', fontWeight: '500' }}>
+                        Dosya {index + 1}
+                      </span>
+                      <span style={{ marginLeft: 'auto', fontSize: '12px', color: '#6B7280' }}>
+                        İndir →
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="card" style={styles.section}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h2 style={styles.sectionTitle}>Talep Edilen Ürünler & Fiyatlandırma</h2>
