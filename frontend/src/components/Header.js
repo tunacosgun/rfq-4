@@ -510,6 +510,77 @@ const Header = ({ settings }) => {
               >
                 {settings?.header_menu_contact || 'İletişim'}
               </Link>
+
+              {/* Mobile: Customer Login/Logout */}
+              {isAuthenticated && customer ? (
+                <>
+                  <Link
+                    to="/musteri-panel"
+                    onClick={() => setIsMenuOpen(false)}
+                    style={{
+                      padding: '14px 16px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: headerLinkColor,
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      background: 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <User size={18} />
+                    Panelim
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      toast.success('Çıkış yapıldı');
+                      navigate('/');
+                      setIsMenuOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: '#DC2626',
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <LogOut size={18} />
+                    Çıkış Yap
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/musteri-giris"
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    padding: '14px 16px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: 'white',
+                    textDecoration: 'none',
+                    borderRadius: '8px',
+                    background: headerCartButtonBg,
+                    textAlign: 'center',
+                    display: 'block',
+                    marginTop: '8px'
+                  }}
+                >
+                  Müşteri Girişi
+                </Link>
+              )}
             </div>
           )}
         </div>
