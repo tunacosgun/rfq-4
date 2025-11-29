@@ -479,22 +479,6 @@ const Header = ({ settings }) => {
                 {settings?.header_menu_products || 'Ürünler'}
               </Link>
               <Link
-                to="/ozellikler"
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  padding: '14px 16px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: isActive('/ozellikler') ? headerLinkActiveColor : headerLinkColor,
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  background: isActive('/ozellikler') ? `${headerLinkActiveColor}1A` : 'transparent',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                {settings?.header_menu_features || 'Özellikler'}
-              </Link>
-              <Link
                 to="/hakkimizda"
                 onClick={() => setIsMenuOpen(false)}
                 style={{
