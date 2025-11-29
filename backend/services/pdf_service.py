@@ -1,12 +1,14 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
+from reportlab.platypus import (
+    SimpleDocTemplate, Table, TableStyle,
+    Paragraph, Spacer
+)
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT, TA_JUSTIFY
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.pdfgen import canvas
 from io import BytesIO
 from datetime import datetime
 from typing import List, Dict, Optional
@@ -15,29 +17,29 @@ import os
 
 logger = logging.getLogger(__name__)
 
+
 class PDFService:
     def __init__(self):
         # Register Turkish-compatible font
         try:
-            # Use DejaVu Sans which supports Turkish characters
             font_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
             font_bold_path = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
-            
+
             if os.path.exists(font_path):
                 pdfmetrics.registerFont(TTFont('DejaVu', font_path))
             if os.path.exists(font_bold_path):
                 pdfmetrics.registerFont(TTFont('DejaVu-Bold', font_bold_path))
-            
+
             self.font_name = 'DejaVu'
             self.font_bold = 'DejaVu-Bold'
         except Exception as e:
             logger.warning(f"Could not load DejaVu font: {e}, using Helvetica")
             self.font_name = 'DejaVu'
             self.font_bold = 'DejaVu-Bold'
-        
+
         self.styles = getSampleStyleSheet()
         self._setup_custom_styles()
-    
+
     def _setup_custom_styles(self):
         """Setup custom paragraph styles"""
         self.styles.add(ParagraphStyle(
@@ -49,169 +51,342 @@ class PDFService:
             spaceAfter=12,
             alignment=TA_CENTER
         ))
-        
+
         self.styles.add(ParagraphStyle(
             name='CustomHeading',
             parent=self.styles['Heading2'],
             fontName=self.font_bold,
-            fontSize=14,
+            fontSize=13,
+            leading=16,
             textColor=colors.HexColor('#253D4E'),
-            spaceAfter=8,
-            spaceBefore=12
+            spaceAfter=6,
+            spaceBefore=14
         ))
-        
+
         self.styles.add(ParagraphStyle(
             name='CustomNormal',
             parent=self.styles['Normal'],
             fontName=self.font_name,
             fontSize=10,
+            leading=13,
             textColor=colors.HexColor('#1E293B')
         ))
-        
+
         self.styles.add(ParagraphStyle(
             name='CustomSmall',
             parent=self.styles['Normal'],
             fontName=self.font_name,
-            fontSize=9,
+            fontSize=8.5,
+            leading=11,
             textColor=colors.HexColor('#64748B')
         ))
-    
-    def generate_quote_pdf(self, quote_data: dict, pricing_data: Optional[List[Dict]] = None, company_settings: Optional[dict] = None) -> bytes:
+
+        # Küçük gri section label (örn: “ŞARTLAR VE KOŞULLAR” alt açıklama)
+        self.styles.add(ParagraphStyle(
+            name='SectionLabel',
+            parent=self.styles['Normal'],
+            fontName=self.font_bold,
+            fontSize=8.5,
+            leading=11,
+            textColor=colors.HexColor('#9CA3AF'),
+            spaceAfter=3,
+            spaceBefore=10,
+            uppercase=True
+        ))
+
+        # İmza alanı için
+        self.styles.add(ParagraphStyle(
+            name='SignatureLabel',
+            parent=self.styles['Normal'],
+            fontName=self.font_bold,
+            fontSize=9,
+            textColor=colors.HexColor('#111827'),
+            alignment=TA_CENTER,
+            spaceAfter=2
+        ))
+        self.styles.add(ParagraphStyle(
+            name='SignatureHint',
+            parent=self.styles['Normal'],
+            fontName=self.font_name,
+            fontSize=8,
+            textColor=colors.HexColor('#6B7280'),
+            alignment=TA_CENTER
+        ))
+
+    # --------------------------------------------------
+    #  ANA FONKSİYON
+    # --------------------------------------------------
+    def generate_quote_pdf(
+        self,
+        quote_data: dict,
+        pricing_data: Optional[List[Dict]] = None,
+        company_settings: Optional[dict] = None
+    ) -> bytes:
         """Generate professional quote PDF"""
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=20*mm, bottomMargin=20*mm)
-        
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            topMargin=20 * mm,
+            bottomMargin=20 * mm,
+            leftMargin=18 * mm,
+            rightMargin=18 * mm
+        )
+
         story = []
-        
-        # Title
+
+        # ------------------------------------------------------------------
+        # BAŞLIK
+        # ------------------------------------------------------------------
         title = Paragraph("TEKLİF FORMU", self.styles['CustomTitle'])
         story.append(title)
-        story.append(Spacer(1, 10*mm))
-        
-        # Quote Info
+        story.append(Spacer(1, 6 * mm))
+
+        # ------------------------------------------------------------------
+        # TEKLİF / DURUM BİLGİLERİ
+        # ------------------------------------------------------------------
+        status_text = self._get_status_text(quote_data['status'])
+        status_bg, status_fg = self._get_status_colors(quote_data['status'])
+
         quote_info_data = [
             ['Teklif No:', quote_data['id'][:8].upper()],
             ['Tarih:', datetime.fromisoformat(quote_data['created_at']).strftime('%d.%m.%Y')],
-            ['Durum:', self._get_status_text(quote_data['status'])]
+            ['Durum:', status_text],
         ]
-        
-        quote_info_table = Table(quote_info_data, colWidths=[40*mm, 80*mm])
-        quote_info_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'DejaVu'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#7E7E7E')),
-            ('FONTNAME', (0, 0), (0, -1), 'DejaVu-Bold'),
+
+        quote_info_table = Table(quote_info_data, colWidths=[35 * mm, 85 * mm])
+        ts = TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), self.font_name),
+            ('FONTSIZE', (0, 0), (-1, -1), 9.5),
+            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#6B7280')),
+            ('FONTNAME', (0, 0), (0, -1), self.font_bold),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ])
+
+        # 3. satırdaki durum hücresini renkli rozet gibi yap
+        ts.add('BACKGROUND', (1, 2), (1, 2), status_bg)
+        ts.add('TEXTCOLOR', (1, 2), (1, 2), status_fg)
+        ts.add('FONTNAME', (1, 2), (1, 2), self.font_bold)
+        ts.add('ALIGN', (1, 2), (1, 2), 'CENTER')
+        ts.add('LEFTPADDING', (1, 2), (1, 2), 8)
+        ts.add('RIGHTPADDING', (1, 2), (1, 2), 8)
+        ts.add('TOPPADDING', (1, 2), (1, 2), 3)
+        ts.add('BOTTOMPADDING', (1, 2), (1, 2), 3)
+        ts.add('BOX', (1, 2), (1, 2), 0.5, status_bg)
+
+        quote_info_table.setStyle(ts)
         story.append(quote_info_table)
-        story.append(Spacer(1, 8*mm))
-        
-        # Customer Info
+        story.append(Spacer(1, 5 * mm))
+
+        # ------------------------------------------------------------------
+        # MÜŞTERİ BİLGİLERİ
+        # ------------------------------------------------------------------
         story.append(Paragraph("MÜŞTERİ BİLGİLERİ", self.styles['CustomHeading']))
-        
+
         customer_data = [
             ['Ad Soyad:', quote_data['customer_name']],
             ['Firma:', quote_data.get('company', '-')],
-            ['Email:', quote_data['email']],
+            ['E-posta:', quote_data['email']],
             ['Telefon:', quote_data.get('phone', '-')]
         ]
-        
-        customer_table = Table(customer_data, colWidths=[40*mm, 120*mm])
+
+        customer_table = Table(customer_data, colWidths=[35 * mm, 120 * mm])
         customer_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'DejaVu'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#7E7E7E')),
-            ('FONTNAME', (0, 0), (0, -1), 'DejaVu-Bold'),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('FONTNAME', (0, 0), (-1, -1), self.font_name),
+            ('FONTSIZE', (0, 0), (-1, -1), 9.5),
+            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#6B7280')),
+            ('FONTNAME', (0, 0), (0, -1), self.font_bold),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
         ]))
         story.append(customer_table)
-        story.append(Spacer(1, 8*mm))
-        
-        # Products Table
+        story.append(Spacer(1, 4 * mm))
+
+        # ------------------------------------------------------------------
+        # ÜRÜNLER TABLOSU
+        # ------------------------------------------------------------------
         story.append(Paragraph("TALEP EDİLEN ÜRÜNLER", self.styles['CustomHeading']))
-        
-        # Table headers
+
         table_data = [['Ürün Adı', 'Miktar', 'Birim Fiyat', 'Toplam']]
-        
+
         total_amount = 0
-        
+
         for item in quote_data['items']:
             product_name = item['product_name']
             quantity = item['quantity']
-            
-            # Check if pricing data exists
+
             unit_price = '-'
             item_total = '-'
-            
+
             if pricing_data:
-                pricing_item = next((p for p in pricing_data if p['product_id'] == item['product_id']), None)
+                pricing_item = next(
+                    (p for p in pricing_data if p['product_id'] == item['product_id']),
+                    None
+                )
                 if pricing_item:
                     unit_price = f"{pricing_item['unit_price']:.2f} TL"
                     item_total_val = pricing_item['unit_price'] * quantity
                     item_total = f"{item_total_val:.2f} TL"
                     total_amount += item_total_val
-            
+
             table_data.append([product_name, str(quantity), unit_price, item_total])
-        
-        # Add total row if pricing exists
+
         if pricing_data and total_amount > 0:
             table_data.append(['', '', 'TOPLAM:', f"{total_amount:.2f} TL"])
-        
-        products_table = Table(table_data, colWidths=[70*mm, 30*mm, 35*mm, 35*mm])
+
+        products_table = Table(
+            table_data,
+            colWidths=[80 * mm, 25 * mm, 35 * mm, 35 * mm]
+        )
         products_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3BB77E')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
-            ('FONTNAME', (0, 0), (-1, 0), 'DejaVu-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 11),
-            ('FONTNAME', (0, 1), (-1, -1), 'DejaVu'),
-            ('FONTSIZE', (0, 1), (-1, -1), 10),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('TOPPADDING', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -2 if pricing_data else -1), [colors.white, colors.HexColor('#F4F6FA')]),
+            ('ALIGN', (0, 0), (-1, 0), 'LEFT'),
+            ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, 0), self.font_bold),
+            ('FONTSIZE', (0, 0), (-1, 0), 10.5),
+
+            ('FONTNAME', (0, 1), (-1, -1), self.font_name),
+            ('FONTSIZE', (0, 1), (-1, -1), 9.5),
+
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 7),
+            ('TOPPADDING', (0, 0), (-1, 0), 7),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 5),
+            ('TOPPADDING', (0, 1), (-1, -1), 5),
+
+            ('GRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#E5E7EB')),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -2 if pricing_data else -1),
+             [colors.white, colors.HexColor('#F9FAFB')]),
         ]))
-        
-        # Bold and highlighted total row
+
         if pricing_data and total_amount > 0:
             products_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#FFF9E6')),
-                ('FONTNAME', (0, -1), (-1, -1), 'DejaVu-Bold'),
-                ('FONTSIZE', (0, -1), (-1, -1), 12),
+                ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#FEF3C7')),
+                ('FONTNAME', (0, -1), (-1, -1), self.font_bold),
+                ('FONTSIZE', (0, -1), (-1, -1), 11),
+                ('ALIGN', (2, -1), (3, -1), 'RIGHT')
             ]))
-        
+
         story.append(products_table)
-        story.append(Spacer(1, 8*mm))
-        
-        # Message
+
+        # ------------------------------------------------------------------
+        # MESAJ / YÖNETİCİ NOTLARI
+        # ------------------------------------------------------------------
         if quote_data.get('message'):
             story.append(Paragraph("MÜŞTERİ MESAJI", self.styles['CustomHeading']))
-            message_para = Paragraph(quote_data['message'], self.styles['Normal'])
+            message_para = Paragraph(
+                quote_data['message'],
+                self.styles['CustomNormal']
+            )
             story.append(message_para)
-            story.append(Spacer(1, 8*mm))
-        
-        # Admin Note
+
         if quote_data.get('admin_note'):
             story.append(Paragraph("YÖNETİCİ NOTU", self.styles['CustomHeading']))
-            note_para = Paragraph(quote_data['admin_note'], self.styles['Normal'])
+            note_para = Paragraph(
+                quote_data['admin_note'],
+                self.styles['CustomNormal']
+            )
             story.append(note_para)
-            story.append(Spacer(1, 8*mm))
-        
-        # Footer
-        story.append(Spacer(1, 15*mm))
-        footer_text = "<para align='center'><font size='9' color='#7E7E7E'>Bu teklif 30 gün geçerlidir. Daha fazla bilgi için bizimle iletişime geçiniz.</font></para>"
-        story.append(Paragraph(footer_text, self.styles['Normal']))
-        
-        # Build PDF
+
+        story.append(Spacer(1, 6 * mm))
+
+        # ------------------------------------------------------------------
+        # ŞARTLAR & KOŞULLAR
+        # ------------------------------------------------------------------
+        story.append(Paragraph("ŞARTLAR VE KOŞULLAR", self.styles['CustomHeading']))
+
+        default_terms = [
+            "Bu teklif, düzenlenme tarihinden itibaren 30 gün geçerlidir.",
+            "Stok ve piyasa koşullarına bağlı olarak fiyatlarda değişiklik yapılabilir.",
+            "Teslimat ve ödeme koşulları, sipariş onayı sırasında netleştirilecektir."
+        ]
+
+        terms = company_settings.get('terms') if company_settings else None
+        if not terms:
+            terms = default_terms
+
+        for idx, term in enumerate(terms, start=1):
+            bullet = f"{idx}. {term}"
+            story.append(Paragraph(bullet, self.styles['CustomSmall']))
+
+        story.append(Spacer(1, 10 * mm))
+
+        # ------------------------------------------------------------------
+        # İMZA ALANI
+        # ------------------------------------------------------------------
+        story.append(Paragraph("ONAY & İMZA", self.styles['SectionLabel']))
+
+        company_name = (company_settings or {}).get(
+            'company_name',
+            'Teklifi Hazırlayan'
+        )
+
+        signature_data = [
+            [
+                Paragraph(company_name, self.styles['SignatureLabel']),
+                Paragraph("Müşteri Onayı", self.styles['SignatureLabel'])
+            ],
+            [
+                Paragraph("İsim / Kaşe / İmza", self.styles['SignatureHint']),
+                Paragraph("İsim / Kaşe / İmza", self.styles['SignatureHint'])
+            ],
+            [
+                "_______________________________",
+                "_______________________________"
+            ]
+        ]
+
+        signature_table = Table(
+            signature_data,
+            colWidths=[85 * mm, 85 * mm]
+        )
+        signature_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('TOPPADDING', (0, 0), (-1, -1), 3),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ]))
+
+        story.append(signature_table)
+        story.append(Spacer(1, 8 * mm))
+
+        # ------------------------------------------------------------------
+        # ALT BİLGİ / FOOTER
+        # ------------------------------------------------------------------
+        footer_lines = []
+
+        footer_lines.append(
+            "Bu doküman, bilgi amaçlı hazırlanmış olup elektronik ortamda oluşturulmuştur."
+        )
+
+        if company_settings:
+            contact_bits = []
+            if company_settings.get('phone'):
+                contact_bits.append(f"Tel: {company_settings['phone']}")
+            if company_settings.get('email'):
+                contact_bits.append(f"E-posta: {company_settings['email']}")
+            if company_settings.get('website'):
+                contact_bits.append(company_settings['website'])
+
+            if contact_bits:
+                footer_lines.append(" | ".join(contact_bits))
+
+        footer_text = "<br/>".join(
+            [f"<font size='8' color='#9CA3AF'>{line}</font>"
+             for line in footer_lines]
+        )
+        story.append(Paragraph(f"<para align='center'>{footer_text}</para>",
+                               self.styles['CustomSmall']))
+
+        # PDF oluştur
         doc.build(story)
-        
+
         pdf_data = buffer.getvalue()
         buffer.close()
-        
         return pdf_data
-    
+
+    # --------------------------------------------------
+    #  YARDIMCI FONKSİYONLAR
+    # --------------------------------------------------
     def _get_status_text(self, status: str) -> str:
         """Get Turkish status text"""
         status_map = {
@@ -222,5 +397,20 @@ class PDFService:
             'reddedildi': 'Reddedildi'
         }
         return status_map.get(status, 'Beklemede')
+
+    def _get_status_colors(self, status: str):
+        """Duruma göre arka plan / yazı rengi"""
+        status = (status or '').lower()
+        if status == 'onaylandi':
+            return colors.HexColor('#DCFCE7'), colors.HexColor('#15803D')
+        if status == 'fiyat_verildi':
+            return colors.HexColor('#DBEAFE'), colors.HexColor('#1D4ED8')
+        if status == 'inceleniyor':
+            return colors.HexColor('#FEF9C3'), colors.HexColor('#CA8A04')
+        if status == 'reddedildi':
+            return colors.HexColor('#FEE2E2'), colors.HexColor('#B91C1C')
+        # beklemede vs.
+        return colors.HexColor('#E5E7EB'), colors.HexColor('#374151')
+
 
 pdf_service = PDFService()
