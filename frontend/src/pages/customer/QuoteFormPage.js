@@ -29,7 +29,8 @@ const QuoteFormPage = () => {
     phone: '',
     message: '',
   });
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   useEffect(() => {
     fetchSettings();
