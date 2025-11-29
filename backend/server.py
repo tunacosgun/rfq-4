@@ -669,6 +669,90 @@ async def update_settings(settings: CompanySettings, admin: dict = Depends(get_c
     await db.settings.insert_one(settings.model_dump())
     return {"message": "Ayarlar kaydedildi"}
 
+# Campaign endpoints
+@api_router.get("/campaigns", response_model=List[Campaign])
+async def get_campaigns(admin: dict = Depends(get_current_admin)):
+    """Get all campaigns (admin only)"""
+    campaigns = await db.campaigns.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    for campaign in campaigns:
+        if isinstance(campaign.get('created_at'), str):
+            campaign['created_at'] = datetime.fromisoformat(campaign['created_at'])
+        if isinstance(campaign.get('baslangic_tarihi'), str):
+            campaign['baslangic_tarihi'] = datetime.fromisoformat(campaign['baslangic_tarihi'])
+        if isinstance(campaign.get('bitis_tarihi'), str):
+            campaign['bitis_tarihi'] = datetime.fromisoformat(campaign['bitis_tarihi'])
+    return campaigns
+
+@api_router.get("/campaigns/active")
+async def get_active_campaign():
+    """Get currently active campaign (public)"""
+    now = datetime.now(timezone.utc)
+    campaigns = await db.campaigns.find({
+        "aktif": True,
+        "baslangic_tarihi": {"$lte": now},
+        "bitis_tarihi": {"$gte": now}
+    }, {"_id": 0}).to_list(1)
+    
+    if not campaigns:
+        return None
+    
+    campaign = campaigns[0]
+    if isinstance(campaign.get('created_at'), str):
+        campaign['created_at'] = datetime.fromisoformat(campaign['created_at'])
+    if isinstance(campaign.get('baslangic_tarihi'), str):
+        campaign['baslangic_tarihi'] = datetime.fromisoformat(campaign['baslangic_tarihi'])
+    if isinstance(campaign.get('bitis_tarihi'), str):
+        campaign['bitis_tarihi'] = datetime.fromisoformat(campaign['bitis_tarihi'])
+    
+    return campaign
+
+@api_router.post("/campaigns", response_model=Campaign)
+async def create_campaign(campaign_data: CampaignCreate, admin: dict = Depends(get_current_admin)):
+    """Create new campaign"""
+    campaign = Campaign(**campaign_data.model_dump())
+    doc = campaign.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['baslangic_tarihi'] = doc['baslangic_tarihi'].isoformat()
+    doc['bitis_tarihi'] = doc['bitis_tarihi'].isoformat()
+    await db.campaigns.insert_one(doc)
+    return campaign
+
+@api_router.put("/campaigns/{campaign_id}", response_model=Campaign)
+async def update_campaign(campaign_id: str, campaign_update: CampaignUpdate, admin: dict = Depends(get_current_admin)):
+    """Update campaign"""
+    campaign = await db.campaigns.find_one({"id": campaign_id}, {"_id": 0})
+    if not campaign:
+        raise HTTPException(status_code=404, detail="Kampanya bulunamadı")
+    
+    update_data = {k: v for k, v in campaign_update.model_dump().items() if v is not None}
+    if update_data:
+        # Convert datetime fields to ISO format if present
+        if 'baslangic_tarihi' in update_data:
+            update_data['baslangic_tarihi'] = update_data['baslangic_tarihi'].isoformat()
+        if 'bitis_tarihi' in update_data:
+            update_data['bitis_tarihi'] = update_data['bitis_tarihi'].isoformat()
+        
+        await db.campaigns.update_one({"id": campaign_id}, {"$set": update_data})
+        campaign.update(update_data)
+    
+    # Convert string dates back to datetime for response
+    if isinstance(campaign.get('created_at'), str):
+        campaign['created_at'] = datetime.fromisoformat(campaign['created_at'])
+    if isinstance(campaign.get('baslangic_tarihi'), str):
+        campaign['baslangic_tarihi'] = datetime.fromisoformat(campaign['baslangic_tarihi'])
+    if isinstance(campaign.get('bitis_tarihi'), str):
+        campaign['bitis_tarihi'] = datetime.fromisoformat(campaign['bitis_tarihi'])
+    
+    return Campaign(**campaign)
+
+@api_router.delete("/campaigns/{campaign_id}")
+async def delete_campaign(campaign_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete campaign"""
+    result = await db.campaigns.delete_one({"id": campaign_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Kampanya bulunamadı")
+    return {"message": "Kampanya silindi"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
