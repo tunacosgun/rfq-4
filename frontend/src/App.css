@@ -434,27 +434,53 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 480px) {
-  /* Header */
-  nav > div > div {
-    height: 48px !important;
+  /* Header - More compact on mobile */
+  header {
+    height: 60px !important;
   }
   
-  nav img[alt="Logo"] {
-    height: 28px !important;
+  header > div > div {
+    height: 60px !important;
   }
   
-  nav span {
+  header img[alt="Logo"] {
+    height: 32px !important;
+    max-height: 32px !important;
+  }
+  
+  header span {
     font-size: 14px !important;
   }
 
+  /* Hero title - Smaller on mobile */
   .hero-title {
-    font-size: 24px !important;
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+  }
+  
+  .hero-section {
+    padding: 100px 20px 60px !important;
+    margin-top: 60px !important;
+  }
+  
+  .hero-section h1 {
+    font-size: 28px !important;
+  }
+  
+  .hero-section p {
+    font-size: 16px !important;
   }
 
-  h1 { font-size: 24px !important; }
-  h2 { font-size: 20px !important; }
+  h1 { font-size: 28px !important; }
+  h2 { font-size: 22px !important; }
   
   section {
-    padding: 40px 12px !important;
+    padding: 50px 16px !important;
+  }
+  
+  /* Product cards - Ensure proper sizing */
+  .grid > .card {
+    width: 100% !important;
+    min-height: auto !important;
   }
 }
