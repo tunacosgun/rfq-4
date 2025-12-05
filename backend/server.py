@@ -280,6 +280,21 @@ class ContactMessage(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class ContactMessageCreate(BaseModel):
+
+# Brand Models
+class Brand(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    logo_url: Optional[str] = None
+    description: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class BrandCreate(BaseModel):
+    name: str
+    logo_url: Optional[str] = None
+    description: Optional[str] = None
+
     name: str
     email: EmailStr
     phone: Optional[str] = None
