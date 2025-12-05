@@ -178,7 +178,7 @@ const CustomerRegister = () => {
         </div>
       </div>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 };
