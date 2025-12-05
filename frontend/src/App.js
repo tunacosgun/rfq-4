@@ -48,6 +48,7 @@ function App() {
               {/* Customer Routes */}
               <Route path="/" element={<HomePage />} />
               <Route path="/urunler" element={<ProductsPage />} />
+              <Route path="/markalar" element={<BrandsPage />} />
               <Route path="/ozellikler" element={<FeaturesPage />} />
               <Route path="/hakkimizda" element={<AboutPage />} />
               <Route path="/iletisim" element={<ContactPage />} />
