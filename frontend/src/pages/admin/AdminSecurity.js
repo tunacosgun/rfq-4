@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminLayout from '../../components/AdminLayout';
 
 const AdminSecurity = () => {
   const [formData, setFormData] = useState({
