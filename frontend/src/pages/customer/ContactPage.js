@@ -39,14 +39,35 @@ const ContactPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast.error('Lütfen zorunlu alanları doldurun');
+      return;
+    }
+    
     setSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      toast.success(settings?.contact_form_success_message || 'Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    try {
+      const response = await fetch(`${backendUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast.success(settings?.contact_form_success_message || 'Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        toast.error('Mesaj gönderilemedi. Lütfen tekrar deneyin.');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
       setSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e) => {
