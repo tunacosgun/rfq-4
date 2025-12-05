@@ -842,6 +842,8 @@ async def change_admin_password(
     admin: dict = Depends(get_current_admin)
 ):
     """Change admin password"""
+    global ADMIN_PASSWORD_HASH
+    
     current_password = data.get('current_password')
     new_password = data.get('new_password')
     
@@ -853,7 +855,6 @@ async def change_admin_password(
         raise HTTPException(status_code=401, detail="Mevcut şifre yanlış")
     
     # Update password (Note: In production, this should update database)
-    global ADMIN_PASSWORD_HASH
     ADMIN_PASSWORD_HASH = get_password_hash(new_password)
     
     return {"message": "Şifre başarıyla güncellendi"}
