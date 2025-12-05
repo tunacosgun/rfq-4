@@ -858,10 +858,6 @@ async def change_admin_password(
     
     return {"message": "Şifre başarıyla güncellendi"}
 
-        updated_customer['created_at'] = datetime.fromisoformat(updated_customer['created_at'])
-    
-    return {"message": "Profil güncellendi", "customer": updated_customer}
-
 
 # Admin Customer Management endpoints
 @api_router.get("/admin/customers")
