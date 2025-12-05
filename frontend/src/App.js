@@ -30,6 +30,7 @@ import AdminCustomers from './pages/admin/AdminCustomers';
 import CustomerLogin from './pages/customer/CustomerLogin';
 import CustomerRegister from './pages/customer/CustomerRegister';
 import CustomerPanel from './pages/customer/CustomerPanel';
+import BrandsPage from './pages/customer/BrandsPage';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
