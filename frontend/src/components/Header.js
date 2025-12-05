@@ -197,8 +197,8 @@ const ModernHeader = ({ settings }) => {
               </Link>
 
               {/* User Menu - Desktop */}
-              {isAuthenticated && customer && (
-                <div className="desktop-user-menu" style={{ display: 'none' }}>
+              <div className="desktop-user-menu" style={{ display: 'none' }}>
+                {isAuthenticated && customer ? (
                   <Link
                     to="/musteri-panel"
                     style={{
@@ -217,8 +217,27 @@ const ModernHeader = ({ settings }) => {
                     <User size={16} />
                     {customer.name}
                   </Link>
-                </div>
-              )}
+                ) : (
+                  <Link
+                    to="/musteri-giris"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 16px',
+                      border: `1px solid ${primaryColor}`,
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      color: primaryColor,
+                      fontSize: '14px',
+                      fontWeight: '600',
+                    }}
+                  >
+                    <User size={16} />
+                    Müşteri Girişi
+                  </Link>
+                )}
+              </div>
 
               {/* Hamburger Menu - Mobile */}
               <button
