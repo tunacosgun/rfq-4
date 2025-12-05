@@ -24,18 +24,21 @@ const Header = ({ settings }) => {
 
   const isActive = (path) => location.pathname === path;
 
-  // Get colors from settings or use defaults
+  // Renkler
   const headerBgColor = settings?.header_bg_color || '#FFFFFF';
-  const headerScrolledBgColor = settings?.header_scrolled_bg_color || 'rgba(255, 255, 255, 0.98)';
+  const headerScrolledBgColor =
+    settings?.header_scrolled_bg_color || 'rgba(255, 255, 255, 0.98)';
   const headerLinkColor = settings?.header_link_color || '#374151';
   const headerLinkActiveColor = settings?.header_link_active_color || '#22C55E';
   const headerLinkHoverColor = settings?.header_link_hover_color || '#22C55E';
   const headerCartButtonBg = settings?.header_cart_button_bg || '#22C55E';
-  const headerCartButtonTextColor = settings?.header_cart_button_text_color || '#FFFFFF';
+  const headerCartButtonTextColor =
+    settings?.header_cart_button_text_color || '#FFFFFF';
 
   return (
     <>
       <style>{`
+        /* NAV LINKLERİ */
         .header-nav-link {
           position: relative;
           padding-bottom: 4px;
@@ -62,25 +65,88 @@ const Header = ({ settings }) => {
         .header-nav-link.active {
           color: ${headerLinkActiveColor};
         }
+
+        /* ANİMASYON */
         .header-mobile-menu {
           animation: slideDown 0.3s ease-out;
         }
         @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
+
+        /* HEADER LAYOUT */
+        .header-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+        .header-inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 72px;
+        }
+        .header-logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-decoration: none;
+        }
+        .header-logo img {
+          display: block;
+          height: 42px;
+          width: auto;
+          object-fit: contain;
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        /* CART BUTTON */
+        .cart-btn {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 24px;
+          background: ${headerCartButtonBg};
+          color: ${headerCartButtonTextColor};
+          border-radius: 10px;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 15px;
+          position: relative;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px ${headerCartButtonBg}33;
+        }
+
+        /* MOBİL BREAKPOINT */
         @media (max-width: 1024px) {
           .desktop-nav {
             display: none !important;
           }
           .mobile-menu-btn {
-            display: block !important;
+            display: inline-flex !important;
+          }
+          .header-container {
+            padding: 0 16px;
+          }
+          .header-inner {
+            height: 64px;
+          }
+          .header-logo img {
+            height: 32px;
+            max-width: 160px;
+          }
+          /* Sepet butonunu yuvarlak icon haline getir */
+          .cart-btn {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 999px;
           }
           .cart-text {
             display: none;
@@ -97,35 +163,18 @@ const Header = ({ settings }) => {
           zIndex: 1000,
           background: isScrolled ? headerScrolledBgColor : headerBgColor,
           backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-          boxShadow: isScrolled ? '0 2px 20px rgba(0,0,0,0.08)' : '0 1px 0 rgba(0,0,0,0.05)',
-          transition: 'all 0.3s ease'
+          boxShadow: isScrolled
+            ? '0 2px 20px rgba(0,0,0,0.08)'
+            : '0 1px 0 rgba(0,0,0,0.05)',
+          transition: 'all 0.3s ease',
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              height: '72px'
-            }}
-          >
+        <div className="header-container">
+          <div className="header-inner">
             {/* Logo */}
-            <Link
-              to="/"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                textDecoration: 'none'
-              }}
-            >
+            <Link to="/" className="header-logo">
               {settings?.header_logo_url ? (
-                <img
-                  src={settings.header_logo_url}
-                  alt="Logo"
-                  style={{ height: '42px', width: 'auto' }}
-                />
+                <img src={settings.header_logo_url} alt="Logo" />
               ) : (
                 <div
                   style={{
@@ -134,7 +183,7 @@ const Header = ({ settings }) => {
                     borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
                   }}
                 >
                   <Award size={26} color="white" />
@@ -145,20 +194,18 @@ const Header = ({ settings }) => {
                   fontSize: '22px',
                   fontWeight: '800',
                   color: headerLinkActiveColor,
-                  letterSpacing: '-0.5px'
+                  letterSpacing: '-0.5px',
                 }}
               >
-                {settings?.header_company_name || settings?.company_name || 'Özmen Gıda'}
+                {settings?.header_company_name ||
+                  settings?.company_name ||
+                  'Özmen Gıda'}
               </span>
             </Link>
 
             {/* Desktop Navigation */}
             <div
-              style={{
-                display: 'flex',
-                gap: '40px',
-                alignItems: 'center'
-              }}
+              style={{ display: 'flex', gap: '40px', alignItems: 'center' }}
               className="desktop-nav"
             >
               <Link
@@ -167,49 +214,55 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
                 {settings?.header_menu_home || 'Ana Sayfa'}
               </Link>
               <Link
                 to="/urunler"
-                className={`header-nav-link ${isActive('/urunler') ? 'active' : ''}`}
+                className={`header-nav-link ${
+                  isActive('/urunler') ? 'active' : ''
+                }`}
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
                 {settings?.header_menu_products || 'Ürünler'}
               </Link>
               <Link
                 to="/hakkimizda"
-                className={`header-nav-link ${isActive('/hakkimizda') ? 'active' : ''}`}
+                className={`header-nav-link ${
+                  isActive('/hakkimizda') ? 'active' : ''
+                }`}
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
                 {settings?.header_menu_about || 'Hakkımızda'}
               </Link>
               <Link
                 to="/iletisim"
-                className={`header-nav-link ${isActive('/iletisim') ? 'active' : ''}`}
+                className={`header-nav-link ${
+                  isActive('/iletisim') ? 'active' : ''
+                }`}
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
                 {settings?.header_menu_contact || 'İletişim'}
               </Link>
             </div>
 
-            {/* Cart, Customer Login/Badge & Mobile Menu */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              {/* Customer Login or User Badge */}
+            {/* Sağ taraf: login + sepet + mobil menü */}
+            <div className="header-right">
+              {/* Desktop: müşteri girişi / user badge */}
               {isAuthenticated && customer ? (
                 <div style={{ position: 'relative' }}>
                   <button
@@ -248,8 +301,8 @@ const Header = ({ settings }) => {
                     </div>
                     <span>{customer.name.split(' ')[0]}</span>
                   </button>
-                  
-                  {/* Dropdown Menu */}
+
+                  {/* Dropdown */}
                   {showUserMenu && (
                     <>
                       <div
@@ -362,24 +415,11 @@ const Header = ({ settings }) => {
                   Müşteri Girişi
                 </Link>
               )}
-              
+
+              {/* Sepet */}
               <Link
                 to="/teklif-sepeti"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '12px 24px',
-                  background: headerCartButtonBg,
-                  color: headerCartButtonTextColor,
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: '700',
-                  fontSize: '15px',
-                  position: 'relative',
-                  transition: 'all 0.2s ease',
-                  boxShadow: `0 2px 8px ${headerCartButtonBg}33`
-                }}
+                className="cart-btn"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
                   e.currentTarget.style.boxShadow = `0 4px 12px ${headerCartButtonBg}4D`;
@@ -390,7 +430,9 @@ const Header = ({ settings }) => {
                 }}
               >
                 <ShoppingCart size={20} />
-                <span className="cart-text">{settings?.header_cart_button_text || 'Sepet'}</span>
+                <span className="cart-text">
+                  {settings?.header_cart_button_text || 'Sepet'}
+                </span>
                 {getCartCount() > 0 && (
                   <span
                     style={{
@@ -407,7 +449,7 @@ const Header = ({ settings }) => {
                       justifyContent: 'center',
                       fontSize: '12px',
                       fontWeight: '800',
-                      border: '2px solid white'
+                      border: '2px solid white',
                     }}
                   >
                     {getCartCount()}
@@ -415,18 +457,19 @@ const Header = ({ settings }) => {
                 )}
               </Link>
 
+              {/* Mobil menü butonu */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="mobile-menu-btn"
                 style={{
                   display: 'none',
-                  background: 'var(--gray-100)',
+                  background: '#F3F4F6',
                   border: 'none',
                   padding: '10px',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   cursor: 'pointer',
                   color: headerLinkColor,
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -439,11 +482,11 @@ const Header = ({ settings }) => {
             <div
               className="header-mobile-menu"
               style={{
-                padding: '20px 0',
-                borderTop: '1px solid var(--border-light)',
+                padding: '20px 0 16px',
+                borderTop: '1px solid #E5E7EB',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '4px'
+                gap: '4px',
               }}
             >
               <Link
@@ -456,8 +499,10 @@ const Header = ({ settings }) => {
                   color: isActive('/') ? headerLinkActiveColor : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/') ? `${headerLinkActiveColor}1A` : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {settings?.header_menu_home || 'Ana Sayfa'}
@@ -469,11 +514,15 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/urunler') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/urunler')
+                    ? headerLinkActiveColor
+                    : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/urunler') ? `${headerLinkActiveColor}1A` : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/urunler')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {settings?.header_menu_products || 'Ürünler'}
@@ -485,11 +534,15 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/hakkimizda') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/hakkimizda')
+                    ? headerLinkActiveColor
+                    : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/hakkimizda') ? `${headerLinkActiveColor}1A` : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/hakkimizda')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {settings?.header_menu_about || 'Hakkımızda'}
@@ -501,11 +554,15 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/iletisim') ? headerLinkActiveColor : headerLinkColor,
+                  color: isActive('/iletisim')
+                    ? headerLinkActiveColor
+                    : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/iletisim') ? `${headerLinkActiveColor}1A` : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/iletisim')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {settings?.header_menu_contact || 'İletişim'}
@@ -527,7 +584,7 @@ const Header = ({ settings }) => {
                       background: 'transparent',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px'
+                      gap: '8px',
                     }}
                   >
                     <User size={18} />
@@ -546,7 +603,6 @@ const Header = ({ settings }) => {
                       fontSize: '16px',
                       fontWeight: '600',
                       color: '#DC2626',
-                      textDecoration: 'none',
                       borderRadius: '8px',
                       background: 'transparent',
                       border: 'none',
@@ -554,7 +610,7 @@ const Header = ({ settings }) => {
                       textAlign: 'left',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px'
+                      gap: '8px',
                     }}
                   >
                     <LogOut size={18} />
@@ -575,7 +631,7 @@ const Header = ({ settings }) => {
                     background: headerCartButtonBg,
                     textAlign: 'center',
                     display: 'block',
-                    marginTop: '8px'
+                    marginTop: '8px',
                   }}
                 >
                   Müşteri Girişi
