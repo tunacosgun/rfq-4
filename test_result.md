@@ -386,13 +386,10 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Contact Messages API - Create Message"
-    - "Contact Messages API - Admin Management"
-    - "Quote Create with Product Image Field"
-    - "PDF Generate with Product Images"
-    - "Quote Update for Customer Panel"
+    - "Quote Creation Process"
   stuck_tasks: 
     - "Mobile Responsive Design"
+    - "Quote Creation Process"
   test_all: false
   test_priority: "high_first"
 
