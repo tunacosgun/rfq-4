@@ -27,28 +27,46 @@ const AboutPage = () => {
     }
   };
 
+  // Stats - Dinamik verilerle doldur
   const stats = [
-    { number: '10+', label: 'Yıllık Deneyim', icon: Award },
-    { number: '500+', label: 'Mutlu Müşteri', icon: Users },
-    { number: '1000+', label: 'Tamamlanan Proje', icon: Target },
-    { number: '98%', label: 'Müşteri Memnuniyeti', icon: Star }
+    { 
+      number: settings?.about_stat1_number || '10+', 
+      label: settings?.about_stat1_label || 'Yıllık Deneyim', 
+      icon: Award 
+    },
+    { 
+      number: settings?.about_stat2_number || '500+', 
+      label: settings?.about_stat2_label || 'Mutlu Müşteri', 
+      icon: Users 
+    },
+    { 
+      number: settings?.about_stat3_number || '1000+', 
+      label: settings?.about_stat3_label || 'Tamamlanan Proje', 
+      icon: Target 
+    },
+    { 
+      number: settings?.about_stat4_number || '98%', 
+      label: settings?.about_stat4_label || 'Müşteri Memnuniyeti', 
+      icon: Star 
+    }
   ];
 
+  // Values - Dinamik verilerle doldur
   const values = [
     {
       icon: Target,
       title: 'Misyonumuz',
-      description: 'Müşterilerimize en kaliteli ürünleri en uygun fiyatlarla sunarak, sektörde öncü olmak.'
+      description: settings?.about_mission || 'Müşterilerimize en kaliteli ürünleri en uygun fiyatlarla sunarak, sektörde öncü olmak.'
     },
     {
       icon: Award,
       title: 'Vizyonumuz',
-      description: 'Global pazarda rekabetçi bir oyuncu olarak, sürdürülebilir büyüme sağlamak.'
+      description: settings?.about_vision || 'Global pazarda rekabetçi bir oyuncu olarak, sürdürülebilir büyüme sağlamak.'
     },
     {
       icon: Users,
       title: 'Değerlerimiz',
-      description: 'Dorüstlük, kalite, müşteri odaklılık ve yenilikçilik temel değerlerimizdir.'
+      description: settings?.about_values || 'Dürüstlük, kalite, müşteri odaklılık ve yenilikçilik temel değerlerimizdir.'
     }
   ];
 
