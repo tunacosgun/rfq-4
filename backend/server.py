@@ -125,6 +125,7 @@ class ProductUpdate(BaseModel):
 class QuoteItem(BaseModel):
     product_id: str
     product_name: str
+    product_image: Optional[str] = None
     quantity: int
 
 class QuotePricing(BaseModel):
