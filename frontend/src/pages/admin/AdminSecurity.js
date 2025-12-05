@@ -55,6 +55,7 @@ const AdminSecurity = () => {
   };
 
   return (
+    <AdminLayout>
     <div style={{ padding: '32px' }}>
       <h1 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '32px', color: '#111827' }}>
         Güvenlik Ayarları
