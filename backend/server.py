@@ -792,6 +792,50 @@ async def get_customer_quotes(customer_email: str):
             quote['created_at'] = datetime.fromisoformat(quote['created_at'])
     return quotes
 
+
+@api_router.get("/customer/profile/{customer_id}")
+async def get_customer_profile(customer_id: str):
+    """Get customer profile by ID"""
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0, "password_hash": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    if isinstance(customer.get('created_at'), str):
+        customer['created_at'] = datetime.fromisoformat(customer['created_at'])
+    return customer
+
+@api_router.put("/customer/profile/{customer_id}")
+async def update_customer_profile(customer_id: str, data: CustomerUpdate):
+    """Update customer profile"""
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    
+    update_data = data.model_dump(exclude_unset=True)
+    
+    # Check email uniqueness if email is being updated
+    if 'email' in update_data and update_data['email'] != customer['email']:
+        existing = await db.customers.find_one({"email": update_data['email']}, {"_id": 0})
+        if existing:
+            raise HTTPException(status_code=400, detail="Bu email adresi zaten kullanılıyor")
+    
+    # Hash password if being updated
+    if 'password' in update_data and update_data['password']:
+        update_data['password_hash'] = get_password_hash(update_data['password'])
+        del update_data['password']
+    
+    if update_data:
+        await db.customers.update_one(
+            {"id": customer_id},
+            {"$set": update_data}
+        )
+    
+    updated_customer = await db.customers.find_one({"id": customer_id}, {"_id": 0, "password_hash": 0})
+    if isinstance(updated_customer.get('created_at'), str):
+        updated_customer['created_at'] = datetime.fromisoformat(updated_customer['created_at'])
+    
+    return {"message": "Profil güncellendi", "customer": updated_customer}
+
+
 # Admin Customer Management endpoints
 @api_router.get("/admin/customers")
 async def get_all_customers(admin: dict = Depends(get_current_admin)):
