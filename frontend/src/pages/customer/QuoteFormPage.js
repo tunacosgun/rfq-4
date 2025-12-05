@@ -129,6 +129,7 @@ const QuoteFormPage = () => {
         items: cart.map((item) => ({
           product_id: item.id,
           product_name: item.name,
+          product_image: item.images && item.images[0] ? item.images[0] : null,
           quantity: item.quantity,
         })),
         attachments: files.map(f => f.url),
