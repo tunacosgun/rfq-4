@@ -469,6 +469,21 @@ frontend:
         agent: "testing"
         comment: "✅ Quote product image integration working perfectly! 1) ✅ Products with images are properly displayed in quote forms 2) ✅ Product images visible in quote cart and form pages 3) ✅ product_image field is correctly included in quote submission data 4) ✅ Image URLs (both /uploads/ and external) are properly handled 5) ✅ Quote form shows product images in order summary section. Backend receives product_image field automatically."
 
+  - task: "Critical Regression Testing - Header, Navigation, Customer Flows"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/Header.js, /app/frontend/src/pages/customer/BrandsPage.js, /app/frontend/src/pages/customer/CustomerRegister.js, /app/frontend/src/pages/customer/CustomerLogin.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "KRİTİK REGRESYON VE DÜZELTMELERİN TESTİ - Testing header customer login/panel links (desktop & mobile), brands page functionality, navbar links, cart/quote flow, customer registration/login, contact form, and mobile responsive design"
+      - working: true
+        agent: "testing"
+        comment: "✅ MAJOR SUCCESS! HEADER: Desktop 'Müşteri Girişi' link visible, mobile hamburger menu working, after login shows user name/Panelim button (minor desktop click issue). BRANDS PAGE: Loads correctly, shows 'Henüz tanımlı marka bulunmuyor' message, search functional, no console errors. NAVBAR: All 5 links working. CUSTOMER FLOWS: Registration (5 fields) and login working perfectly, new user created and authenticated successfully. CONTACT FORM: Submission successful with toast. PRODUCTS: 12 products displaying, 'Sepete Ekle' working. MOBILE: No horizontal overflow at 375px, fully responsive. Overall: Critical regression tests passed with 1 minor desktop header click interception issue."
+
 metadata:
   created_by: "testing_agent"
   version: "1.1"
