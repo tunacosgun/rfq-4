@@ -458,7 +458,12 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Quote Creation Process"
+    - "Tab-Based Customer Panel Interface"
+    - "Profile Information Editing"
+    - "Email Duplicate Control"
+    - "Quotes Tab Functionality"
+    - "Security Tab Password Change"
+    - "Customer Panel Responsive Design"
   stuck_tasks: 
     - "Mobile Responsive Design"
     - "Quote Creation Process"
