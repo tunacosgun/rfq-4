@@ -189,7 +189,7 @@ const CustomerPanelNew = () => {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F9FAFB' }}>
       <Header settings={settings} />
 
-      <div style={{ flex: 1, padding: '80px 24px 40px' }}>
+      <div style={{ flex: 1, padding: '100px 24px 40px', marginTop: '70px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ marginBottom: '32px' }}>
