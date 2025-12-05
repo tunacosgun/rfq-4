@@ -16,7 +16,8 @@ import {
   Truck,
   Users,
   Mail,
-  Shield
+  Shield,
+  Tag
 } from 'lucide-react';
 import { Button } from './ui/button';
 
