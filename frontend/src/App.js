@@ -26,6 +26,7 @@ import AdminCampaigns from './pages/admin/AdminCampaigns';
 import AdminVehicles from './pages/admin/AdminVehicles';
 import AdminContactMessages from './pages/admin/AdminContactMessages';
 import AdminSecurity from './pages/admin/AdminSecurity';
+import AdminBrands from './pages/admin/AdminBrands';
 import AdminCustomers from './pages/admin/AdminCustomers';
 import CustomerLogin from './pages/customer/CustomerLogin';
 import CustomerRegister from './pages/customer/CustomerRegister';
