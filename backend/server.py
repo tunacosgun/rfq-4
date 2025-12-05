@@ -831,6 +831,31 @@ async def update_customer_profile(customer_id: str, data: CustomerUpdate):
     
     updated_customer = await db.customers.find_one({"id": customer_id}, {"_id": 0, "password_hash": 0})
     if isinstance(updated_customer.get('created_at'), str):
+
+
+# Admin Password Change
+@api_router.post("/admin/change-password")
+async def change_admin_password(
+    data: dict,
+    admin: dict = Depends(get_current_admin)
+):
+    """Change admin password"""
+    current_password = data.get('current_password')
+    new_password = data.get('new_password')
+    
+    if not current_password or not new_password:
+        raise HTTPException(status_code=400, detail="Tüm alanlar gereklidir")
+    
+    # Verify current password
+    if not verify_password(current_password, ADMIN_PASSWORD_HASH):
+        raise HTTPException(status_code=401, detail="Mevcut şifre yanlış")
+    
+    # Update password (Note: In production, this should update database)
+    global ADMIN_PASSWORD_HASH
+    ADMIN_PASSWORD_HASH = get_password_hash(new_password)
+    
+    return {"message": "Şifre başarıyla güncellendi"}
+
         updated_customer['created_at'] = datetime.fromisoformat(updated_customer['created_at'])
     
     return {"message": "Profil güncellendi", "customer": updated_customer}
