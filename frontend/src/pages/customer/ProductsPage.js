@@ -1,76 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { Package, Search, Filter, ArrowRight, ShoppingCart, Star, Grid, List, Zap } from 'lucide-react';
-import { useQuoteCart } from '../../context/QuoteCartContext';
+import { Package, Search, Grid, List, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { toast } from 'sonner';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { useQuoteCart } from '../../context/QuoteCartContext';
+import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const ITEMS_PER_PAGE = 12;
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
+  const [currentPage, setCurrentPage] = useState(1);
   const { addToCart } = useQuoteCart();
 
   useEffect(() => {
-    fetchData();
+    fetchProducts();
+    fetchCategories();
+    fetchSettings();
   }, []);
 
-  const fetchData = async () => {
+  const fetchSettings = async () => {
     try {
-      setLoading(true);
-      const [productsRes, categoriesRes, settingsRes] = await Promise.all([
-        axios.get(`${API}/products`),
-        axios.get(`${API}/categories`),
-        axios.get(`${API}/settings`).catch(() => ({ data: null }))
-      ]);
-      setProducts(productsRes.data);
-      setCategories(categoriesRes.data);
-      setSettings(settingsRes.data);
+      const response = await fetch(`${BACKEND_URL}/api/settings`);
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      }
     } catch (error) {
-      toast.error('Veri yüklenemedi');
+      console.error('Settings fetch error:', error);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/products`);
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.filter(p => p.is_active));
+      }
+    } catch (error) {
+      console.error('Products fetch error:', error);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/categories`);
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Categories fetch error:', error);
+    }
+  };
+
   const handleAddToCart = (product) => {
-    addToCart(product, 1);
-    toast.success(`${product.name} sepete eklendi`, {
-      position: 'top-center'
-    });
+    addToCart(product);
+    toast.success(`${product.name} sepete eklendi`);
   };
 
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
   });
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div className="spinner" style={{ margin: '0 auto 16px' }}></div>
-          <p>Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
+  // Pagination
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery]);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F9FAFB' }}>
       <Header settings={settings} />
 
       {/* Hero Section */}
@@ -80,449 +97,331 @@ const ProductsPage = () => {
           color: 'white',
           padding: '140px 24px 80px',
           textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden'
+          marginTop: '70px',
         }}
         className="hero-section"
       >
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0,
-          background: 'radial-gradient(circle at 30% 50%, rgba(224, 108, 27, 0.15) 0%, transparent 50%)',
-          pointerEvents: 'none'
-        }}></div>
-        
-        <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ 
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '12px 24px',
-            background: 'rgba(224, 108, 27, 0.15)',
-            border: '1px solid rgba(224, 108, 27, 0.3)',
-            borderRadius: '50px',
-            marginBottom: '32px',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <Package size={18} fill="currentColor" />
-            <span style={{ fontSize: '16px', fontWeight: '600' }}>
-              ÜRÜN KATALOĞU
-            </span>
-          </div>
-          
-          <h1
-            style={{
-              fontSize: '56px',
-              fontWeight: '900',
-              marginBottom: '24px',
-              letterSpacing: '-1px',
-              lineHeight: '1.1',
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-          >
-            <span style={{ 
-              background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: 'block'
-            }}>
-              Ürünlerimiz
-            </span>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', marginBottom: '16px', lineHeight: '1.2' }}>
+            Ürünlerimiz
           </h1>
-          <p style={{ fontSize: '20px', opacity: 0.95, lineHeight: '1.6' }}>
-            Geniş ürün yelpazemizle ihtiyacınıza en uygun çözümleri keşfedin.
+          <p style={{ fontSize: '18px', opacity: 0.9 }}>
+            Geniş ürün yelpazemizden ihtiyacınıza uygun olanı seçin
           </p>
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section style={{ 
-        background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)', 
-        padding: '40px 24px', 
-        borderBottom: '1px solid rgba(34, 30, 145, 0.1)' 
-      }}>
+      {/* Main Content */}
+      <div style={{ flex: 1, padding: '48px 24px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ 
-            display: 'flex', 
-            gap: '16px', 
+          {/* Categories Filter */}
+          <div style={{
+            marginBottom: '32px',
+            display: 'flex',
+            gap: '12px',
             flexWrap: 'wrap',
-            alignItems: 'center'
+            justifyContent: 'center',
           }}>
-            <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
-              <Search
-                size={20}
-                style={{
-                  position: 'absolute',
-                  left: '16px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: '#666'
-                }}
-              />
-              <Input
+            <button
+              onClick={() => setSelectedCategory('all')}
+              style={{
+                padding: '10px 20px',
+                borderRadius: '24px',
+                border: selectedCategory === 'all' ? 'none' : '1px solid #D1D5DB',
+                background: selectedCategory === 'all' ? '#221E91' : 'white',
+                color: selectedCategory === 'all' ? 'white' : '#374151',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              Tümü ({products.length})
+            </button>
+            {categories.map((category) => {
+              const count = products.filter(p => p.category === category.name).length;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.name)}
+                  style={{
+                    padding: '10px 20px',
+                    borderRadius: '24px',
+                    border: selectedCategory === category.name ? 'none' : '1px solid #D1D5DB',
+                    background: selectedCategory === category.name ? '#221E91' : 'white',
+                    color: selectedCategory === category.name ? 'white' : '#374151',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {category.name} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search & View Controls */}
+          <div style={{
+            display: 'flex',
+            gap: '16px',
+            marginBottom: '32px',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+            <div style={{ position: 'relative', flex: '1', minWidth: '250px', maxWidth: '400px' }}>
+              <Search size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
+              <input
+                type="text"
                 placeholder="Ürün ara..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ 
-                  paddingLeft: '48px', 
-                  height: '48px', 
-                  fontSize: '16px',
-                  border: '1px solid rgba(34, 30, 145, 0.2)',
-                  borderRadius: '10px',
-                  background: 'white'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 12px 12px 44px',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '8px',
+                  fontSize: '14px',
                 }}
               />
             </div>
-            
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              style={{
-                minWidth: '220px',
-                height: '48px',
-                fontSize: '16px',
-                borderRadius: '10px',
-                border: '1px solid rgba(34, 30, 145, 0.2)',
-                padding: '0 16px',
-                background: 'white',
-                cursor: 'pointer',
-                fontWeight: '500'
-              }}
-            >
-              <option value="">Tüm Kategoriler</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.slug}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
 
-            {/* View Mode Toggle */}
-            <div style={{ 
-              display: 'flex', 
-              border: '1px solid rgba(34, 30, 145, 0.2)',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              background: 'white'
-            }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <button
                 onClick={() => setViewMode('grid')}
                 style={{
-                  padding: '12px 16px',
-                  background: viewMode === 'grid' ? '#221E91' : 'transparent',
-                  color: viewMode === 'grid' ? 'white' : '#221E91',
-                  border: 'none',
+                  padding: '10px',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '8px',
+                  background: viewMode === 'grid' ? '#221E91' : 'white',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontWeight: '600'
                 }}
               >
-                <Grid size={18} />
-                Grid
+                <Grid size={20} color={viewMode === 'grid' ? 'white' : '#374151'} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
                 style={{
-                  padding: '12px 16px',
-                  background: viewMode === 'list' ? '#221E91' : 'transparent',
-                  color: viewMode === 'list' ? 'white' : '#221E91',
-                  border: 'none',
+                  padding: '10px',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '8px',
+                  background: viewMode === 'list' ? '#221E91' : 'white',
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontWeight: '600'
                 }}
               >
-                <List size={18} />
-                List
+                <List size={20} color={viewMode === 'list' ? 'white' : '#374151'} />
               </button>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Products Section */}
-      <section style={{ padding: '80px 24px', background: 'white', flex: 1 }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          {filteredProducts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-              <Package size={64} color="#666" style={{ margin: '0 auto 16px' }} />
-              <h3 style={{ fontSize: '24px', color: '#221E91', marginBottom: '12px' }}>
-                Ürün Bulunamadı
-              </h3>
-              <p style={{ fontSize: '16px', color: '#666', marginBottom: '24px' }}>
-                Aramanızla eşleşen ürün bulunamadı.
-              </p>
-              <Button
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedCategory('');
-                }}
-                style={{ 
-                  background: 'linear-gradient(135deg, #221E91, #1a1775)',
-                  color: 'white',
-                  padding: '12px 24px',
-                  fontWeight: '700'
-                }}
-              >
-                Filtreleri Temizle
-              </Button>
+          {/* Products Grid */}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '64px' }}>
+              <div className="spinner" style={{ margin: '0 auto' }}></div>
+            </div>
+          ) : paginatedProducts.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '64px',
+              background: 'white',
+              borderRadius: '12px',
+            }}>
+              <Package size={48} style={{ color: '#D1D5DB', margin: '0 auto 16px' }} />
+              <p style={{ fontSize: '16px', color: '#6B7280' }}>Ürün bulunamadı</p>
             </div>
           ) : (
             <>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                marginBottom: '32px',
-                flexWrap: 'wrap',
-                gap: '16px'
-              }}>
-                <div>
-                  <p style={{ fontSize: '18px', color: '#666' }}>
-                    <strong style={{ color: '#221E91' }}>{filteredProducts.length}</strong> ürün bulundu
-                  </p>
-                </div>
-                
-                <div style={{ 
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '8px 16px',
-                  background: 'rgba(34, 30, 145, 0.1)',
-                  color: '#221E91',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  fontWeight: '600'
-                }}>
-                  <Zap size={16} />
-                  HIZLI TEKLİF AL
-                </div>
-              </div>
-
-              <div className={viewMode === 'grid' ? "grid grid-4" : "list-view"} style={{ gap: '24px' }}>
-                {filteredProducts.map((product) => (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: viewMode === 'grid'
+                    ? 'repeat(auto-fill, minmax(280px, 1fr))'
+                    : '1fr',
+                  gap: '24px',
+                }}
+              >
+                {paginatedProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="card"
                     style={{
-                      padding: '0',
-                      overflow: 'hidden',
-                      transition: 'all 0.3s ease',
                       background: 'white',
-                      borderRadius: '16px',
-                      border: '1px solid rgba(34, 30, 145, 0.1)',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-                      ...(viewMode === 'list' && {
-                        display: 'flex',
-                        height: '200px'
-                      })
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      flexDirection: viewMode === 'grid' ? 'column' : 'row',
+                      height: viewMode === 'grid' ? 'auto' : 'auto',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-8px)';
-                      e.currentTarget.style.boxShadow = '0 20px 40px rgba(34, 30, 145, 0.15)';
-                      e.currentTarget.style.borderColor = 'rgba(224, 108, 27, 0.3)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                      e.currentTarget.style.transform = 'translateY(-4px)';
                     }}
                     onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 30, 145, 0.1)';
                     }}
                   >
-                    <Link 
-                      to={`/urun/${product.id}`} 
-                      style={{ 
-                        textDecoration: 'none', 
-                        color: 'inherit',
-                        ...(viewMode === 'list' && {
-                          display: 'flex',
-                          flex: 1
-                        })
+                    {/* Image */}
+                    <div
+                      style={{
+                        width: viewMode === 'grid' ? '100%' : '200px',
+                        height: viewMode === 'grid' ? '220px' : '180px',
+                        background: '#F9FAFB',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        flexShrink: 0,
                       }}
                     >
-                      <div
+                      {product.images && product.images[0] ? (
+                        <img
+                          src={
+                            product.images[0].startsWith('http')
+                              ? product.images[0]
+                              : `${BACKEND_URL}${product.images[0]}`
+                          }
+                          alt={product.name}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <Package size={56} color="#D1D5DB" />
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <h3 style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#111827',
+                        marginBottom: '8px',
+                        lineHeight: '1.4',
+                        minHeight: '44px',
+                      }}>
+                        {product.name}
+                      </h3>
+
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#6B7280',
+                        marginBottom: '12px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                      }}>
+                        {product.description}
+                      </p>
+
+                      <div style={{
+                        display: 'inline-block',
+                        padding: '4px 12px',
+                        background: '#EEF2FF',
+                        color: '#4F46E5',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                        alignSelf: 'flex-start',
+                      }}>
+                        {product.category}
+                      </div>
+
+                      <Button
+                        onClick={() => handleAddToCart(product)}
                         style={{
-                          width: viewMode === 'grid' ? '100%' : '200px',
-                          height: viewMode === 'grid' ? '240px' : '100%',
-                          background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          overflow: 'hidden',
-                          flexShrink: 0
+                          marginTop: 'auto',
+                          width: '100%',
+                          padding: '12px',
+                          background: '#E06C1B',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
                         }}
                       >
-                        {product.images?.[0] ? (
-                          <img
-                            src={product.images[0].startsWith('http') ? product.images[0] : `${BACKEND_URL}${product.images[0]}`}
-                            alt={product.name}
-                            style={{ 
-                              width: '100%', 
-                              height: '100%', 
-                              objectFit: 'cover' 
-                            }}
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              e.target.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#221E91" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>';
-                            }}
-                          />
-                        ) : (
-                          <Package size={56} color="#221E91" />
-                        )}
-                      </div>
-                    </Link>
-                    
-                    <div style={{ 
-                      padding: '24px',
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between'
-                    }}>
-                      <div>
-                        <span
-                          style={{
-                            fontSize: '12px',
-                            fontWeight: '700',
-                            color: '#e06c1b',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                          }}
-                        >
-                          {product.category}
-                        </span>
-                        <h3
-                          style={{
-                            fontSize: viewMode === 'grid' ? '20px' : '24px',
-                            fontWeight: '700',
-                            margin: '8px 0 12px',
-                            color: '#221E91'
-                          }}
-                        >
-                          {product.name}
-                        </h3>
-                        <p
-                          style={{
-                            fontSize: '14px',
-                            color: '#666',
-                            lineHeight: '1.6',
-                            marginBottom: '16px',
-                            ...(viewMode === 'list' && {
-                              maxWidth: '600px'
-                            })
-                          }}
-                        >
-                          {product.description?.substring(0, viewMode === 'grid' ? 90 : 200)}...
-                        </p>
-                      </div>
-                      
-                      <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center',
-                        marginTop: 'auto'
-                      }}>
-                        {product.price_range && (
-                          <p
-                            style={{
-                              fontSize: '18px',
-                              fontWeight: '800',
-                              color: '#221E91',
-                              margin: 0
-                            }}
-                          >
-                            {product.price_range}
-                          </p>
-                        )}
-                        
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product);
-                          }}
-                          style={{
-                            background: 'linear-gradient(135deg, #221E91, #1a1775)',
-                            color: 'white',
-                            height: '48px',
-                            fontWeight: '700',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            border: 'none',
-                            borderRadius: '10px',
-                            padding: '0 20px',
-                            minWidth: viewMode === 'grid' ? '100%' : 'auto',
-                            marginTop: viewMode === 'grid' ? '16px' : '0'
-                          }}
-                        >
-                          <ShoppingCart size={20} />
-                          Sepete Ekle
-                        </Button>
-                      </div>
+                        Sepete Ekle
+                      </Button>
                     </div>
                   </div>
                 ))}
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginTop: '48px',
+                }}>
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    style={{
+                      padding: '8px 12px',
+                      border: '1px solid #D1D5DB',
+                      borderRadius: '8px',
+                      background: 'white',
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === 1 ? 0.5 : 1,
+                    }}
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      style={{
+                        padding: '8px 16px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        background: currentPage === page ? '#221E91' : 'white',
+                        color: currentPage === page ? 'white' : '#374151',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      padding: '8px 12px',
+                      border: '1px solid #D1D5DB',
+                      borderRadius: '8px',
+                      background: 'white',
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === totalPages ? 0.5 : 1,
+                    }}
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
-      </section>
+      </div>
 
       <Footer settings={settings} />
-
-      <style>{`
-        @media (max-width: 1200px) {
-          .grid-4 {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        
-        @media (max-width: 900px) {
-          .grid-4 {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          
-          .list-view .card {
-            flex-direction: column;
-            height: auto !important;
-          }
-          
-          .list-view .card > a > div {
-            width: 100% !important;
-            height: 240px !important;
-          }
-        }
-        
-        @media (max-width: 600px) {
-          .grid-4 {
-            grid-template-columns: 1fr;
-          }
-        }
-        
-        .grid {
-          display: grid;
-        }
-        
-        .grid-4 {
-          grid-template-columns: repeat(4, 1fr);
-        }
-        
-        .list-view {
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .card {
-          transition: all 0.3s ease;
-        }
-      `}</style>
     </div>
   );
 };
