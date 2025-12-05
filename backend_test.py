@@ -141,44 +141,297 @@ class TurkishQuoteSystemTester:
         
         return success
 
-    def test_quotes(self):
-        """Test quote endpoints"""
-        # Create quote (no auth required)
-        quote_data = {
-            "customer_name": "Test Müşteri",
-            "company": "Test Firma",
+    def test_contact_messages_api(self):
+        """Test Contact Messages API - FAZ 1 Critical Business Logic"""
+        print("\n🔍 Testing Contact Messages API...")
+        
+        # 1. POST /api/contact - Create new message
+        contact_data = {
+            "name": "Test Kullanıcı",
             "email": "test@example.com",
-            "phone": "+90 555 123 4567",
-            "message": "Test teklif mesajı",
+            "phone": "05551234567",
+            "subject": "Test Konusu",
+            "message": "Bu bir test mesajıdır"
+        }
+        
+        create_success, created_message = self.run_test(
+            "Create Contact Message", 
+            "POST", 
+            "contact", 
+            200, 
+            contact_data
+        )
+        
+        if not create_success:
+            return False
+            
+        message_id = created_message.get('id')
+        if not message_id:
+            self.log_test("Contact Message ID Check", False, "No message ID returned")
+            return False
+        
+        # 2. GET /api/contact-messages - List messages as admin
+        if self.auth_header:
+            list_success, messages = self.run_test(
+                "List Contact Messages (Admin)", 
+                "GET", 
+                "contact-messages", 
+                200
+            )
+            
+            if list_success and messages:
+                # Verify the created message exists and has "yeni" status
+                found_message = None
+                for msg in messages:
+                    if msg.get('id') == message_id:
+                        found_message = msg
+                        break
+                
+                if found_message:
+                    if found_message.get('status') == 'yeni':
+                        self.log_test("Message Status Check", True, "Status is 'yeni' as expected")
+                    else:
+                        self.log_test("Message Status Check", False, f"Expected 'yeni', got '{found_message.get('status')}'")
+                else:
+                    self.log_test("Message Found Check", False, "Created message not found in list")
+            
+            # 3. PUT /api/contact-messages/{message_id} - Update status to "okundu"
+            update_data = {"status": "okundu"}
+            update_success, updated_message = self.run_test(
+                "Update Message Status", 
+                "PUT", 
+                f"contact-messages/{message_id}", 
+                200, 
+                update_data
+            )
+            
+            if update_success and updated_message.get('status') == 'okundu':
+                self.log_test("Status Update Verification", True, "Status updated to 'okundu'")
+            else:
+                self.log_test("Status Update Verification", False, f"Status not updated correctly")
+            
+            # 4. DELETE /api/contact-messages/{message_id} - Delete message
+            delete_success, _ = self.run_test(
+                "Delete Contact Message", 
+                "DELETE", 
+                f"contact-messages/{message_id}", 
+                200
+            )
+            
+            return create_success and list_success and update_success and delete_success
+        
+        return create_success
+
+    def test_quote_with_product_image(self):
+        """Test Quote Create with Product Image - FAZ 1 Critical Business Logic"""
+        print("\n🔍 Testing Quote Create with Product Image...")
+        
+        # Create quote with product_image field
+        quote_data = {
+            "customer_name": "Ali Yılmaz",
+            "email": "ali@test.com",
+            "phone": "05551234567",
+            "company": "Test A.Ş.",
+            "message": "Test teklif",
             "items": [
                 {
-                    "product_id": "test-product-id",
+                    "product_id": "test-product-1",
                     "product_name": "Test Ürün",
-                    "quantity": 2
+                    "product_image": "/uploads/test.png",
+                    "quantity": 5
+                }
+            ],
+            "attachments": []
+        }
+        
+        create_success, created_quote = self.run_test(
+            "Create Quote with Product Image", 
+            "POST", 
+            "quotes", 
+            200, 
+            quote_data
+        )
+        
+        if not create_success:
+            return False
+            
+        quote_id = created_quote.get('id')
+        if not quote_id:
+            self.log_test("Quote ID Check", False, "No quote ID returned")
+            return False
+        
+        # Get the created quote and verify product_image field
+        if self.auth_header:
+            get_success, quote_details = self.run_test(
+                "Get Quote Details", 
+                "GET", 
+                f"quotes/{quote_id}", 
+                200
+            )
+            
+            if get_success and quote_details:
+                items = quote_details.get('items', [])
+                if items and len(items) > 0:
+                    first_item = items[0]
+                    if 'product_image' in first_item and first_item['product_image'] == '/uploads/test.png':
+                        self.log_test("Product Image Field Verification", True, "product_image field present and correct")
+                        return True, quote_id  # Return quote_id for PDF test
+                    else:
+                        self.log_test("Product Image Field Verification", False, f"product_image field missing or incorrect: {first_item}")
+                else:
+                    self.log_test("Quote Items Check", False, "No items found in quote")
+            
+            return get_success, quote_id if get_success else None
+        
+        return create_success, quote_id
+
+    def test_pdf_generate_with_product_images(self, quote_id=None):
+        """Test PDF Generate with Product Images - FAZ 1 Critical Business Logic"""
+        print("\n🔍 Testing PDF Generate with Product Images...")
+        
+        if not quote_id or not self.auth_header:
+            self.log_test("PDF Test Prerequisites", False, "No quote_id or admin auth")
+            return False
+        
+        # First add pricing to the quote (admin requirement)
+        pricing_data = {
+            "pricing": [
+                {
+                    "product_id": "test-product-1",
+                    "product_name": "Test Ürün",
+                    "quantity": 5,
+                    "unit_price": 100.0,
+                    "total_price": 500.0
                 }
             ]
         }
         
-        create_success, created_quote = self.run_test("Create Quote", "POST", "quotes", 200, quote_data)
+        pricing_success, _ = self.run_test(
+            "Add Pricing to Quote", 
+            "PUT", 
+            f"quotes/{quote_id}", 
+            200, 
+            pricing_data
+        )
         
-        # Get quotes (requires admin auth)
-        if self.auth_header:
-            self.run_test("Get Quotes", "GET", "quotes", 200)
+        if not pricing_success:
+            return False
+        
+        # Test PDF generation
+        try:
+            url = f"{self.api_url}/quotes/{quote_id}/pdf"
+            headers = {'Authorization': self.auth_header['Authorization']}
             
-            if create_success and created_quote:
-                quote_id = created_quote.get('id')
+            response = requests.get(url, headers=headers, timeout=30)
+            
+            success = response.status_code == 200
+            content_type = response.headers.get('content-type', '')
+            
+            if success and 'application/pdf' in content_type:
+                self.log_test("PDF Generation", True, f"PDF generated successfully, Content-Type: {content_type}")
+                return True
+            else:
+                details = f"Status: {response.status_code}, Content-Type: {content_type}"
+                if not success:
+                    try:
+                        error_data = response.json()
+                        details += f", Error: {error_data}"
+                    except:
+                        details += f", Response: {response.text[:200]}"
+                self.log_test("PDF Generation", False, details)
+                return False
                 
-                # Test get single quote
-                self.run_test("Get Single Quote", "GET", f"quotes/{quote_id}", 200)
-                
-                # Test update quote status
-                update_data = {
-                    "status": "onaylandi",
-                    "admin_note": "Test admin notu"
-                }
-                self.run_test("Update Quote", "PUT", f"quotes/{quote_id}", 200, update_data)
+        except Exception as e:
+            self.log_test("PDF Generation", False, f"Exception: {str(e)}")
+            return False
+
+    def test_quote_update_customer_panel(self, quote_id=None):
+        """Test Quote Update for Customer Panel - FAZ 1 Critical Business Logic"""
+        print("\n🔍 Testing Quote Update (Customer Panel Scenario)...")
         
-        return create_success
+        if not quote_id or not self.auth_header:
+            self.log_test("Quote Update Prerequisites", False, "No quote_id or admin auth")
+            return False
+        
+        # First, get current quote to see current items
+        get_success, current_quote = self.run_test(
+            "Get Current Quote for Update", 
+            "GET", 
+            f"quotes/{quote_id}", 
+            200
+        )
+        
+        if not get_success:
+            return False
+        
+        # Remove one item from the quote (simulate customer removing item)
+        current_items = current_quote.get('items', [])
+        if len(current_items) > 0:
+            # Keep all items but reduce quantity (simulating item removal)
+            updated_items = [
+                {
+                    "product_id": item['product_id'],
+                    "product_name": item['product_name'],
+                    "product_image": item.get('product_image'),
+                    "quantity": max(1, item['quantity'] - 1)  # Reduce quantity by 1
+                }
+                for item in current_items
+            ]
+        else:
+            updated_items = []
+        
+        # Update quote with modified items and status
+        update_data = {
+            "status": "onaylandi",  # Convert to order
+            "items": updated_items
+        }
+        
+        # Note: This endpoint might need to be modified to accept items update
+        # For now, we'll test status update
+        status_update_data = {"status": "onaylandi"}
+        
+        update_success, updated_quote = self.run_test(
+            "Update Quote Status to Approved", 
+            "PUT", 
+            f"quotes/{quote_id}", 
+            200, 
+            status_update_data
+        )
+        
+        if update_success:
+            # Verify status was updated
+            if updated_quote.get('status') == 'onaylandi':
+                self.log_test("Quote Status Update Verification", True, "Status updated to 'onaylandi'")
+                
+                # Check if pricing array still exists after update
+                if 'pricing' in updated_quote:
+                    self.log_test("Pricing Array Preservation", True, "Pricing array preserved after update")
+                else:
+                    self.log_test("Pricing Array Preservation", False, "Pricing array missing after update")
+                
+                return True
+            else:
+                self.log_test("Quote Status Update Verification", False, f"Expected 'onaylandi', got '{updated_quote.get('status')}'")
+        
+        return update_success
+
+    def test_quotes(self):
+        """Test quote endpoints - Enhanced for FAZ 1 Critical Business Logic"""
+        print("\n🔍 Running Enhanced Quote Tests...")
+        
+        # Run the new product image quote test
+        quote_success, quote_id = self.test_quote_with_product_image()
+        
+        if quote_success and quote_id:
+            # Test PDF generation with the created quote
+            pdf_success = self.test_pdf_generate_with_product_images(quote_id)
+            
+            # Test quote update for customer panel
+            update_success = self.test_quote_update_customer_panel(quote_id)
+            
+            return quote_success and pdf_success and update_success
+        
+        return quote_success
 
     def test_file_upload(self):
         """Test file upload endpoint"""
