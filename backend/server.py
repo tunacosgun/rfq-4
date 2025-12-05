@@ -1074,6 +1074,76 @@ async def get_vehicle_warnings(admin: dict = Depends(get_current_admin)):
     
     return warnings
 
+
+# ==================== CONTACT MESSAGES ====================
+
+@api_router.post("/contact", response_model=ContactMessage)
+async def create_contact_message(message_data: ContactMessageCreate):
+    """Create new contact message (public endpoint)"""
+    message = ContactMessage(**message_data.model_dump())
+    doc = message.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.contact_messages.insert_one(doc)
+    
+    # Optional: Send notification email to admin
+    try:
+        logger.info(f"New contact message received from {message.email}")
+    except Exception as e:
+        logger.error(f"Failed to log contact message: {str(e)}")
+    
+    return message
+
+@api_router.get("/contact-messages", response_model=List[ContactMessage])
+async def get_contact_messages(admin: dict = Depends(get_current_admin), status_filter: Optional[str] = None):
+    """Get all contact messages (admin only)"""
+    query = {}
+    if status_filter:
+        query["status"] = status_filter
+    messages = await db.contact_messages.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    for message in messages:
+        if isinstance(message.get('created_at'), str):
+            message['created_at'] = datetime.fromisoformat(message['created_at'])
+    return messages
+
+@api_router.get("/contact-messages/{message_id}", response_model=ContactMessage)
+async def get_contact_message(message_id: str, admin: dict = Depends(get_current_admin)):
+    """Get specific contact message (admin only)"""
+    message = await db.contact_messages.find_one({"id": message_id}, {"_id": 0})
+    if not message:
+        raise HTTPException(status_code=404, detail="Mesaj bulunamadı")
+    if isinstance(message.get('created_at'), str):
+        message['created_at'] = datetime.fromisoformat(message['created_at'])
+    return message
+
+@api_router.put("/contact-messages/{message_id}", response_model=ContactMessage)
+async def update_contact_message(message_id: str, message_update: ContactMessageUpdate, admin: dict = Depends(get_current_admin)):
+    """Update contact message status (admin only)"""
+    message = await db.contact_messages.find_one({"id": message_id}, {"_id": 0})
+    if not message:
+        raise HTTPException(status_code=404, detail="Mesaj bulunamadı")
+    
+    update_data = message_update.model_dump(exclude_unset=True)
+    if update_data:
+        await db.contact_messages.update_one(
+            {"id": message_id},
+            {"$set": update_data}
+        )
+    
+    updated_message = await db.contact_messages.find_one({"id": message_id}, {"_id": 0})
+    if isinstance(updated_message.get('created_at'), str):
+        updated_message['created_at'] = datetime.fromisoformat(updated_message['created_at'])
+    
+    return ContactMessage(**updated_message)
+
+@api_router.delete("/contact-messages/{message_id}")
+async def delete_contact_message(message_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete contact message (admin only)"""
+    result = await db.contact_messages.delete_one({"id": message_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Mesaj bulunamadı")
+    return {"message": "Mesaj silindi"}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
