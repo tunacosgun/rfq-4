@@ -187,6 +187,14 @@ class CustomerLogin(BaseModel):
     email: EmailStr
     password: str
 
+class CustomerUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    password: Optional[str] = None  # For password change
+
+
 class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     slug: Optional[str] = None
