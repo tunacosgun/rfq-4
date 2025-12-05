@@ -238,9 +238,16 @@ input:focus, textarea:focus, select:focus {
 }
 
 @media (max-width: 768px) {
-  .grid-2, .grid-3, .grid-4 { 
+  .grid-2, .grid-3, .grid-4, 
+  .grid.grid-2, .grid.grid-3, .grid.grid-4 { 
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 16px !important;
+    gap: 20px !important;
+  }
+  
+  /* Product cards uniform height */
+  .grid > .card {
+    display: flex !important;
+    flex-direction: column !important;
   }
 }
 
@@ -248,7 +255,7 @@ input:focus, textarea:focus, select:focus {
   .grid-2, .grid-3, .grid-4, 
   .grid.grid-2, .grid.grid-3, .grid.grid-4 { 
     grid-template-columns: 1fr !important;
-    gap: 16px !important;
+    gap: 20px !important;
     display: grid !important;
   }
 }
