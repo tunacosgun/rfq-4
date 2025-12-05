@@ -46,6 +46,7 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/araclar', label: 'Araçlar', icon: Truck },
     { path: '/admin/musteriler', label: 'Müşteriler', icon: Users },
     { path: '/admin/ayarlar', label: 'Ayarlar', icon: Settings },
+    { path: '/admin/guvenlik', label: 'Güvenlik', icon: Shield },
     { path: '/admin/renkler', label: 'Renk Yönetimi', icon: Palette },
   ];
 
