@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import { Mail, Phone, Clock, Check, X, Eye } from 'lucide-react';
+import { toast } from 'sonner';
+import { Mail, Phone, Clock, Check, X } from 'lucide-react';
 
 const AdminContactMessages = () => {
   const [messages, setMessages] = useState([]);
