@@ -28,7 +28,7 @@ import AdminContactMessages from './pages/admin/AdminContactMessages';
 import AdminCustomers from './pages/admin/AdminCustomers';
 import CustomerLogin from './pages/customer/CustomerLogin';
 import CustomerRegister from './pages/customer/CustomerRegister';
-import CustomerPanel from './pages/customer/CustomerPanelNew';
+import CustomerPanel from './pages/customer/CustomerPanel';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
