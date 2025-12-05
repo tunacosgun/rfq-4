@@ -70,6 +70,83 @@ const CustomerPanel = () => {
     toast.info('PDF indirme özelliği admin tarafından hazırlanmalıdır');
   };
 
+  const handleRemoveProductFromQuote = async (quoteId, productId) => {
+    if (!window.confirm('Bu ürünü tekliften kaldırmak istediğinizden emin misiniz?')) {
+      return;
+    }
+
+    try {
+      const quote = quotes.find(q => q.id === quoteId);
+      if (!quote) return;
+
+      // Remove product from items and pricing
+      const updatedItems = quote.items.filter(item => item.product_id !== productId);
+      const updatedPricing = quote.pricing ? quote.pricing.filter(p => p.product_id !== productId) : [];
+
+      if (updatedItems.length === 0) {
+        toast.error('Teklifte en az bir ürün kalmalıdır');
+        return;
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/quotes/${quoteId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${btoa('admin:admin123')}`
+        },
+        body: JSON.stringify({
+          items: updatedItems,
+          pricing: updatedPricing
+        })
+      });
+
+      if (response.ok) {
+        toast.success('Ürün kaldırıldı ve fiyat güncellendi');
+        fetchQuotes(); // Reload quotes
+      } else {
+        toast.error('Ürün kaldırılamadı');
+      }
+    } catch (error) {
+      console.error('Remove product error:', error);
+      toast.error('Bir hata oluştu');
+    }
+  };
+
+  const handleConvertToOrder = async (quoteId) => {
+    const quote = quotes.find(q => q.id === quoteId);
+    if (!quote || !quote.pricing || quote.pricing.length === 0) {
+      toast.error('Fiyatlandırılmış ürün bulunamadı');
+      return;
+    }
+
+    if (!window.confirm('Bu teklifi siparişe çevirmek istediğinizden emin misiniz?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/quotes/${quoteId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${btoa('admin:admin123')}`
+        },
+        body: JSON.stringify({
+          status: 'onaylandi'
+        })
+      });
+
+      if (response.ok) {
+        toast.success('Teklif başarıyla siparişe dönüştürüldü!');
+        fetchQuotes(); // Reload quotes
+      } else {
+        toast.error('Sipariş oluşturulamadı');
+      }
+    } catch (error) {
+      console.error('Convert to order error:', error);
+      toast.error('Bir hata oluştu');
+    }
+  };
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'beklemede':
