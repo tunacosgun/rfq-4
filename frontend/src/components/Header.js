@@ -521,6 +521,18 @@ const ModernHeader = ({ settings }) => {
             display: none;
           }
         }
+        
+        @media (max-width: 480px) {
+          header img[alt="Logo"] {
+            height: 32px !important;
+            max-height: 32px !important;
+            max-width: 100px !important;
+          }
+          
+          header span {
+            font-size: 13px !important;
+          }
+        }
       `}</style>
     </>
   );
