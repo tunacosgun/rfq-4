@@ -446,7 +446,7 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="grid grid-3" style={{ gap: '32px' }}>
-              {products.slice(0, 6).map((product) => (
+              {products.filter(p => p.is_featured).slice(0, 6).map((product) => (
                 <div
                   key={product.id}
                   className="card"
