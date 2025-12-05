@@ -365,6 +365,7 @@ const AdminContactMessages = () => {
         </div>
       )}
     </div>
+    </AdminLayout>
   );
 };
 
