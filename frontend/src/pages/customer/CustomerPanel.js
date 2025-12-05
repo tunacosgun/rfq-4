@@ -306,6 +306,17 @@ const CustomerPanel = () => {
                             <Download size={18} />
                             PDF İndir
                           </Button>
+                          <Button
+                            onClick={() => handleConvertToOrder(quote.id)}
+                            style={{
+                              ...styles.downloadButton,
+                              background: '#10B981',
+                              marginLeft: '12px'
+                            }}
+                          >
+                            <CheckCircle size={18} />
+                            Siparişe Çevir
+                          </Button>
                         </div>
                       )}
                     </div>
