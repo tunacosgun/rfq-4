@@ -467,7 +467,7 @@ class TurkishQuoteSystemTester:
 
     def run_all_tests(self):
         """Run all backend tests"""
-        print("🚀 Starting Turkish Quote System Backend Tests")
+        print("🚀 Starting Turkish Quote System Backend Tests - FAZ 1 Critical Business Logic")
         print(f"🔗 Testing API at: {self.api_url}")
         print("=" * 60)
         
@@ -481,7 +481,19 @@ class TurkishQuoteSystemTester:
         # Test main functionality
         self.test_categories()
         self.test_products()
+        
+        # FAZ 1 - Critical Business Logic Tests
+        print("\n" + "=" * 60)
+        print("🎯 FAZ 1 - KRİTİK İŞ MANTIĞI BACKEND TESTLERİ")
+        print("=" * 60)
+        
+        # Test Contact Messages API
+        self.test_contact_messages_api()
+        
+        # Test Enhanced Quotes (includes product images, PDF generation, and updates)
         self.test_quotes()
+        
+        # Test file upload
         self.test_file_upload()
         
         # Print summary
