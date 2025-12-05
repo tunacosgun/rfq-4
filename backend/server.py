@@ -1166,6 +1166,52 @@ async def get_vehicle_warnings(admin: dict = Depends(get_current_admin)):
     return warnings
 
 
+
+
+# ==================== BRANDS ====================
+
+@api_router.get("/brands", response_model=List[Brand])
+async def get_brands():
+    """Get all brands (public)"""
+    brands = await db.brands.find({}, {"_id": 0}).sort("name", 1).to_list(1000)
+    for brand in brands:
+        if isinstance(brand.get('created_at'), str):
+            brand['created_at'] = datetime.fromisoformat(brand['created_at'])
+    return brands
+
+@api_router.post("/brands", response_model=Brand)
+async def create_brand(brand: BrandCreate, admin: dict = Depends(get_current_admin)):
+    """Create new brand (admin only)"""
+    new_brand = Brand(**brand.model_dump())
+    doc = new_brand.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.brands.insert_one(doc)
+    return new_brand
+
+@api_router.put("/brands/{brand_id}", response_model=Brand)
+async def update_brand(brand_id: str, brand: BrandCreate, admin: dict = Depends(get_current_admin)):
+    """Update brand (admin only)"""
+    update_data = brand.model_dump(exclude_unset=True)
+    if update_data:
+        await db.brands.update_one({"id": brand_id}, {"$set": update_data})
+    
+    updated_brand = await db.brands.find_one({"id": brand_id}, {"_id": 0})
+    if not updated_brand:
+        raise HTTPException(status_code=404, detail="Marka bulunamadı")
+    
+    if isinstance(updated_brand.get('created_at'), str):
+        updated_brand['created_at'] = datetime.fromisoformat(updated_brand['created_at'])
+    
+    return Brand(**updated_brand)
+
+@api_router.delete("/brands/{brand_id}")
+async def delete_brand(brand_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete brand (admin only)"""
+    result = await db.brands.delete_one({"id": brand_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Marka bulunamadı")
+    return {"message": "Marka silindi"}
+
 # ==================== CONTACT MESSAGES ====================
 
 @api_router.post("/contact", response_model=ContactMessage)
