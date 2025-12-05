@@ -50,16 +50,17 @@ const CustomerRegister = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
       if (response.ok) {
+        const data = await response.json();
         toast.success('Kayıt başarılı! Giriş yapabilirsiniz.');
         navigate('/musteri-giris');
       } else {
+        const data = await response.json();
         toast.error(data.detail || 'Kayıt başarısız');
       }
     } catch (error) {
-      toast.error('Bir hata oluştu');
+      console.error('Registration error:', error);
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
