@@ -102,7 +102,7 @@ const CustomerPanel = () => {
 
       if (response.ok) {
         toast.success('Ürün kaldırıldı ve fiyat güncellendi');
-        fetchQuotes(); // Reload quotes
+        fetchQuotes(customer.email); // Reload quotes
       } else {
         toast.error('Ürün kaldırılamadı');
       }
