@@ -137,6 +137,7 @@ const AdminContactMessages = () => {
   }
 
   return (
+    <AdminLayout>
     <div style={{ padding: '32px' }}>
       <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>
