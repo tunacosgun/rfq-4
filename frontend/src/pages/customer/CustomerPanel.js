@@ -1,25 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Download, LogOut, User, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { User, FileText, Settings, LogOut, Save, Mail, Phone, Building, Lock } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
-const CustomerPanel = () => {
+const CustomerPanelNew = () => {
   const navigate = useNavigate();
-  const { customer, logout, isAuthenticated, loading: authLoading } = useCustomerAuth();
+  const { customer, logout, isAuthenticated, updateCustomer, loading: authLoading } = useCustomerAuth();
+  const [activeTab, setActiveTab] = useState('profile');
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
+  const [expandedQuote, setExpandedQuote] = useState(null);
+  
+  // Profile form state
+  const [profileData, setProfileData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+  });
+  const [passwordData, setPasswordData] = useState({
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [saving, setSaving] = useState(false);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-  // Fetch settings
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (!authLoading && !isAuthenticated) {
+      navigate('/musteri/giris');
+    }
+  }, [isAuthenticated, authLoading, navigate]);
+
+  useEffect(() => {
+    if (customer) {
+      setProfileData({
+        name: customer.name || '',
+        email: customer.email || '',
+        phone: customer.phone || '',
+        company: customer.company || '',
+      });
+      fetchQuotes();
+      fetchSettings();
+    }
+  }, [customer]);
 
   const fetchSettings = async () => {
     try {
@@ -29,32 +58,19 @@ const CustomerPanel = () => {
         setSettings(data);
       }
     } catch (error) {
-      console.error('Settings could not be loaded');
+      console.error('Settings fetch error:', error);
     }
   };
 
-  useEffect(() => {
-    // Check if customer is logged in
-    if (!authLoading && !isAuthenticated) {
-      toast.error('Lütfen giriş yapın');
-      navigate('/musteri-giris');
-      return;
-    }
-
-    if (customer) {
-      fetchQuotes(customer.email);
-    }
-  }, [customer, isAuthenticated, authLoading, navigate]);
-
-  const fetchQuotes = async (email) => {
+  const fetchQuotes = async () => {
     try {
-      const response = await fetch(`${backendUrl}/api/customer/quotes/${encodeURIComponent(email)}`);
+      const response = await fetch(`${backendUrl}/api/customer/quotes/${customer.email}`);
       if (response.ok) {
         const data = await response.json();
         setQuotes(data);
       }
     } catch (error) {
-      toast.error('Teklifler yüklenemedi');
+      console.error('Quotes fetch error:', error);
     } finally {
       setLoading(false);
     }
@@ -66,593 +82,536 @@ const CustomerPanel = () => {
     navigate('/');
   };
 
-  const handleDownloadPDF = async (quoteId) => {
-    toast.info('PDF indirme özelliği admin tarafından hazırlanmalıdır');
-  };
-
-  const handleRemoveProductFromQuote = async (quoteId, productId) => {
-    if (!window.confirm('Bu ürünü tekliften kaldırmak istediğinizden emin misiniz?')) {
-      return;
-    }
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    setSaving(true);
 
     try {
-      const quote = quotes.find(q => q.id === quoteId);
-      if (!quote) return;
-
-      // Remove product from items and pricing
-      const updatedItems = quote.items.filter(item => item.product_id !== productId);
-      const updatedPricing = quote.pricing ? quote.pricing.filter(p => p.product_id !== productId) : [];
-
-      if (updatedItems.length === 0) {
-        toast.error('Teklifte en az bir ürün kalmalıdır');
-        return;
-      }
-
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/quotes/${quoteId}`, {
+      const response = await fetch(`${backendUrl}/api/customer/profile/${customer.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${btoa('admin:admin123')}`
         },
-        body: JSON.stringify({
-          items: updatedItems,
-          pricing: updatedPricing
-        })
+        body: JSON.stringify(profileData),
       });
 
       if (response.ok) {
-        toast.success('Ürün kaldırıldı ve fiyat güncellendi');
-        fetchQuotes(customer.email); // Reload quotes
+        const result = await response.json();
+        updateCustomer(result.customer);
+        toast.success('Profil bilgileri güncellendi');
       } else {
-        toast.error('Ürün kaldırılamadı');
+        const error = await response.json();
+        toast.error(error.detail || 'Güncelleme başarısız');
       }
     } catch (error) {
-      console.error('Remove product error:', error);
+      console.error('Profile update error:', error);
       toast.error('Bir hata oluştu');
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleConvertToOrder = async (quoteId) => {
-    const quote = quotes.find(q => q.id === quoteId);
-    if (!quote || !quote.pricing || quote.pricing.length === 0) {
-      toast.error('Fiyatlandırılmış ürün bulunamadı');
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('Şifreler eşleşmiyor');
       return;
     }
 
-    if (!window.confirm('Bu teklifi siparişe çevirmek istediğinizden emin misiniz?')) {
+    if (passwordData.newPassword.length < 6) {
+      toast.error('Şifre en az 6 karakter olmalıdır');
       return;
     }
+
+    setSaving(true);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/quotes/${quoteId}`, {
+      const response = await fetch(`${backendUrl}/api/customer/profile/${customer.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${btoa('admin:admin123')}`
         },
-        body: JSON.stringify({
-          status: 'onaylandi'
-        })
+        body: JSON.stringify({ password: passwordData.newPassword }),
       });
 
       if (response.ok) {
-        toast.success('Teklif başarıyla siparişe dönüştürüldü!');
-        fetchQuotes(customer.email); // Reload quotes
+        toast.success('Şifre güncellendi');
+        setPasswordData({ newPassword: '', confirmPassword: '' });
       } else {
-        toast.error('Sipariş oluşturulamadı');
+        const error = await response.json();
+        toast.error(error.detail || 'Şifre güncellenemedi');
       }
     } catch (error) {
-      console.error('Convert to order error:', error);
+      console.error('Password update error:', error);
       toast.error('Bir hata oluştu');
+    } finally {
+      setSaving(false);
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'beklemede':
-        return <Clock size={18} color="#D97706" />;
-      case 'inceleniyor':
-        return <AlertCircle size={18} color="#3B82F6" />;
-      case 'fiyat_verildi':
-        return <CheckCircle size={18} color="#22C55E" />;
-      case 'onaylandi':
-        return <CheckCircle size={18} color="#059669" />;
-      case 'reddedildi':
-        return <XCircle size={18} color="#DC2626" />;
-      default:
-        return <Clock size={18} color="#9CA3AF" />;
-    }
-  };
+  const getStatusBadge = (status) => {
+    const styles = {
+      beklemede: { bg: '#FEF3C7', color: '#92400E', text: 'Beklemede' },
+      inceleniyor: { bg: '#DBEAFE', color: '#1E40AF', text: 'İnceleniyor' },
+      fiyat_verildi: { bg: '#D1FAE5', color: '#065F46', text: 'Fiyat Verildi' },
+      onaylandi: { bg: '#D1FAE5', color: '#065F46', text: 'Onaylandı' },
+      reddedildi: { bg: '#FEE2E2', color: '#991B1B', text: 'Reddedildi' },
+    };
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'beklemede':
-        return 'Beklemede';
-      case 'inceleniyor':
-        return 'İnceleniyor';
-      case 'fiyat_verildi':
-        return 'Fiyat Verildi';
-      case 'onaylandi':
-        return 'Onaylandı';
-      case 'reddedildi':
-        return 'Reddedildi';
-      default:
-        return status;
-    }
-  };
+    const style = styles[status] || styles.beklemede;
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'beklemede':
-        return { bg: '#FEF3C7', text: '#D97706' };
-      case 'inceleniyor':
-        return { bg: '#DBEAFE', text: '#3B82F6' };
-      case 'fiyat_verildi':
-        return { bg: '#D1FAE5', text: '#22C55E' };
-      case 'onaylandi':
-        return { bg: '#D1FAE5', text: '#059669' };
-      case 'reddedildi':
-        return { bg: '#FEE2E2', text: '#DC2626' };
-      default:
-        return { bg: '#F3F4F6', text: '#6B7280' };
-    }
-  };
-
-  if (loading) {
     return (
-      <div style={styles.container}>
-        <Header settings={settings} />
-        <div style={styles.loading}>Yükleniyor...</div>
-        <Footer />
+      <span
+        style={{
+          padding: '4px 12px',
+          borderRadius: '12px',
+          fontSize: '13px',
+          fontWeight: '600',
+          backgroundColor: style.bg,
+          color: style.color,
+        }}
+      >
+        {style.text}
+      </span>
+    );
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <div className="spinner" style={{ margin: '0 auto' }}></div>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F9FAFB' }}>
       <Header settings={settings} />
-      
-      <div style={styles.contentWrapper}>
-        <div style={styles.content}>
-          <div style={styles.wrapper}>
-          {/* User Info Card */}
-          <div style={styles.userCard}>
-            <div style={styles.userHeader}>
-              <div style={styles.userIcon}>
-                <User size={32} color="#22C55E" />
-              </div>
-              <div>
-                <h2 style={styles.userName}>{customer?.name}</h2>
-                <p style={styles.userEmail}>{customer?.email}</p>
-              </div>
-            </div>
-            <Button onClick={handleLogout} style={styles.logoutButton}>
-              <LogOut size={18} />
-              Çıkış Yap
-            </Button>
+
+      <div style={{ flex: 1, padding: '80px 24px 40px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          {/* Header */}
+          <div style={{ marginBottom: '32px' }}>
+            <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#111827', marginBottom: '8px' }}>
+              Müşteri Paneli
+            </h1>
+            <p style={{ fontSize: '16px', color: '#6B7280' }}>
+              Hoş geldiniz, {customer?.name}
+            </p>
           </div>
 
-          {/* Quotes Section */}
-          <div style={styles.quotesSection}>
-            <div style={styles.sectionHeader}>
-              <h1 style={styles.title}>Tekliflerim</h1>
-              <p style={styles.subtitle}>Gönderdiğiniz teklif taleplerini buradan takip edebilirsiniz</p>
-            </div>
+          {/* Tabs */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '8px', 
+            borderBottom: '2px solid #E5E7EB',
+            marginBottom: '32px',
+            overflowX: 'auto'
+          }}>
+            <button
+              onClick={() => setActiveTab('profile')}
+              style={{
+                padding: '12px 24px',
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === 'profile' ? '2px solid #221E91' : '2px solid transparent',
+                color: activeTab === 'profile' ? '#221E91' : '#6B7280',
+                fontWeight: activeTab === 'profile' ? '600' : '400',
+                fontSize: '15px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <User size={18} />
+              Profil Bilgileri
+            </button>
+            <button
+              onClick={() => setActiveTab('quotes')}
+              style={{
+                padding: '12px 24px',
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === 'quotes' ? '2px solid #221E91' : '2px solid transparent',
+                color: activeTab === 'quotes' ? '#221E91' : '#6B7280',
+                fontWeight: activeTab === 'quotes' ? '600' : '400',
+                fontSize: '15px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <FileText size={18} />
+              Tekliflerim ({quotes.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              style={{
+                padding: '12px 24px',
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === 'settings' ? '2px solid #221E91' : '2px solid transparent',
+                color: activeTab === 'settings' ? '#221E91' : '#6B7280',
+                fontWeight: activeTab === 'settings' ? '600' : '400',
+                fontSize: '15px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <Settings size={18} />
+              Güvenlik
+            </button>
+          </div>
 
-            {quotes.length === 0 ? (
-              <div style={styles.emptyState}>
-                <FileText size={64} color="#D1D5DB" />
-                <p style={{ marginTop: '16px', fontSize: '18px', color: '#6B7280' }}>
-                  Henüz teklif talebiniz bulunmuyor
-                </p>
-                <Button
-                  onClick={() => navigate('/urunler')}
-                  style={{ marginTop: '16px', background: '#22C55E', color: 'white' }}
-                >
-                  Ürünleri İnceleyin
-                </Button>
-              </div>
-            ) : (
-              <div style={styles.quotesList}>
-                {quotes.map((quote) => {
-                  const statusColor = getStatusColor(quote.status);
-                  
-                  return (
-                    <div key={quote.id} style={styles.quoteCard}>
-                      <div style={styles.quoteHeader}>
-                        <div style={styles.quoteId}>
-                          <FileText size={20} color="#6B7280" />
-                          <span>#{quote.id.substring(0, 8)}</span>
+          {/* Tab Content */}
+          {activeTab === 'profile' && (
+            <div style={{ 
+              background: 'white', 
+              borderRadius: '12px', 
+              padding: '32px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+            }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#111827' }}>
+                İletişim Bilgileri
+              </h2>
+              <form onSubmit={handleProfileUpdate}>
+                <div style={{ display: 'grid', gap: '20px', maxWidth: '600px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                      <User size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                      Ad Soyad *
+                    </label>
+                    <input
+                      type="text"
+                      value={profileData.name}
+                      onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                      <Mail size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                      E-posta *
+                    </label>
+                    <input
+                      type="email"
+                      value={profileData.email}
+                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                      <Phone size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                      Telefon
+                    </label>
+                    <input
+                      type="tel"
+                      value={profileData.phone}
+                      onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                      <Building size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                      Şirket
+                    </label>
+                    <input
+                      type="text"
+                      value={profileData.company}
+                      onChange={(e) => setProfileData({ ...profileData, company: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={saving}
+                    style={{
+                      background: '#221E91',
+                      color: 'white',
+                      padding: '12px 24px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontWeight: '600',
+                      cursor: saving ? 'not-allowed' : 'pointer',
+                      opacity: saving ? 0.6 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Save size={18} />
+                    {saving ? 'Kaydediliyor...' : 'Bilgileri Kaydet'}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {activeTab === 'quotes' && (
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {quotes.length === 0 ? (
+                <div style={{
+                  background: 'white',
+                  borderRadius: '12px',
+                  padding: '64px 32px',
+                  textAlign: 'center',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
+                  <FileText size={48} style={{ color: '#D1D5DB', margin: '0 auto 16px' }} />
+                  <p style={{ fontSize: '16px', color: '#6B7280' }}>Henüz teklif talebiniz yok</p>
+                </div>
+              ) : (
+                quotes.map((quote) => (
+                  <div
+                    key={quote.id}
+                    style={{
+                      background: 'white',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onClick={() => setExpandedQuote(expandedQuote === quote.id ? null : quote.id)}
+                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'}
+                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '6px' }}>
+                          Teklif #{quote.id.substring(0, 8).toUpperCase()}
                         </div>
-                        <div
-                          style={{
-                            ...styles.statusBadge,
-                            background: statusColor.bg,
-                            color: statusColor.text,
-                          }}
-                        >
-                          {getStatusIcon(quote.status)}
-                          {getStatusText(quote.status)}
+                        <div style={{ fontSize: '14px', color: '#6B7280' }}>
+                          {new Date(quote.created_at).toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
                         </div>
                       </div>
+                      {getStatusBadge(quote.status)}
+                    </div>
 
-                      <div style={styles.quoteBody}>
-                        <div style={styles.quoteInfo}>
-                          <span style={styles.infoLabel}>Tarih:</span>
-                          <span style={styles.infoValue}>
-                            {new Date(quote.created_at).toLocaleDateString('tr-TR', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </span>
-                        </div>
-
-                        <div style={styles.quoteInfo}>
-                          <span style={styles.infoLabel}>Ürün Sayısı:</span>
-                          <span style={styles.infoValue}>{quote.items.length} ürün</span>
-                        </div>
-
-                        {quote.company && (
-                          <div style={styles.quoteInfo}>
-                            <span style={styles.infoLabel}>Şirket:</span>
-                            <span style={styles.infoValue}>{quote.company}</span>
-                          </div>
-                        )}
-
-                        {quote.message && (
-                          <div style={{ ...styles.quoteInfo, marginTop: '12px' }}>
-                            <span style={styles.infoLabel}>Mesaj:</span>
-                            <p style={styles.message}>{quote.message}</p>
-                          </div>
-                        )}
-
-                        {quote.admin_note && quote.status !== 'beklemede' && (
-                          <div style={styles.adminNote}>
-                            <strong>Admin Notu:</strong> {quote.admin_note}
-                          </div>
-                        )}
-
-                        {/* Products List */}
-                        <div style={styles.productsList}>
-                          <p style={styles.productsTitle}>Ürünler:</p>
+                    {expandedQuote === quote.id && (
+                      <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #E5E7EB' }}>
+                        <div style={{ marginBottom: '16px' }}>
+                          <strong style={{ display: 'block', marginBottom: '8px', color: '#374151' }}>Ürünler:</strong>
                           {quote.items.map((item, idx) => (
-                            <div key={idx} style={styles.productItem}>
+                            <div key={idx} style={{ 
+                              padding: '8px 12px', 
+                              background: '#F9FAFB', 
+                              borderRadius: '6px',
+                              marginBottom: '6px',
+                              display: 'flex',
+                              justifyContent: 'space-between'
+                            }}>
                               <span>{item.product_name}</span>
-                              <span style={styles.quantity}>× {item.quantity}</span>
+                              <span style={{ fontWeight: '600' }}>× {item.quantity}</span>
                             </div>
                           ))}
                         </div>
 
-                        {/* Pricing if available */}
                         {quote.pricing && quote.pricing.length > 0 && (
-                          <div style={styles.pricingSection}>
-                            <p style={styles.pricingTitle}>Fiyat Detayları:</p>
+                          <div style={{ 
+                            padding: '16px', 
+                            background: '#F0FDF4', 
+                            borderRadius: '8px',
+                            border: '1px solid #BBF7D0'
+                          }}>
+                            <strong style={{ display: 'block', marginBottom: '12px', color: '#065F46' }}>
+                              Fiyat Detayları:
+                            </strong>
                             {quote.pricing.map((price, idx) => (
-                              <div key={idx} style={styles.pricingItem}>
-                                <div style={{display: 'flex', alignItems: 'center', flex: 1}}>
-                                  <span>{price.product_name}</span>
-                                </div>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                                  <span style={styles.price}>
-                                    ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
-                                  </span>
-                                  {quote.status === 'fiyat_verildi' && (
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleRemoveProductFromQuote(quote.id, price.product_id);
-                                      }}
-                                      style={{
-                                        background: '#FEE2E2',
-                                        color: '#DC2626',
-                                        border: 'none',
-                                        borderRadius: '6px',
-                                        padding: '4px 8px',
-                                        cursor: 'pointer',
-                                        fontSize: '12px',
-                                        fontWeight: '600'
-                                      }}
-                                      title="Ürünü kaldır"
-                                    >
-                                      ×
-                                    </button>
-                                  )}
-                                </div>
+                              <div key={idx} style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between',
+                                marginBottom: '8px',
+                                fontSize: '14px',
+                                color: '#047857'
+                              }}>
+                                <span>{price.product_name}</span>
+                                <span style={{ fontWeight: '600' }}>
+                                  ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
+                                </span>
                               </div>
                             ))}
-                            <div style={styles.totalPrice}>
+                            <div style={{
+                              marginTop: '12px',
+                              paddingTop: '12px',
+                              borderTop: '1px solid #BBF7D0',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              fontWeight: '700',
+                              fontSize: '16px',
+                              color: '#065F46'
+                            }}>
                               <span>Toplam:</span>
                               <span>
-                                ₺
-                                {quote.pricing
-                                  .reduce((sum, p) => sum + p.total_price, 0)
-                                  .toLocaleString('tr-TR')}
+                                ₺{quote.pricing.reduce((sum, p) => sum + p.total_price, 0).toLocaleString('tr-TR')}
                               </span>
                             </div>
                           </div>
                         )}
                       </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
 
-                      {quote.status === 'fiyat_verildi' && (
-                        <div style={styles.quoteFooter}>
-                          <Button
-                            onClick={() => handleDownloadPDF(quote.id)}
-                            style={styles.downloadButton}
-                          >
-                            <Download size={18} />
-                            PDF İndir
-                          </Button>
-                          <Button
-                            onClick={() => handleConvertToOrder(quote.id)}
-                            style={{
-                              ...styles.downloadButton,
-                              background: '#10B981',
-                              marginLeft: '12px'
-                            }}
-                          >
-                            <CheckCircle size={18} />
-                            Siparişe Çevir
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+          {activeTab === 'settings' && (
+            <div style={{ 
+              background: 'white', 
+              borderRadius: '12px', 
+              padding: '32px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+            }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#111827' }}>
+                Şifre Değiştir
+              </h2>
+              <form onSubmit={handlePasswordUpdate}>
+                <div style={{ display: 'grid', gap: '20px', maxWidth: '600px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                      <Lock size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                      Yeni Şifre
+                    </label>
+                    <input
+                      type="password"
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                      minLength={6}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
+                      <Lock size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                      Yeni Şifre (Tekrar)
+                    </label>
+                    <input
+                      type="password"
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                      minLength={6}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={saving || !passwordData.newPassword || !passwordData.confirmPassword}
+                    style={{
+                      background: '#221E91',
+                      color: 'white',
+                      padding: '12px 24px',
+                      borderRadius: '8px',
+                      border: 'none',
+                      fontWeight: '600',
+                      cursor: (saving || !passwordData.newPassword || !passwordData.confirmPassword) ? 'not-allowed' : 'pointer',
+                      opacity: (saving || !passwordData.newPassword || !passwordData.confirmPassword) ? 0.6 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Save size={18} />
+                    {saving ? 'Güncelleniyor...' : 'Şifreyi Güncelle'}
+                  </Button>
+                </div>
+              </form>
+
+              <div style={{
+                marginTop: '32px',
+                paddingTop: '32px',
+                borderTop: '1px solid #E5E7EB'
+              }}>
+                <Button
+                  onClick={handleLogout}
+                  style={{
+                    background: '#EF4444',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <LogOut size={18} />
+                  Çıkış Yap
+                </Button>
               </div>
-            )}
-          </div>
-        </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 };
 
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  contentWrapper: {
-    flex: 1,
-    background: '#F9FAFB',
-    marginTop: '72px', // Header height
-  },
-  loading: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '18px',
-    color: '#6B7280',
-    minHeight: '60vh',
-    paddingTop: '72px',
-  },
-  content: {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '60px 20px',
-  },
-  wrapper: {
-    width: '100%',
-  },
-  userCard: {
-    background: 'white',
-    borderRadius: '12px',
-    padding: '24px',
-    marginBottom: '24px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-  },
-  userHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-  },
-  userIcon: {
-    width: '60px',
-    height: '60px',
-    borderRadius: '50%',
-    background: '#F0FDF4',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  userName: {
-    fontSize: '20px',
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: '4px',
-  },
-  userEmail: {
-    fontSize: '14px',
-    color: '#6B7280',
-  },
-  logoutButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '10px 20px',
-    background: '#FEE2E2',
-    color: '#DC2626',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '500',
-  },
-  quotesSection: {
-    background: 'white',
-    borderRadius: '12px',
-    padding: '32px',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-  },
-  sectionHeader: {
-    marginBottom: '32px',
-  },
-  title: {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#1F2937',
-    marginBottom: '8px',
-  },
-  subtitle: {
-    fontSize: '16px',
-    color: '#6B7280',
-  },
-  emptyState: {
-    textAlign: 'center',
-    padding: '80px 20px',
-  },
-  quotesList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
-  quoteCard: {
-    border: '1px solid #E5E7EB',
-    borderRadius: '12px',
-    overflow: 'hidden',
-  },
-  quoteHeader: {
-    background: '#F9FAFB',
-    padding: '16px 20px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottom: '1px solid #E5E7EB',
-  },
-  quoteId: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#374151',
-  },
-  statusBadge: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '6px 12px',
-    borderRadius: '6px',
-    fontSize: '13px',
-    fontWeight: '600',
-  },
-  quoteBody: {
-    padding: '20px',
-  },
-  quoteInfo: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '12px',
-    marginBottom: '8px',
-  },
-  infoLabel: {
-    fontSize: '14px',
-    color: '#6B7280',
-    minWidth: '100px',
-  },
-  infoValue: {
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#374151',
-  },
-  message: {
-    fontSize: '14px',
-    color: '#374151',
-    marginTop: '4px',
-    fontStyle: 'italic',
-  },
-  adminNote: {
-    marginTop: '16px',
-    padding: '12px',
-    background: '#FFFBEB',
-    borderLeft: '4px solid #F59E0B',
-    fontSize: '14px',
-    color: '#92400E',
-  },
-  productsList: {
-    marginTop: '20px',
-    padding: '16px',
-    background: '#F9FAFB',
-    borderRadius: '8px',
-  },
-  productsTitle: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: '12px',
-  },
-  productItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px 0',
-    borderBottom: '1px solid #E5E7EB',
-    fontSize: '14px',
-    color: '#374151',
-  },
-  quantity: {
-    fontWeight: '600',
-    color: '#6B7280',
-  },
-  pricingSection: {
-    marginTop: '20px',
-    padding: '16px',
-    background: '#F0FDF4',
-    borderRadius: '8px',
-  },
-  pricingTitle: {
-    fontSize: '14px',
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: '12px',
-  },
-  pricingItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '8px 0',
-    fontSize: '14px',
-    color: '#374151',
-  },
-  price: {
-    fontWeight: '500',
-    color: '#059669',
-  },
-  totalPrice: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '12px 0',
-    marginTop: '8px',
-    borderTop: '2px solid #22C55E',
-    fontSize: '16px',
-    fontWeight: '700',
-    color: '#059669',
-  },
-  quoteFooter: {
-    padding: '16px 20px',
-    background: '#F9FAFB',
-    borderTop: '1px solid #E5E7EB',
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  downloadButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '10px 20px',
-    background: '#22C55E',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontWeight: '500',
-  },
-};
-
-export default CustomerPanel;
+export default CustomerPanelNew;
