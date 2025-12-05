@@ -300,12 +300,6 @@ class BrandCreate(BaseModel):
     logo_url: Optional[str] = None
     description: Optional[str] = None
 
-    name: str
-    email: EmailStr
-    phone: Optional[str] = None
-    subject: str
-    message: str
-
 class ContactMessageUpdate(BaseModel):
     status: Optional[str] = None
 
