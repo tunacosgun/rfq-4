@@ -825,7 +825,7 @@ async def get_customer_quotes_by_id(customer_id: str, admin: dict = Depends(get_
 
 # File Upload endpoints
 @api_router.post("/upload-file")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file_to_disk(file: UploadFile = File(...)):
     """Upload a file (for quotes or other purposes)"""
     try:
         # Generate unique filename
