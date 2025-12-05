@@ -37,6 +37,12 @@ export const CustomerAuthProvider = ({ children }) => {
     localStorage.removeItem('customer');
   };
 
+  const updateCustomer = (updatedData) => {
+    const updatedCustomer = { ...customer, ...updatedData };
+    setCustomer(updatedCustomer);
+    localStorage.setItem('customer', JSON.stringify(updatedCustomer));
+  };
+
   const isAuthenticated = !!customer;
 
   return (
@@ -45,6 +51,7 @@ export const CustomerAuthProvider = ({ children }) => {
         customer,
         login,
         logout,
+        updateCustomer,
         isAuthenticated,
         loading,
       }}
