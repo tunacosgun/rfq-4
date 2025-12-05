@@ -99,7 +99,9 @@ const ModernHeader = ({ settings }) => {
                   alt="Logo"
                   style={{
                     height: '40px',
+                    maxHeight: '40px',
                     width: 'auto',
+                    maxWidth: '120px',
                     objectFit: 'contain',
                   }}
                 />
