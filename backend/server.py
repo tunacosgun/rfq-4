@@ -696,8 +696,11 @@ async def send_quote_email(quote_id: str, admin: dict = Depends(get_current_admi
         # Get company settings
         settings = await db.settings.find_one({}, {"_id": 0})
         
+        # Get backend URL
+        base_url = os.environ.get('BACKEND_URL', 'http://localhost:8001')
+        
         # Generate PDF
-        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'), settings)
+        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'), settings, base_url)
         
         # Send email with PDF attachment
         success = email_service.send_quote_response(quote, pdf_data)
