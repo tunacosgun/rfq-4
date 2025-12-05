@@ -258,6 +258,29 @@ class VehicleUpdate(BaseModel):
     kasko_tarihi: Optional[datetime] = None
     sigorta_tarihi: Optional[datetime] = None
 
+
+# Contact Message Models
+class ContactMessage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    subject: str
+    message: str
+    status: str = "yeni"  # yeni, okundu, yanıtlandı
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class ContactMessageCreate(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    subject: str
+    message: str
+
+class ContactMessageUpdate(BaseModel):
+    status: Optional[str] = None
+
 class CompanySettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
     # Genel Bilgiler
