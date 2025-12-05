@@ -253,10 +253,35 @@ const CustomerPanel = () => {
                             <p style={styles.pricingTitle}>Fiyat Detayları:</p>
                             {quote.pricing.map((price, idx) => (
                               <div key={idx} style={styles.pricingItem}>
-                                <span>{price.product_name}</span>
-                                <span style={styles.price}>
-                                  ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
-                                </span>
+                                <div style={{display: 'flex', alignItems: 'center', flex: 1}}>
+                                  <span>{price.product_name}</span>
+                                </div>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                                  <span style={styles.price}>
+                                    ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
+                                  </span>
+                                  {quote.status === 'fiyat_verildi' && (
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveProductFromQuote(quote.id, price.product_id);
+                                      }}
+                                      style={{
+                                        background: '#FEE2E2',
+                                        color: '#DC2626',
+                                        border: 'none',
+                                        borderRadius: '6px',
+                                        padding: '4px 8px',
+                                        cursor: 'pointer',
+                                        fontSize: '12px',
+                                        fontWeight: '600'
+                                      }}
+                                      title="Ürünü kaldır"
+                                    >
+                                      ×
+                                    </button>
+                                  )}
+                                </div>
                               </div>
                             ))}
                             <div style={styles.totalPrice}>
