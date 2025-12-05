@@ -670,7 +670,10 @@ async def generate_quote_pdf(quote_id: str, admin: dict = Depends(get_current_ad
         # Get company settings
         settings = await db.settings.find_one({}, {"_id": 0})
         
-        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'), settings)
+        # Get backend URL from environment or use localhost
+        base_url = os.environ.get('BACKEND_URL', 'http://localhost:8001')
+        
+        pdf_data = pdf_service.generate_quote_pdf(quote, quote.get('pricing'), settings, base_url)
         return Response(
             content=pdf_data,
             media_type="application/pdf",
