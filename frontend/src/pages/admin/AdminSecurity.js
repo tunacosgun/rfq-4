@@ -191,6 +191,7 @@ const AdminSecurity = () => {
         </div>
       </div>
     </div>
+    </AdminLayout>
   );
 };
 
