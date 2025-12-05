@@ -42,6 +42,7 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/urunler', label: 'Ürünler', icon: PackageIcon },
     { path: '/admin/teklifler', label: 'Teklifler', icon: FileText },
     { path: '/admin/mesajlar', label: 'İletişim Mesajları', icon: Mail },
+    { path: '/admin/markalar', label: 'Markalar', icon: Tag },
     { path: '/admin/kampanyalar', label: 'Kampanyalar', icon: Bell },
     { path: '/admin/araclar', label: 'Araçlar', icon: Truck },
     { path: '/admin/musteriler', label: 'Müşteriler', icon: Users },
