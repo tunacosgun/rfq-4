@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "FAZ 1 - Kritik İş Mantığı Backend Testleri: Contact Messages API, Quote Create with Product Image, PDF Generate, Quote Update"
+user_problem_statement: "FAZ 2 - Grup 1: Müşteri Paneli İyileştirmeleri Test - Tab-based customer panel with profile editing, quotes management, and security features"
 
 backend:
   - task: "Contact Messages API - Create Message"
