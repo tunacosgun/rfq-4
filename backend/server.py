@@ -831,7 +831,9 @@ async def update_customer_profile(customer_id: str, data: CustomerUpdate):
     
     updated_customer = await db.customers.find_one({"id": customer_id}, {"_id": 0, "password_hash": 0})
     if isinstance(updated_customer.get('created_at'), str):
-
+        updated_customer['created_at'] = datetime.fromisoformat(updated_customer['created_at'])
+    
+    return {"message": "Profil güncellendi", "customer": updated_customer}
 
 # Admin Password Change
 @api_router.post("/admin/change-password")
