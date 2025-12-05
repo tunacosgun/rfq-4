@@ -3,7 +3,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import mm
 from reportlab.platypus import (
     SimpleDocTemplate, Table, TableStyle,
-    Paragraph, Spacer
+    Paragraph, Spacer, Image
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT, TA_JUSTIFY
@@ -14,6 +14,8 @@ from datetime import datetime
 from typing import List, Dict, Optional
 import logging
 import os
+import requests
+from PIL import Image as PILImage
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +83,7 @@ class PDFService:
             textColor=colors.HexColor('#64748B')
         ))
 
-        # Küçük gri section label (örn: “ŞARTLAR VE KOŞULLAR” alt açıklama)
+        # Küçük gri section label (örn: "ŞARTLAR VE KOŞULLAR" alt açıklama)
         self.styles.add(ParagraphStyle(
             name='SectionLabel',
             parent=self.styles['Normal'],
@@ -113,6 +115,30 @@ class PDFService:
             alignment=TA_CENTER
         ))
 
+    def _fetch_image(self, image_url: str, base_url: str = None) -> Optional[BytesIO]:
+        """Fetch image from URL or local path"""
+        try:
+            # If it's a local path (starts with /uploads/)
+            if image_url.startswith('/uploads/'):
+                local_path = f"/app/backend{image_url}"
+                if os.path.exists(local_path):
+                    with open(local_path, 'rb') as f:
+                        return BytesIO(f.read())
+                elif base_url:
+                    # Try to fetch from backend URL
+                    full_url = f"{base_url}{image_url}"
+                    response = requests.get(full_url, timeout=5)
+                    if response.status_code == 200:
+                        return BytesIO(response.content)
+            else:
+                # External URL
+                response = requests.get(image_url, timeout=5)
+                if response.status_code == 200:
+                    return BytesIO(response.content)
+        except Exception as e:
+            logger.warning(f"Could not fetch image {image_url}: {e}")
+        return None
+
     # --------------------------------------------------
     #  ANA FONKSİYON
     # --------------------------------------------------
@@ -120,9 +146,10 @@ class PDFService:
         self,
         quote_data: dict,
         pricing_data: Optional[List[Dict]] = None,
-        company_settings: Optional[dict] = None
+        company_settings: Optional[dict] = None,
+        base_url: str = None
     ) -> bytes:
-        """Generate professional quote PDF"""
+        """Generate professional quote PDF with product images"""
         buffer = BytesIO()
         doc = SimpleDocTemplate(
             buffer,
@@ -203,17 +230,32 @@ class PDFService:
         story.append(Spacer(1, 4 * mm))
 
         # ------------------------------------------------------------------
-        # ÜRÜNLER TABLOSU
+        # ÜRÜNLER TABLOSU (Görsellerle)
         # ------------------------------------------------------------------
         story.append(Paragraph("TALEP EDİLEN ÜRÜNLER", self.styles['CustomHeading']))
 
-        table_data = [['Ürün Adı', 'Miktar', 'Birim Fiyat', 'Toplam']]
+        table_data = [['Görsel', 'Ürün Adı', 'Miktar', 'Birim Fiyat', 'Toplam']]
 
         total_amount = 0
 
         for item in quote_data['items']:
             product_name = item['product_name']
             quantity = item['quantity']
+            product_image = item.get('product_image')
+
+            # Fetch and prepare image
+            img_element = ''
+            if product_image:
+                img_data = self._fetch_image(product_image, base_url)
+                if img_data:
+                    try:
+                        img = Image(img_data, width=15*mm, height=15*mm)
+                        img_element = img
+                    except:
+                        img_element = ''
+
+            if not img_element:
+                img_element = Paragraph('<font color="#9CA3AF">-</font>', self.styles['CustomSmall'])
 
             unit_price = '-'
             item_total = '-'
@@ -229,20 +271,21 @@ class PDFService:
                     item_total = f"{item_total_val:.2f} TL"
                     total_amount += item_total_val
 
-            table_data.append([product_name, str(quantity), unit_price, item_total])
+            table_data.append([img_element, product_name, str(quantity), unit_price, item_total])
 
         if pricing_data and total_amount > 0:
-            table_data.append(['', '', 'TOPLAM:', f"{total_amount:.2f} TL"])
+            table_data.append(['', '', '', 'TOPLAM:', f"{total_amount:.2f} TL"])
 
         products_table = Table(
             table_data,
-            colWidths=[80 * mm, 25 * mm, 35 * mm, 35 * mm]
+            colWidths=[18 * mm, 62 * mm, 25 * mm, 35 * mm, 35 * mm]
         )
         products_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3BB77E')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-            ('ALIGN', (0, 0), (-1, 0), 'LEFT'),
-            ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+            ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('FONTNAME', (0, 0), (-1, 0), self.font_bold),
             ('FONTSIZE', (0, 0), (-1, 0), 10.5),
 
@@ -264,7 +307,7 @@ class PDFService:
                 ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#FEF3C7')),
                 ('FONTNAME', (0, -1), (-1, -1), self.font_bold),
                 ('FONTSIZE', (0, -1), (-1, -1), 11),
-                ('ALIGN', (2, -1), (3, -1), 'RIGHT')
+                ('ALIGN', (3, -1), (4, -1), 'RIGHT')
             ]))
 
         story.append(products_table)
