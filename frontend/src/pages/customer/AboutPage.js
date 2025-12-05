@@ -148,11 +148,11 @@ const AboutPage = () => {
               WebkitTextFillColor: 'transparent',
               display: 'block'
             }}>
-              Hakkımızda
+              {settings?.about_hero_title || 'Hakkımızda'}
             </span>
           </h1>
           <p style={{ fontSize: '20px', opacity: 0.95, lineHeight: '1.6' }}>
-            {settings?.about_title ||
+            {settings?.about_hero_subtitle ||
               'Yılların deneyimi ve mükemmellik anlayışıyla, sektörün önde gelen firmalarından biriyiz.'}
           </p>
         </div>
