@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Mail, Phone, Clock, Check, X } from 'lucide-react';
+import AdminLayout from '../../components/AdminLayout';
 
 const AdminContactMessages = () => {
   const [messages, setMessages] = useState([]);
