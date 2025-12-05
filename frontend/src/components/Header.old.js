@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Award } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Menu, X, Award, User, LogOut } from 'lucide-react';
 import { useQuoteCart } from '../context/QuoteCartContext';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
+import { toast } from 'sonner';
 
 const Header = ({ settings }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { getCartCount } = useQuoteCart();
+  const { customer, logout, isAuthenticated } = useCustomerAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,13 +24,26 @@ const Header = ({ settings }) => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Renkler
+  const headerBgColor = settings?.header_bg_color || '#FFFFFF';
+  const headerScrolledBgColor =
+    settings?.header_scrolled_bg_color || 'rgba(255, 255, 255, 0.98)';
+  const headerLinkColor = settings?.header_link_color || '#374151';
+  const headerLinkActiveColor = settings?.header_link_active_color || '#22C55E';
+  const headerLinkHoverColor = settings?.header_link_hover_color || '#22C55E';
+  const headerCartButtonBg = settings?.header_cart_button_bg || '#22C55E';
+  const headerCartButtonTextColor =
+    settings?.header_cart_button_text_color || '#FFFFFF';
+
   return (
     <>
       <style>{`
+        /* NAV LINKLERİ */
         .header-nav-link {
           position: relative;
           padding-bottom: 4px;
           transition: all 0.3s ease;
+          color: ${headerLinkColor};
         }
         .header-nav-link::after {
           content: '';
@@ -34,24 +52,104 @@ const Header = ({ settings }) => {
           left: 0;
           width: 0;
           height: 2px;
-          background: var(--primary-600);
+          background: ${headerLinkActiveColor};
           transition: width 0.3s ease;
+        }
+        .header-nav-link:hover {
+          color: ${headerLinkHoverColor};
         }
         .header-nav-link:hover::after,
         .header-nav-link.active::after {
           width: 100%;
         }
+        .header-nav-link.active {
+          color: ${headerLinkActiveColor};
+        }
+
+        /* ANİMASYON */
         .header-mobile-menu {
           animation: slideDown 0.3s ease-out;
         }
         @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HEADER LAYOUT */
+        .header-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+        .header-inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 72px;
+        }
+        .header-logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-decoration: none;
+        }
+        .header-logo img {
+          display: block;
+          height: 42px;
+          width: auto;
+          object-fit: contain;
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        /* CART BUTTON */
+        .cart-btn {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 24px;
+          background: ${headerCartButtonBg};
+          color: ${headerCartButtonTextColor};
+          border-radius: 10px;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 15px;
+          position: relative;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px ${headerCartButtonBg}33;
+        }
+
+        /* MOBİL BREAKPOINT */
+        @media (max-width: 1024px) {
+          .desktop-nav {
+            display: none !important;
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
+          .mobile-menu-btn {
+            display: inline-flex !important;
+          }
+          .header-container {
+            padding: 0 16px;
+          }
+          .header-inner {
+            height: 64px;
+          }
+          .header-logo img {
+            height: 32px;
+            max-width: 160px;
+          }
+          /* Sepet butonunu yuvarlak icon haline getir */
+          .cart-btn {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            justify-content: center;
+            border-radius: 999px;
+          }
+          .cart-text {
+            display: none;
           }
         }
       `}</style>
@@ -63,46 +161,29 @@ const Header = ({ settings }) => {
           left: 0,
           right: 0,
           zIndex: 1000,
-          background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'white',
+          background: isScrolled ? headerScrolledBgColor : headerBgColor,
           backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-          boxShadow: isScrolled ? '0 2px 20px rgba(0,0,0,0.08)' : '0 1px 0 rgba(0,0,0,0.05)',
-          transition: 'all 0.3s ease'
+          boxShadow: isScrolled
+            ? '0 2px 20px rgba(0,0,0,0.08)'
+            : '0 1px 0 rgba(0,0,0,0.05)',
+          transition: 'all 0.3s ease',
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              height: '72px'
-            }}
-          >
+        <div className="header-container">
+          <div className="header-inner">
             {/* Logo */}
-            <Link
-              to="/"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                textDecoration: 'none'
-              }}
-            >
-              {settings?.logo_url ? (
-                <img
-                  src={settings.logo_url}
-                  alt="Logo"
-                  style={{ height: '42px', width: 'auto' }}
-                />
+            <Link to="/" className="header-logo">
+              {settings?.header_logo_url ? (
+                <img src={settings.header_logo_url} alt="Logo" />
               ) : (
                 <div
                   style={{
                     padding: '8px',
-                    background: 'var(--primary-600)',
+                    background: headerCartButtonBg,
                     borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
                   }}
                 >
                   <Award size={26} color="white" />
@@ -112,21 +193,19 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '22px',
                   fontWeight: '800',
-                  color: 'var(--primary-600)',
-                  letterSpacing: '-0.5px'
+                  color: headerLinkActiveColor,
+                  letterSpacing: '-0.5px',
                 }}
               >
-                {settings?.company_name || 'Özmen Gıda'}
+                {settings?.header_company_name ||
+                  settings?.company_name ||
+                  'Özmen Gıda'}
               </span>
             </Link>
 
             {/* Desktop Navigation */}
             <div
-              style={{
-                display: 'flex',
-                gap: '40px',
-                alignItems: 'center'
-              }}
+              style={{ display: 'flex', gap: '40px', alignItems: 'center' }}
               className="desktop-nav"
             >
               <Link
@@ -135,92 +214,225 @@ const Header = ({ settings }) => {
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: isActive('/') ? 'var(--primary-600)' : 'var(--text-primary)',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
-                Ana Sayfa
+                {settings?.header_menu_home || 'Ana Sayfa'}
               </Link>
               <Link
                 to="/urunler"
-                className={`header-nav-link ${isActive('/urunler') ? 'active' : ''}`}
+                className={`header-nav-link ${
+                  isActive('/urunler') ? 'active' : ''
+                }`}
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: isActive('/urunler') ? 'var(--primary-600)' : 'var(--text-primary)',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
-                Ürünler
-              </Link>
-              <Link
-                to="/ozellikler"
-                className={`header-nav-link ${isActive('/ozellikler') ? 'active' : ''}`}
-                style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  color: isActive('/ozellikler') ? 'var(--primary-600)' : 'var(--text-primary)',
-                  textDecoration: 'none'
-                }}
-              >
-                Özellikler
+                {settings?.header_menu_products || 'Ürünler'}
               </Link>
               <Link
                 to="/hakkimizda"
-                className={`header-nav-link ${isActive('/hakkimizda') ? 'active' : ''}`}
+                className={`header-nav-link ${
+                  isActive('/hakkimizda') ? 'active' : ''
+                }`}
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: isActive('/hakkimizda') ? 'var(--primary-600)' : 'var(--text-primary)',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
-                Hakkımızda
+                {settings?.header_menu_about || 'Hakkımızda'}
               </Link>
               <Link
                 to="/iletisim"
-                className={`header-nav-link ${isActive('/iletisim') ? 'active' : ''}`}
+                className={`header-nav-link ${
+                  isActive('/iletisim') ? 'active' : ''
+                }`}
                 style={{
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: isActive('/iletisim') ? 'var(--primary-600)' : 'var(--text-primary)',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
                 }}
               >
-                İletişim
+                {settings?.header_menu_contact || 'İletişim'}
               </Link>
             </div>
 
-            {/* Cart & Mobile Menu */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Sağ taraf: login + sepet + mobil menü */}
+            <div className="header-right">
+              {/* Desktop: müşteri girişi / user badge */}
+              {isAuthenticated && customer ? (
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="desktop-nav"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      background: headerCartButtonBg,
+                      color: headerCartButtonTextColor,
+                      borderRadius: '10px',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        background: headerCartButtonTextColor,
+                        color: headerCartButtonBg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: '700',
+                        fontSize: '14px',
+                      }}
+                    >
+                      {customer.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span>{customer.name.split(' ')[0]}</span>
+                  </button>
+
+                  {/* Dropdown */}
+                  {showUserMenu && (
+                    <>
+                      <div
+                        style={{
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          zIndex: 998,
+                        }}
+                        onClick={() => setShowUserMenu(false)}
+                      />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 'calc(100% + 8px)',
+                          right: 0,
+                          background: 'white',
+                          borderRadius: '10px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          minWidth: '200px',
+                          zIndex: 999,
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <Link
+                          to="/musteri-panel"
+                          onClick={() => setShowUserMenu(false)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 16px',
+                            color: '#374151',
+                            textDecoration: 'none',
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#F3F4F6';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <User size={18} />
+                          <span style={{ fontWeight: '500' }}>Panelim</span>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            toast.success('Çıkış yapıldı');
+                            navigate('/');
+                            setShowUserMenu(false);
+                          }}
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 16px',
+                            color: '#DC2626',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                            borderTop: '1px solid #E5E7EB',
+                            textAlign: 'left',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#FEE2E2';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          <LogOut size={18} />
+                          <span style={{ fontWeight: '500' }}>Çıkış Yap</span>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to="/musteri-giris"
+                  className="desktop-nav"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 18px',
+                    border: `2px solid ${headerCartButtonBg}`,
+                    color: headerCartButtonBg,
+                    borderRadius: '10px',
+                    textDecoration: 'none',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = headerCartButtonBg;
+                    e.currentTarget.style.color = headerCartButtonTextColor;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = headerCartButtonBg;
+                  }}
+                >
+                  Müşteri Girişi
+                </Link>
+              )}
+
+              {/* Sepet */}
               <Link
                 to="/teklif-sepeti"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '12px 24px',
-                  background: 'var(--primary-600)',
-                  color: 'white',
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontWeight: '700',
-                  fontSize: '15px',
-                  position: 'relative',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)'
-                }}
+                className="cart-btn"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(34, 197, 94, 0.3)';
+                  e.currentTarget.style.boxShadow = `0 4px 12px ${headerCartButtonBg}4D`;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(34, 197, 94, 0.2)';
+                  e.currentTarget.style.boxShadow = `0 2px 8px ${headerCartButtonBg}33`;
                 }}
               >
                 <ShoppingCart size={20} />
-                <span className="cart-text">Sepet</span>
+                <span className="cart-text">
+                  {settings?.header_cart_button_text || 'Sepet'}
+                </span>
                 {getCartCount() > 0 && (
                   <span
                     style={{
@@ -237,7 +449,7 @@ const Header = ({ settings }) => {
                       justifyContent: 'center',
                       fontSize: '12px',
                       fontWeight: '800',
-                      border: '2px solid white'
+                      border: '2px solid white',
                     }}
                   >
                     {getCartCount()}
@@ -245,18 +457,19 @@ const Header = ({ settings }) => {
                 )}
               </Link>
 
+              {/* Mobil menü butonu */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="mobile-menu-btn"
                 style={{
                   display: 'none',
-                  background: 'var(--gray-100)',
+                  background: '#F3F4F6',
                   border: 'none',
                   padding: '10px',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   cursor: 'pointer',
-                  color: 'var(--text-primary)',
-                  transition: 'all 0.2s ease'
+                  color: headerLinkColor,
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -269,11 +482,11 @@ const Header = ({ settings }) => {
             <div
               className="header-mobile-menu"
               style={{
-                padding: '20px 0',
-                borderTop: '1px solid var(--border-light)',
+                padding: '20px 0 16px',
+                borderTop: '1px solid #E5E7EB',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '4px'
+                gap: '4px',
               }}
             >
               <Link
@@ -283,14 +496,16 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/') ? 'var(--primary-600)' : 'var(--text-primary)',
+                  color: isActive('/') ? headerLinkActiveColor : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/') ? 'var(--primary-50)' : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                Ana Sayfa
+                {settings?.header_menu_home || 'Ana Sayfa'}
               </Link>
               <Link
                 to="/urunler"
@@ -299,30 +514,18 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/urunler') ? 'var(--primary-600)' : 'var(--text-primary)',
+                  color: isActive('/urunler')
+                    ? headerLinkActiveColor
+                    : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/urunler') ? 'var(--primary-50)' : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/urunler')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                Ürünler
-              </Link>
-              <Link
-                to="/ozellikler"
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  padding: '14px 16px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: isActive('/ozellikler') ? 'var(--primary-600)' : 'var(--text-primary)',
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  background: isActive('/ozellikler') ? 'var(--primary-50)' : 'transparent',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                Özellikler
+                {settings?.header_menu_products || 'Ürünler'}
               </Link>
               <Link
                 to="/hakkimizda"
@@ -331,14 +534,18 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/hakkimizda') ? 'var(--primary-600)' : 'var(--text-primary)',
+                  color: isActive('/hakkimizda')
+                    ? headerLinkActiveColor
+                    : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/hakkimizda') ? 'var(--primary-50)' : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/hakkimizda')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                Hakkımızda
+                {settings?.header_menu_about || 'Hakkımızda'}
               </Link>
               <Link
                 to="/iletisim"
@@ -347,32 +554,92 @@ const Header = ({ settings }) => {
                   padding: '14px 16px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: isActive('/iletisim') ? 'var(--primary-600)' : 'var(--text-primary)',
+                  color: isActive('/iletisim')
+                    ? headerLinkActiveColor
+                    : headerLinkColor,
                   textDecoration: 'none',
                   borderRadius: '8px',
-                  background: isActive('/iletisim') ? 'var(--primary-50)' : 'transparent',
-                  transition: 'all 0.2s ease'
+                  background: isActive('/iletisim')
+                    ? `${headerLinkActiveColor}1A`
+                    : 'transparent',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                İletişim
+                {settings?.header_menu_contact || 'İletişim'}
               </Link>
+
+              {/* Mobile: Customer Login/Logout */}
+              {isAuthenticated && customer ? (
+                <>
+                  <Link
+                    to="/musteri-panel"
+                    onClick={() => setIsMenuOpen(false)}
+                    style={{
+                      padding: '14px 16px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: headerLinkColor,
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      background: 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <User size={18} />
+                    Panelim
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      toast.success('Çıkış yapıldı');
+                      navigate('/');
+                      setIsMenuOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '14px 16px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: '#DC2626',
+                      borderRadius: '8px',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+                    <LogOut size={18} />
+                    Çıkış Yap
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/musteri-giris"
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    padding: '14px 16px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: 'white',
+                    textDecoration: 'none',
+                    borderRadius: '8px',
+                    background: headerCartButtonBg,
+                    textAlign: 'center',
+                    display: 'block',
+                    marginTop: '8px',
+                  }}
+                >
+                  Müşteri Girişi
+                </Link>
+              )}
             </div>
           )}
         </div>
-
-        <style>{`
-          @media (max-width: 1024px) {
-            .desktop-nav {
-              display: none !important;
-            }
-            .mobile-menu-btn {
-              display: block !important;
-            }
-            .cart-text {
-              display: none;
-            }
-          }
-        `}</style>
       </nav>
     </>
   );

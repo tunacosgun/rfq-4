@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Award, User, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, User, LogOut, Home, Package, Info, Mail, Tag } from 'lucide-react';
 import { useQuoteCart } from '../context/QuoteCartContext';
 import { useCustomerAuth } from '../context/CustomerAuthContext';
 import { toast } from 'sonner';
 
-const Header = ({ settings }) => {
+const ModernHeader = ({ settings }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { getCartCount } = useQuoteCart();
   const { customer, logout, isAuthenticated } = useCustomerAuth();
   const location = useLocation();
@@ -16,440 +15,180 @@ const Header = ({ settings }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Close drawer on route change
+    setIsDrawerOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    // Prevent body scroll when drawer is open
+    if (isDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isDrawerOpen]);
+
   const isActive = (path) => location.pathname === path;
 
-  // Renkler
+  const handleLogout = () => {
+    logout();
+    toast.success('Çıkış yapıldı');
+    navigate('/');
+  };
+
+  const menuItems = [
+    { path: '/', label: 'Ana Sayfa', icon: Home },
+    { path: '/urunler', label: 'Ürünler', icon: Package },
+    { path: '/markalar', label: 'Markalar', icon: Tag },
+    { path: '/hakkimizda', label: 'Hakkımızda', icon: Info },
+    { path: '/iletisim', label: 'İletişim', icon: Mail },
+  ];
+
   const headerBgColor = settings?.header_bg_color || '#FFFFFF';
-  const headerScrolledBgColor =
-    settings?.header_scrolled_bg_color || 'rgba(255, 255, 255, 0.98)';
-  const headerLinkColor = settings?.header_link_color || '#374151';
-  const headerLinkActiveColor = settings?.header_link_active_color || '#22C55E';
-  const headerLinkHoverColor = settings?.header_link_hover_color || '#22C55E';
-  const headerCartButtonBg = settings?.header_cart_button_bg || '#22C55E';
-  const headerCartButtonTextColor =
-    settings?.header_cart_button_text_color || '#FFFFFF';
+  const primaryColor = settings?.header_link_active_color || '#221E91';
+  const cartBgColor = settings?.header_cart_button_bg || '#E06C1B';
 
   return (
     <>
-      <style>{`
-        /* NAV LINKLERİ */
-        .header-nav-link {
-          position: relative;
-          padding-bottom: 4px;
-          transition: all 0.3s ease;
-          color: ${headerLinkColor};
-        }
-        .header-nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: ${headerLinkActiveColor};
-          transition: width 0.3s ease;
-        }
-        .header-nav-link:hover {
-          color: ${headerLinkHoverColor};
-        }
-        .header-nav-link:hover::after,
-        .header-nav-link.active::after {
-          width: 100%;
-        }
-        .header-nav-link.active {
-          color: ${headerLinkActiveColor};
-        }
-
-        /* ANİMASYON */
-        .header-mobile-menu {
-          animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* HEADER LAYOUT */
-        .header-container {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-        .header-inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 72px;
-        }
-        .header-logo {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          text-decoration: none;
-        }
-        .header-logo img {
-          display: block;
-          height: 42px;
-          width: auto;
-          object-fit: contain;
-        }
-        .header-right {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        /* CART BUTTON */
-        .cart-btn {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 12px 24px;
-          background: ${headerCartButtonBg};
-          color: ${headerCartButtonTextColor};
-          border-radius: 10px;
-          text-decoration: none;
-          font-weight: 700;
-          font-size: 15px;
-          position: relative;
-          transition: all 0.2s ease;
-          box-shadow: 0 2px 8px ${headerCartButtonBg}33;
-        }
-
-        /* MOBİL BREAKPOINT */
-        @media (max-width: 1024px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .mobile-menu-btn {
-            display: inline-flex !important;
-          }
-          .header-container {
-            padding: 0 16px;
-          }
-          .header-inner {
-            height: 64px;
-          }
-          .header-logo img {
-            height: 32px;
-            max-width: 160px;
-          }
-          /* Sepet butonunu yuvarlak icon haline getir */
-          .cart-btn {
-            width: 42px;
-            height: 42px;
-            padding: 0;
-            justify-content: center;
-            border-radius: 999px;
-          }
-          .cart-text {
-            display: none;
-          }
-        }
-      `}</style>
-
-      <nav
+      {/* Header */}
+      <header
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
+          background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : headerBgColor,
+          boxShadow: isScrolled ? '0 2px 20px rgba(0,0,0,0.08)' : 'none',
+          borderBottom: '1px solid rgba(0,0,0,0.05)',
           zIndex: 1000,
-          background: isScrolled ? headerScrolledBgColor : headerBgColor,
-          backdropFilter: isScrolled ? 'blur(12px)' : 'none',
-          boxShadow: isScrolled
-            ? '0 2px 20px rgba(0,0,0,0.08)'
-            : '0 1px 0 rgba(0,0,0,0.05)',
           transition: 'all 0.3s ease',
         }}
       >
-        <div className="header-container">
-          <div className="header-inner">
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              height: '70px',
+            }}
+          >
             {/* Logo */}
-            <Link to="/" className="header-logo">
-              {settings?.header_logo_url ? (
-                <img src={settings.header_logo_url} alt="Logo" />
-              ) : (
-                <div
+            <Link
+              to="/"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                textDecoration: 'none',
+              }}
+            >
+              {settings?.header_logo_url && (
+                <img
+                  src={settings.header_logo_url}
+                  alt="Logo"
                   style={{
-                    padding: '8px',
-                    background: headerCartButtonBg,
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    height: '40px',
+                    width: 'auto',
+                    objectFit: 'contain',
+                  }}
+                />
+              )}
+              {settings?.header_company_name && (
+                <span
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    color: primaryColor,
                   }}
                 >
-                  <Award size={26} color="white" />
-                </div>
+                  {settings.header_company_name}
+                </span>
               )}
-              <span
-                style={{
-                  fontSize: '22px',
-                  fontWeight: '800',
-                  color: headerLinkActiveColor,
-                  letterSpacing: '-0.5px',
-                }}
-              >
-                {settings?.header_company_name ||
-                  settings?.company_name ||
-                  'Özmen Gıda'}
-              </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <div
-              style={{ display: 'flex', gap: '40px', alignItems: 'center' }}
+            <nav
+              style={{
+                display: 'none',
+                gap: '32px',
+                alignItems: 'center',
+              }}
               className="desktop-nav"
             >
-              <Link
-                to="/"
-                className={`header-nav-link ${isActive('/') ? 'active' : ''}`}
-                style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  textDecoration: 'none',
-                }}
-              >
-                {settings?.header_menu_home || 'Ana Sayfa'}
-              </Link>
-              <Link
-                to="/urunler"
-                className={`header-nav-link ${
-                  isActive('/urunler') ? 'active' : ''
-                }`}
-                style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  textDecoration: 'none',
-                }}
-              >
-                {settings?.header_menu_products || 'Ürünler'}
-              </Link>
-              <Link
-                to="/hakkimizda"
-                className={`header-nav-link ${
-                  isActive('/hakkimizda') ? 'active' : ''
-                }`}
-                style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  textDecoration: 'none',
-                }}
-              >
-                {settings?.header_menu_about || 'Hakkımızda'}
-              </Link>
-              <Link
-                to="/iletisim"
-                className={`header-nav-link ${
-                  isActive('/iletisim') ? 'active' : ''
-                }`}
-                style={{
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  textDecoration: 'none',
-                }}
-              >
-                {settings?.header_menu_contact || 'İletişim'}
-              </Link>
-            </div>
-
-            {/* Sağ taraf: login + sepet + mobil menü */}
-            <div className="header-right">
-              {/* Desktop: müşteri girişi / user badge */}
-              {isAuthenticated && customer ? (
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="desktop-nav"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '8px 12px',
-                      background: headerCartButtonBg,
-                      color: headerCartButtonTextColor,
-                      borderRadius: '10px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      transition: 'all 0.2s ease',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        background: headerCartButtonTextColor,
-                        color: headerCartButtonBg,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: '700',
-                        fontSize: '14px',
-                      }}
-                    >
-                      {customer.name.charAt(0).toUpperCase()}
-                    </div>
-                    <span>{customer.name.split(' ')[0]}</span>
-                  </button>
-
-                  {/* Dropdown */}
-                  {showUserMenu && (
-                    <>
-                      <div
-                        style={{
-                          position: 'fixed',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          zIndex: 998,
-                        }}
-                        onClick={() => setShowUserMenu(false)}
-                      />
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: 'calc(100% + 8px)',
-                          right: 0,
-                          background: 'white',
-                          borderRadius: '10px',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                          minWidth: '200px',
-                          zIndex: 999,
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <Link
-                          to="/musteri-panel"
-                          onClick={() => setShowUserMenu(false)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            padding: '12px 16px',
-                            color: '#374151',
-                            textDecoration: 'none',
-                            transition: 'background 0.2s',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#F3F4F6';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                          }}
-                        >
-                          <User size={18} />
-                          <span style={{ fontWeight: '500' }}>Panelim</span>
-                        </Link>
-                        <button
-                          onClick={() => {
-                            logout();
-                            toast.success('Çıkış yapıldı');
-                            navigate('/');
-                            setShowUserMenu(false);
-                          }}
-                          style={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            padding: '12px 16px',
-                            color: '#DC2626',
-                            background: 'transparent',
-                            border: 'none',
-                            cursor: 'pointer',
-                            transition: 'background 0.2s',
-                            borderTop: '1px solid #E5E7EB',
-                            textAlign: 'left',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#FEE2E2';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                          }}
-                        >
-                          <LogOut size={18} />
-                          <span style={{ fontWeight: '500' }}>Çıkış Yap</span>
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ) : (
+              {menuItems.map((item) => (
                 <Link
-                  to="/musteri-giris"
-                  className="desktop-nav"
+                  key={item.path}
+                  to={item.path}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 18px',
-                    border: `2px solid ${headerCartButtonBg}`,
-                    color: headerCartButtonBg,
-                    borderRadius: '10px',
+                    fontSize: '15px',
+                    fontWeight: isActive(item.path) ? '600' : '500',
+                    color: isActive(item.path) ? primaryColor : '#374151',
                     textDecoration: 'none',
-                    fontWeight: '600',
-                    fontSize: '14px',
-                    transition: 'all 0.2s ease',
+                    transition: 'color 0.2s',
+                    borderBottom: isActive(item.path) ? `2px solid ${primaryColor}` : 'none',
+                    paddingBottom: '4px',
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = headerCartButtonBg;
-                    e.currentTarget.style.color = headerCartButtonTextColor;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = headerCartButtonBg;
-                  }}
+                  onMouseEnter={(e) => (e.target.style.color = primaryColor)}
+                  onMouseLeave={(e) =>
+                    (e.target.style.color = isActive(item.path) ? primaryColor : '#374151')
+                  }
                 >
-                  Müşteri Girişi
+                  {item.label}
                 </Link>
-              )}
+              ))}
+            </nav>
 
-              {/* Sepet */}
+            {/* Right Section */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {/* Cart Button */}
               <Link
-                to="/teklif-sepeti"
-                className="cart-btn"
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = `0 4px 12px ${headerCartButtonBg}4D`;
+                to="/sepet"
+                style={{
+                  position: 'relative',
+                  background: cartBgColor,
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  transition: 'transform 0.2s',
                 }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = `0 2px 8px ${headerCartButtonBg}33`;
-                }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
               >
-                <ShoppingCart size={20} />
-                <span className="cart-text">
-                  {settings?.header_cart_button_text || 'Sepet'}
-                </span>
+                <ShoppingCart size={18} />
+                <span className="cart-text">Sepet</span>
                 {getCartCount() > 0 && (
                   <span
                     style={{
                       position: 'absolute',
                       top: '-6px',
                       right: '-6px',
-                      background: '#EF4444',
+                      background: '#DC2626',
                       color: 'white',
                       borderRadius: '50%',
-                      width: '24px',
-                      height: '24px',
+                      width: '20px',
+                      height: '20px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '12px',
-                      fontWeight: '800',
-                      border: '2px solid white',
+                      fontSize: '11px',
+                      fontWeight: '700',
                     }}
                   >
                     {getCartCount()}
@@ -457,192 +196,313 @@ const Header = ({ settings }) => {
                 )}
               </Link>
 
-              {/* Mobil menü butonu */}
+              {/* User Menu - Desktop */}
+              {isAuthenticated && customer && (
+                <div className="desktop-user-menu" style={{ display: 'none' }}>
+                  <Link
+                    to="/musteri-panel"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 16px',
+                      border: `1px solid ${primaryColor}`,
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      color: primaryColor,
+                      fontSize: '14px',
+                      fontWeight: '600',
+                    }}
+                  >
+                    <User size={16} />
+                    {customer.name}
+                  </Link>
+                </div>
+              )}
+
+              {/* Hamburger Menu - Mobile */}
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="mobile-menu-btn"
+                onClick={() => setIsDrawerOpen(true)}
                 style={{
-                  display: 'none',
-                  background: '#F3F4F6',
+                  background: 'none',
                   border: 'none',
-                  padding: '10px',
-                  borderRadius: '12px',
                   cursor: 'pointer',
-                  color: headerLinkColor,
-                  transition: 'all 0.2s ease',
+                  padding: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
+                className="mobile-menu-button"
+                aria-label="Open menu"
               >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                <Menu size={28} color={primaryColor} />
               </button>
             </div>
           </div>
+        </div>
+      </header>
 
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
+      {/* Mobile Drawer Overlay */}
+      {isDrawerOpen && (
+        <div
+          onClick={() => setIsDrawerOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1100,
+            animation: 'fadeIn 0.3s ease',
+          }}
+        />
+      )}
+
+      {/* Mobile Drawer */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          right: isDrawerOpen ? 0 : '-100%',
+          width: '320px',
+          maxWidth: '85vw',
+          height: '100vh',
+          background: '#1F2937',
+          boxShadow: '-4px 0 20px rgba(0,0,0,0.3)',
+          zIndex: 1200,
+          transition: 'right 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflowY: 'auto',
+          padding: '24px',
+        }}
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => setIsDrawerOpen(false)}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            background: 'rgba(255,255,255,0.1)',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '8px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          aria-label="Close menu"
+        >
+          <X size={24} color="white" />
+        </button>
+
+        {/* User Info */}
+        {isAuthenticated && customer && (
+          <div
+            style={{
+              padding: '20px',
+              background: 'rgba(255,255,255,0.05)',
+              borderRadius: '12px',
+              marginBottom: '24px',
+              marginTop: '40px',
+            }}
+          >
             <div
-              className="header-mobile-menu"
               style={{
-                padding: '20px 0 16px',
-                borderTop: '1px solid #E5E7EB',
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '12px',
               }}
             >
-              <Link
-                to="/"
-                onClick={() => setIsMenuOpen(false)}
+              <div
                 style={{
-                  padding: '14px 16px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: isActive('/') ? headerLinkActiveColor : headerLinkColor,
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  background: isActive('/')
-                    ? `${headerLinkActiveColor}1A`
-                    : 'transparent',
-                  transition: 'all 0.2s ease',
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: primaryColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '20px',
+                  fontWeight: '700',
                 }}
               >
-                {settings?.header_menu_home || 'Ana Sayfa'}
-              </Link>
-              <Link
-                to="/urunler"
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  padding: '14px 16px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: isActive('/urunler')
-                    ? headerLinkActiveColor
-                    : headerLinkColor,
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  background: isActive('/urunler')
-                    ? `${headerLinkActiveColor}1A`
-                    : 'transparent',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {settings?.header_menu_products || 'Ürünler'}
-              </Link>
-              <Link
-                to="/hakkimizda"
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  padding: '14px 16px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: isActive('/hakkimizda')
-                    ? headerLinkActiveColor
-                    : headerLinkColor,
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  background: isActive('/hakkimizda')
-                    ? `${headerLinkActiveColor}1A`
-                    : 'transparent',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {settings?.header_menu_about || 'Hakkımızda'}
-              </Link>
-              <Link
-                to="/iletisim"
-                onClick={() => setIsMenuOpen(false)}
-                style={{
-                  padding: '14px 16px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: isActive('/iletisim')
-                    ? headerLinkActiveColor
-                    : headerLinkColor,
-                  textDecoration: 'none',
-                  borderRadius: '8px',
-                  background: isActive('/iletisim')
-                    ? `${headerLinkActiveColor}1A`
-                    : 'transparent',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {settings?.header_menu_contact || 'İletişim'}
-              </Link>
-
-              {/* Mobile: Customer Login/Logout */}
-              {isAuthenticated && customer ? (
-                <>
-                  <Link
-                    to="/musteri-panel"
-                    onClick={() => setIsMenuOpen(false)}
-                    style={{
-                      padding: '14px 16px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      color: headerLinkColor,
-                      textDecoration: 'none',
-                      borderRadius: '8px',
-                      background: 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                    }}
-                  >
-                    <User size={18} />
-                    Panelim
-                  </Link>
-                  <button
-                    onClick={() => {
-                      logout();
-                      toast.success('Çıkış yapıldı');
-                      navigate('/');
-                      setIsMenuOpen(false);
-                    }}
-                    style={{
-                      width: '100%',
-                      padding: '14px 16px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      color: '#DC2626',
-                      borderRadius: '8px',
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                    }}
-                  >
-                    <LogOut size={18} />
-                    Çıkış Yap
-                  </button>
-                </>
-              ) : (
-                <Link
-                  to="/musteri-giris"
-                  onClick={() => setIsMenuOpen(false)}
-                  style={{
-                    padding: '14px 16px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: 'white',
-                    textDecoration: 'none',
-                    borderRadius: '8px',
-                    background: headerCartButtonBg,
-                    textAlign: 'center',
-                    display: 'block',
-                    marginTop: '8px',
-                  }}
-                >
-                  Müşteri Girişi
-                </Link>
-              )}
+                {customer.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <div style={{ color: 'white', fontSize: '16px', fontWeight: '600' }}>
+                  {customer.name}
+                </div>
+                <div style={{ color: '#9CA3AF', fontSize: '13px' }}>{customer.email}</div>
+              </div>
             </div>
-          )}
-        </div>
-      </nav>
+            <Link
+              to="/musteri-panel"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 16px',
+                background: primaryColor,
+                color: 'white',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                justifyContent: 'center',
+              }}
+            >
+              <User size={16} />
+              Panelim
+            </Link>
+          </div>
+        )}
+
+        {/* Menu Items */}
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  padding: '16px 20px',
+                  borderRadius: '10px',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  color: isActive(item.path) ? 'white' : '#D1D5DB',
+                  background: isActive(item.path) ? 'rgba(255,255,255,0.1)' : 'transparent',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive(item.path)) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive(item.path)) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#D1D5DB';
+                  }
+                }}
+              >
+                <Icon size={22} />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* CTA Button */}
+        <Link
+          to="/sepet"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            padding: '16px',
+            background: cartBgColor,
+            color: 'white',
+            borderRadius: '12px',
+            textDecoration: 'none',
+            fontSize: '16px',
+            fontWeight: '700',
+            marginTop: '24px',
+          }}
+        >
+          <ShoppingCart size={20} />
+          Hemen Teklif Al
+        </Link>
+
+        {/* Logout Button */}
+        {isAuthenticated && (
+          <button
+            onClick={handleLogout}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              width: '100%',
+              padding: '14px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '10px',
+              color: '#EF4444',
+              fontSize: '15px',
+              fontWeight: '600',
+              marginTop: '16px',
+              cursor: 'pointer',
+            }}
+          >
+            <LogOut size={18} />
+            Çıkış Yap
+          </button>
+        )}
+
+        {/* Login Link */}
+        {!isAuthenticated && (
+          <Link
+            to="/musteri-giris"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              padding: '14px',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: '10px',
+              color: 'white',
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              marginTop: '24px',
+            }}
+          >
+            <User size={18} />
+            Müşteri Girişi
+          </Link>
+        )}
+      </div>
+
+      {/* Responsive Styles */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @media (min-width: 1024px) {
+          .desktop-nav {
+            display: flex !important;
+          }
+          .desktop-user-menu {
+            display: block !important;
+          }
+          .mobile-menu-button {
+            display: none !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .cart-text {
+            display: none;
+          }
+        }
+      `}</style>
     </>
   );
 };
 
-export default Header;
+export default ModernHeader;
