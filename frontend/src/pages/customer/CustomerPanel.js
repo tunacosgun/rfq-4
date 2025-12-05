@@ -137,7 +137,7 @@ const CustomerPanel = () => {
 
       if (response.ok) {
         toast.success('Teklif başarıyla siparişe dönüştürüldü!');
-        fetchQuotes(); // Reload quotes
+        fetchQuotes(customer.email); // Reload quotes
       } else {
         toast.error('Sipariş oluşturulamadı');
       }
