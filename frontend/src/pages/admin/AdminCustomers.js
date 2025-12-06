@@ -258,7 +258,7 @@ const AdminCustomers = () => {
                       {new Date(customer.created_at).toLocaleDateString('tr-TR')}
                     </td>
                     <td style={styles.td}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         <button
                           onClick={() => handleViewQuotes(customer)}
                           style={styles.viewButton}
@@ -269,10 +269,25 @@ const AdminCustomers = () => {
                         </button>
                         <button
                           onClick={() => handleEditBalance(customer)}
-                          style={{ ...styles.viewButton, background: '#F59E0B', color: 'white' }}
-                          title="Bakiye Düzenle"
+                          style={{ 
+                            padding: '8px 14px',
+                            background: '#10B981',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            fontWeight: '700',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.background = '#059669'}
+                          onMouseLeave={(e) => e.target.style.background = '#10B981'}
+                          title="Bakiye İşlemi"
                         >
-                          ₺
+                          💰 Bakiye
                         </button>
                       </div>
                     </td>
