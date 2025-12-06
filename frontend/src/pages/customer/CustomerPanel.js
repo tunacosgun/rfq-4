@@ -15,6 +15,7 @@ const CustomerPanelNew = () => {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
   const [expandedQuote, setExpandedQuote] = useState(null);
+  const [selectedItems, setSelectedItems] = useState({});
   
   // Profile form state
   const [profileData, setProfileData] = useState({
@@ -109,6 +110,59 @@ const CustomerPanelNew = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleConvertToOrder = async (quoteId) => {
+    const selected = selectedItems[quoteId] || [];
+    
+    if (selected.length === 0) {
+      toast.error('Lütfen en az bir ürün seçin');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${backendUrl}/api/customer/quotes/${quoteId}/convert-to-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selected_items: selected }),
+      });
+
+      if (response.ok) {
+        toast.success('Sipariş başarıyla oluşturuldu!');
+        fetchQuotes(); // Refresh quotes
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Sipariş oluşturulamadı');
+      }
+    } catch (error) {
+      console.error('Order creation error:', error);
+      toast.error('Bir hata oluştu');
+    }
+  };
+
+  const toggleItemSelection = (quoteId, itemIndex) => {
+    setSelectedItems(prev => {
+      const quoteSelections = prev[quoteId] || [];
+      const isSelected = quoteSelections.includes(itemIndex);
+      
+      return {
+        ...prev,
+        [quoteId]: isSelected
+          ? quoteSelections.filter(i => i !== itemIndex)
+          : [...quoteSelections, itemIndex]
+      };
+    });
+  };
+
+  const calculateSelectedTotal = (quote) => {
+    const selected = selectedItems[quote.id] || [];
+    if (!quote.pricing || selected.length === 0) return 0;
+    
+    return quote.pricing
+      .filter((_, idx) => selected.includes(idx))
+      .reduce((sum, p) => sum + p.total_price, 0);
   };
 
   const handlePasswordUpdate = async (e) => {
