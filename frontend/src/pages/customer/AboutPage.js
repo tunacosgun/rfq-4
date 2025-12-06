@@ -141,7 +141,7 @@ const AboutPage = () => {
         style={{
           marginTop: '72px',
           padding: '96px 24px 72px',
-          background: 'linear-gradient(135deg,#111827 0%,#1a1775 50%,#020617 100%)',
+          background: 'linear-gradient(135deg,#111827 0%,#f97316 50%,#020617 100%)',
           color: '#ffffff',
           position: 'relative',
           overflow: 'hidden',
@@ -385,7 +385,7 @@ const AboutPage = () => {
                   style={{
                     width: '100%',
                     height: 360,
-                    background: 'linear-gradient(135deg,#1e3a8a,#1d4ed8,#f97316)',
+                    background: 'linear-gradient(135deg,#ea580c,#f97316,#f97316)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -427,7 +427,7 @@ const AboutPage = () => {
                   padding: '6px 16px',
                   borderRadius: 999,
                   background: 'rgba(34,30,145,0.08)',
-                  color: '#221E91',
+                  color: '#e06c1b',
                   fontSize: 13,
                   fontWeight: 600,
                   marginBottom: 14,
@@ -487,7 +487,7 @@ const AboutPage = () => {
                     padding: '10px 16px',
                     borderRadius: 999,
                     background: 'rgba(34,30,145,0.08)',
-                    color: '#221E91',
+                    color: '#e06c1b',
                     fontSize: 13,
                     fontWeight: 600,
                   }}
@@ -534,7 +534,7 @@ const AboutPage = () => {
                 padding: '6px 16px',
                 borderRadius: 999,
                 background: 'rgba(34,30,145,0.08)',
-                color: '#221E91',
+                color: '#e06c1b',
                 fontSize: 13,
                 fontWeight: 600,
                 marginBottom: 12,
@@ -604,7 +604,7 @@ const AboutPage = () => {
                       width: 46,
                       height: 46,
                       borderRadius: 14,
-                      background: 'linear-gradient(135deg,#221E91,#4338ca)',
+                      background: 'linear-gradient(135deg,#e06c1b,#f59e0b)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -657,7 +657,7 @@ const AboutPage = () => {
                 padding: '6px 16px',
                 borderRadius: 999,
                 background: 'rgba(37,99,235,0.12)',
-                color: '#1d4ed8',
+                color: '#f97316',
                 fontSize: 13,
                 fontWeight: 600,
                 marginBottom: 12,
@@ -743,7 +743,7 @@ const AboutPage = () => {
                         flexShrink: 0,
                       }}
                     >
-                      <HelpCircle size={18} color="#1d4ed8" />
+                      <HelpCircle size={18} color="#f97316" />
                     </div>
                     <span
                       style={{

@@ -93,7 +93,7 @@ const ProductsPage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
+          background: 'linear-gradient(135deg, #e06c1b 0%, #f97316 100%)',
           color: 'white',
           padding: '140px 24px 80px',
           textAlign: 'center',
@@ -197,7 +197,7 @@ const ProductsPage = () => {
                   padding: '10px',
                   border: '1px solid #D1D5DB',
                   borderRadius: '8px',
-                  background: viewMode === 'grid' ? '#221E91' : 'white',
+                  background: viewMode === 'grid' ? '#e06c1b' : 'white',
                   cursor: 'pointer',
                 }}
               >
@@ -209,7 +209,7 @@ const ProductsPage = () => {
                   padding: '10px',
                   border: '1px solid #D1D5DB',
                   borderRadius: '8px',
-                  background: viewMode === 'list' ? '#221E91' : 'white',
+                  background: viewMode === 'list' ? '#e06c1b' : 'white',
                   cursor: 'pointer',
                 }}
               >
@@ -392,7 +392,7 @@ const ProductsPage = () => {
                         padding: '8px 16px',
                         border: '1px solid #D1D5DB',
                         borderRadius: '8px',
-                        background: currentPage === page ? '#221E91' : 'white',
+                        background: currentPage === page ? '#e06c1b' : 'white',
                         color: currentPage === page ? 'white' : '#374151',
                         fontWeight: '600',
                         cursor: 'pointer',

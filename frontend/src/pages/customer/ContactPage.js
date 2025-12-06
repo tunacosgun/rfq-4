@@ -92,7 +92,7 @@ const ContactPage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
+          background: 'linear-gradient(135deg, #e06c1b 0%, #f97316 100%)',
           color: 'white',
           padding: '140px 24px 80px',
           textAlign: 'center',
@@ -188,14 +188,14 @@ const ContactPage = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)'
+                  background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)'
                 }}></div>
                 
                 <div
                   style={{
                     width: '72px',
                     height: '72px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     borderRadius: '16px',
                     display: 'flex',
                     alignItems: 'center',
@@ -211,7 +211,7 @@ const ContactPage = () => {
                     fontSize: '20px',
                     fontWeight: '700',
                     marginBottom: '12px',
-                    color: '#221E91'
+                    color: '#e06c1b'
                   }}
                 >
                   Telefon
@@ -251,14 +251,14 @@ const ContactPage = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)'
+                  background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)'
                 }}></div>
                 
                 <div
                   style={{
                     width: '72px',
                     height: '72px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     borderRadius: '16px',
                     display: 'flex',
                     alignItems: 'center',
@@ -274,7 +274,7 @@ const ContactPage = () => {
                     fontSize: '20px',
                     fontWeight: '700',
                     marginBottom: '12px',
-                    color: '#221E91'
+                    color: '#e06c1b'
                   }}
                 >
                   E-posta
@@ -314,14 +314,14 @@ const ContactPage = () => {
                   left: 0,
                   right: 0,
                   height: '4px',
-                  background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)'
+                  background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)'
                 }}></div>
                 
                 <div
                   style={{
                     width: '72px',
                     height: '72px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     borderRadius: '16px',
                     display: 'flex',
                     alignItems: 'center',
@@ -337,7 +337,7 @@ const ContactPage = () => {
                     fontSize: '20px',
                     fontWeight: '700',
                     marginBottom: '12px',
-                    color: '#221E91'
+                    color: '#e06c1b'
                   }}
                 >
                   Adres
@@ -388,7 +388,7 @@ const ContactPage = () => {
                   fontSize: '32px',
                   fontWeight: '800',
                   marginBottom: '8px',
-                  color: '#221E91'
+                  color: '#e06c1b'
                 }}
               >
                 Mesaj Gönderin
@@ -547,7 +547,7 @@ const ContactPage = () => {
                   type="submit"
                   disabled={submitting}
                   style={{
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     color: 'white',
                     height: '56px',
                     fontSize: '16px',
@@ -592,7 +592,7 @@ const ContactPage = () => {
                   <div style={{
                     width: '48px',
                     height: '48px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
@@ -602,7 +602,7 @@ const ContactPage = () => {
                     <Clock size={24} color="white" />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '4px', color: '#221E91' }}>Çalışma Saatleri</h3>
+                    <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '4px', color: '#e06c1b' }}>Çalışma Saatleri</h3>
                     <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>Pazartesi - Cuma: 09:00 - 18:00</p>
                     <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>Cumartesi: 09:00 - 14:00</p>
                   </div>
@@ -620,7 +620,7 @@ const ContactPage = () => {
                   <div style={{
                     width: '48px',
                     height: '48px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
@@ -630,7 +630,7 @@ const ContactPage = () => {
                     <Zap size={24} color="white" />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#221E91' }}>Hızlı İletişim</h3>
+                    <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#e06c1b' }}>Hızlı İletişim</h3>
                     <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '16px' }}>
                       Acil durumlar için telefon veya e-posta ile bize ulaşabilirsiniz. Ortalama yanıt süremiz 2 saat
                       içindedir.
@@ -682,7 +682,7 @@ const ContactPage = () => {
                   <div style={{
                     width: '48px',
                     height: '48px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                     borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
@@ -692,7 +692,7 @@ const ContactPage = () => {
                     <Building size={24} color="white" />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#221E91' }}>Ofis Ziyareti</h3>
+                    <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#e06c1b' }}>Ofis Ziyareti</h3>
                     <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.7' }}>
                       Ofisimizi ziyaret etmek için randevu alabilirsiniz. Size en uygun zamanı belirlemek için lütfen önceden arayın.
                     </p>
