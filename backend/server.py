@@ -196,6 +196,26 @@ class CustomerUpdate(BaseModel):
     password: Optional[str] = None  # For password change
     balance: Optional[float] = None  # For admin to set customer balance
 
+class FAQ(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    question: str
+    answer: str
+    order: int = 0
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class FAQCreate(BaseModel):
+    question: str
+    answer: str
+    order: Optional[int] = 0
+    is_active: Optional[bool] = True
+
+class FAQUpdate(BaseModel):
+    question: Optional[str] = None
+    answer: Optional[str] = None
+    order: Optional[int] = None
+    is_active: Optional[bool] = None
 
 class CategoryUpdate(BaseModel):
     name: Optional[str] = None
