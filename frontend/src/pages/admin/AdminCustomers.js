@@ -785,6 +785,5 @@ const styles = {
   },
 };
 
-});
 
 export default AdminCustomers;
