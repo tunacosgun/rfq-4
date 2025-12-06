@@ -797,7 +797,17 @@ async def customer_login(data: CustomerLogin):
     customer = await db.customers.find_one({"email": data.email}, {"_id": 0})
     if not customer or not verify_password(data.password, customer["password_hash"]):
         raise HTTPException(status_code=401, detail="Hatalı email veya şifre")
-    return {"success": True, "customer": {"id": customer["id"], "name": customer["name"], "email": customer["email"]}}
+    return {
+        "success": True, 
+        "customer": {
+            "id": customer["id"], 
+            "name": customer["name"], 
+            "email": customer["email"],
+            "phone": customer.get("phone", ""),
+            "company": customer.get("company", ""),
+            "balance": customer.get("balance", 0)
+        }
+    }
 
 @api_router.get("/customer/quotes/{customer_email}")
 async def get_customer_quotes(customer_email: str):
