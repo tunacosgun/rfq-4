@@ -838,6 +838,46 @@ async def convert_quote_to_order(quote_id: str, data: dict):
             }
         }
     )
+
+# ==================== VISITOR TRACKING ====================
+
+@api_router.post("/track-visit")
+async def track_visit(data: dict, request: Request):
+    """Track website visitor"""
+    try:
+        # Get client IP
+        client_ip = request.client.host
+        if 'x-forwarded-for' in request.headers:
+            client_ip = request.headers['x-forwarded-for'].split(',')[0]
+        
+        # Get user agent
+        user_agent = request.headers.get('user-agent', 'Unknown')
+        
+        # Get page
+        page = data.get('page', '/')
+        
+        # Track visitor
+        await track_visitor(db, client_ip, user_agent, page)
+        
+        return {"status": "tracked"}
+    except Exception as e:
+        logger.error(f"Visitor tracking error: {e}")
+        return {"status": "error"}
+
+
+@api_router.get("/admin/visitors")
+async def get_visitors(credentials: HTTPBasicCredentials = Depends(security)):
+    """Get all visitors (admin only)"""
+    if not verify_admin(credentials):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    try:
+        visitors = await db.visitors.find({}, {"_id": 0}).sort("timestamp", -1).limit(500).to_list(500)
+        return visitors
+    except Exception as e:
+        logger.error(f"Visitors fetch error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
     
     return {"message": "Sipariş başarıyla oluşturuldu", "order_id": quote_id}
 
