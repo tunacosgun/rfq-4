@@ -567,7 +567,7 @@ const HomePage = () => {
                   padding: '6px 14px',
                   borderRadius: 999,
                   background: 'rgba(34,30,145,0.08)',
-                  color: '#221E91',
+                  color: '#e06c1b',
                   fontSize: 13,
                   fontWeight: 600,
                   marginBottom: 12,
@@ -632,7 +632,7 @@ const HomePage = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           background:
-                            'linear-gradient(135deg,#221E91,#4338ca)',
+                            'linear-gradient(135deg,#e06c1b,#f59e0b)',
                           boxShadow:
                             '0 6px 14px rgba(67,56,202,0.35)',
                         }}
@@ -747,7 +747,7 @@ const HomePage = () => {
                   padding: '10px 18px',
                   borderRadius: 12,
                   background:
-                    'linear-gradient(135deg,#221E91,#1e3a8a)',
+                    'linear-gradient(135deg,#e06c1b,#ea580c)',
                   color: '#fff',
                   textDecoration: 'none',
                   fontSize: 14,
@@ -1005,7 +1005,7 @@ const HomePage = () => {
                         justifyContent: 'center',
                         gap: 8,
                         background:
-                          'linear-gradient(135deg,#1e3a8a,#1d4ed8)',
+                          'linear-gradient(135deg,#ea580c,#1d4ed8)',
                         color: '#fff',
                         border: 'none',
                       }}
