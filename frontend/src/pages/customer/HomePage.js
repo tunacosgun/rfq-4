@@ -159,7 +159,7 @@ const HomePage = () => {
                 })()
               : settings?.home_hero_bg_image && settings?.home_hero_disable_color
               ? `url(${settings.home_hero_bg_image})`
-              : 'linear-gradient(135deg,#e06c1b 0%,#f97316 100%)',
+              : 'linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           color: settings?.home_hero_text_color || '#FFFFFF',
@@ -230,7 +230,7 @@ const HomePage = () => {
                 style={{
                   display: 'block',
                   background:
-                    'linear-gradient(135deg,#fbbf24,#f97316,#fb7185)',
+                    'linear-gradient(135deg,#fbbf24,#3b82f6,#fb7185)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -270,7 +270,7 @@ const HomePage = () => {
                   padding: '14px 26px',
                   borderRadius: '12px',
                   background:
-                    'linear-gradient(135deg,#f97316,#f97316,#ec4899)',
+                    'linear-gradient(135deg,#3b82f6,#3b82f6,#ec4899)',
                   color: '#fff',
                   fontSize: '15px',
                   fontWeight: 700,
@@ -567,7 +567,7 @@ const HomePage = () => {
                   padding: '6px 14px',
                   borderRadius: 999,
                   background: 'rgba(34,30,145,0.08)',
-                  color: '#e06c1b',
+                  color: '#1e3a8a',
                   fontSize: 13,
                   fontWeight: 600,
                   marginBottom: 12,
@@ -632,7 +632,7 @@ const HomePage = () => {
                           alignItems: 'center',
                           justifyContent: 'center',
                           background:
-                            'linear-gradient(135deg,#e06c1b,#f59e0b)',
+                            'linear-gradient(135deg,#1e3a8a,#60a5fa)',
                           boxShadow:
                             '0 6px 14px rgba(67,56,202,0.35)',
                         }}
@@ -715,7 +715,7 @@ const HomePage = () => {
                   marginBottom: 14,
                 }}
               >
-                <HeadphonesIcon size={22} color="#f97316" />
+                <HeadphonesIcon size={22} color="#3b82f6" />
                 <div
                   style={{
                     fontSize: 14,
@@ -747,7 +747,7 @@ const HomePage = () => {
                   padding: '10px 18px',
                   borderRadius: 12,
                   background:
-                    'linear-gradient(135deg,#e06c1b,#ea580c)',
+                    'linear-gradient(135deg,#1e3a8a,#2563eb)',
                   color: '#fff',
                   textDecoration: 'none',
                   fontSize: 14,
@@ -932,7 +932,7 @@ const HomePage = () => {
                           padding: '6px 10px',
                           borderRadius: 999,
                           background:
-                            'linear-gradient(135deg,#f97316,#fb7185)',
+                            'linear-gradient(135deg,#3b82f6,#fb7185)',
                           color: '#fff',
                           fontSize: 11,
                           fontWeight: 700,
@@ -949,7 +949,7 @@ const HomePage = () => {
                           fontWeight: 700,
                           textTransform: 'uppercase',
                           letterSpacing: '.05em',
-                          color: '#f97316',
+                          color: '#3b82f6',
                           marginBottom: 4,
                         }}
                       >
@@ -1005,7 +1005,7 @@ const HomePage = () => {
                         justifyContent: 'center',
                         gap: 8,
                         background:
-                          'linear-gradient(135deg,#ea580c,#f97316)',
+                          'linear-gradient(135deg,#2563eb,#3b82f6)',
                         color: '#fff',
                         border: 'none',
                       }}
@@ -1107,7 +1107,7 @@ const HomePage = () => {
                 padding: '14px 30px',
                 borderRadius: 999,
                 background:
-                  'linear-gradient(135deg,#f97316,#fb7185)',
+                  'linear-gradient(135deg,#3b82f6,#fb7185)',
                 color: '#fff',
                 textDecoration: 'none',
                 fontSize: 15,
