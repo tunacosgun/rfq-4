@@ -79,15 +79,16 @@ const AdminCustomers = React.memo(() => {
   };
 
 
-  const handleEditBalance = useCallback((customer) => {
+  const handleEditBalance = (customer) => {
+    console.log('Bakiye modal açılıyor', customer);
     setSelectedCustomer(customer);
     setBalanceAmount(0);
     setBalanceAction('add');
     setBalanceNote('');
     setShowBalanceModal(true);
-  }, []);
+  };
 
-  const handleUpdateBalance = useCallback(async () => {
+  const handleUpdateBalance = async () => {
     try {
       let newBalance = selectedCustomer?.balance || 0;
       const amount = parseFloat(balanceAmount);
@@ -155,7 +156,7 @@ const AdminCustomers = React.memo(() => {
     } catch (error) {
       toast.error('Bir hata oluştu');
     }
-  }, [selectedCustomer, balanceAmount, balanceAction, balanceNote, backendUrl]);
+  };
 
   const handleCloseModal = () => {
     setShowModal(false);
