@@ -84,7 +84,7 @@ const CustomerLogin = () => {
             <div style={{
               width: '64px',
               height: '64px',
-              background: 'linear-gradient(135deg, #221E91 0%, #3B82F6 100%)',
+              background: 'linear-gradient(135deg, #e06c1b 0%, #3B82F6 100%)',
               borderRadius: '16px',
               display: 'flex',
               alignItems: 'center',
@@ -166,7 +166,7 @@ const CustomerLogin = () => {
                 style={{
                   width: '100%',
                   padding: '14px',
-                  background: 'linear-gradient(135deg, #221E91 0%, #3B82F6 100%)',
+                  background: 'linear-gradient(135deg, #e06c1b 0%, #3B82F6 100%)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '10px',
@@ -192,7 +192,7 @@ const CustomerLogin = () => {
             <Link
               to="/musteri-kayit"
               style={{
-                color: '#221E91',
+                color: '#e06c1b',
                 fontWeight: '600',
                 textDecoration: 'none',
               }}

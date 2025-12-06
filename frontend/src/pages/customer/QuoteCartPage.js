@@ -96,7 +96,7 @@ const QuoteCartPage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
+          background: 'linear-gradient(135deg, #e06c1b 0%, #f97316 100%)',
           color: 'white',
           padding: '140px 24px 60px',
           position: 'relative',
@@ -230,7 +230,7 @@ const QuoteCartPage = () => {
             >
               <Package
                 size={80}
-                color="#221E91"
+                color="#e06c1b"
                 style={{ margin: '0 auto 24px' }}
               />
               <h2
@@ -238,7 +238,7 @@ const QuoteCartPage = () => {
                   fontSize: '28px',
                   fontWeight: '700',
                   marginBottom: '12px',
-                  color: '#221E91',
+                  color: '#e06c1b',
                 }}
               >
                 Sepetiniz Boş
@@ -256,7 +256,7 @@ const QuoteCartPage = () => {
                 <Button
                   style={{
                     background:
-                      'linear-gradient(135deg, #221E91, #1a1775)',
+                      'linear-gradient(135deg, #e06c1b, #f97316)',
                     color: 'white',
                     padding: '14px 32px',
                     fontSize: '16px',
@@ -338,7 +338,7 @@ const QuoteCartPage = () => {
                         ) : (
                           <Package
                             size={40}
-                            color="#221E91"
+                            color="#e06c1b"
                           />
                         )}
                       </div>
@@ -362,7 +362,7 @@ const QuoteCartPage = () => {
                               fontSize: '20px',
                               fontWeight: '700',
                               margin: '4px 0',
-                              color: '#221E91',
+                              color: '#e06c1b',
                             }}
                           >
                             {item.name}
@@ -425,16 +425,16 @@ const QuoteCartPage = () => {
                                 justifyContent: 'center',
                                 background: 'white',
                                 border:
-                                  '1px solid #221E91',
+                                  '1px solid #e06c1b',
                                 borderRadius: '6px',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
-                                color: '#221E91',
+                                color: '#e06c1b',
                                 fontWeight: '700',
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background =
-                                  '#221E91';
+                                  '#e06c1b';
                                 e.currentTarget.style.color =
                                   'white';
                               }}
@@ -442,7 +442,7 @@ const QuoteCartPage = () => {
                                 e.currentTarget.style.background =
                                   'white';
                                 e.currentTarget.style.color =
-                                  '#221E91';
+                                  '#e06c1b';
                               }}
                             >
                               <Minus size={16} />
@@ -453,7 +453,7 @@ const QuoteCartPage = () => {
                                 fontWeight: '800',
                                 minWidth: '40px',
                                 textAlign: 'center',
-                                color: '#221E91',
+                                color: '#e06c1b',
                               }}
                             >
                               {item.quantity}
@@ -473,16 +473,16 @@ const QuoteCartPage = () => {
                                 justifyContent: 'center',
                                 background: 'white',
                                 border:
-                                  '1px solid #221E91',
+                                  '1px solid #e06c1b',
                                 borderRadius: '6px',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
-                                color: '#221E91',
+                                color: '#e06c1b',
                                 fontWeight: '700',
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.background =
-                                  '#221E91';
+                                  '#e06c1b';
                                 e.currentTarget.style.color =
                                   'white';
                               }}
@@ -490,7 +490,7 @@ const QuoteCartPage = () => {
                                 e.currentTarget.style.background =
                                   'white';
                                 e.currentTarget.style.color =
-                                  '#221E91';
+                                  '#e06c1b';
                               }}
                             >
                               <Plus size={16} />
@@ -620,7 +620,7 @@ const QuoteCartPage = () => {
                       fontSize: '24px',
                       fontWeight: '800',
                       marginBottom: '24px',
-                      color: '#221E91',
+                      color: '#e06c1b',
                     }}
                   >
                     Özet
@@ -653,7 +653,7 @@ const QuoteCartPage = () => {
                         style={{
                           fontSize: '15px',
                           fontWeight: '700',
-                          color: '#221E91',
+                          color: '#e06c1b',
                         }}
                       >
                         {getCartCount()}
@@ -677,7 +677,7 @@ const QuoteCartPage = () => {
                         style={{
                           fontSize: '15px',
                           fontWeight: '700',
-                          color: '#221E91',
+                          color: '#e06c1b',
                         }}
                       >
                         {cart.reduce(
@@ -709,13 +709,13 @@ const QuoteCartPage = () => {
                     >
                       <Shield
                         size={18}
-                        color="#221E91"
+                        color="#e06c1b"
                       />
                       <span
                         style={{
                           fontSize: '14px',
                           fontWeight: '700',
-                          color: '#221E91',
+                          color: '#e06c1b',
                         }}
                       >
                         Hızlı Teklif
@@ -740,7 +740,7 @@ const QuoteCartPage = () => {
                     style={{
                       width: '100%',
                       background:
-                        'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                        'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                       color: 'white',
                       height: '56px',
                       fontSize: '17px',

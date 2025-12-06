@@ -136,7 +136,7 @@ const ProductDetailPage = () => {
                 return (
                   <div key={index} style={styles.featureItem}>
                     <div style={styles.featureIcon}>
-                      <Icon size={20} color="#221E91" />
+                      <Icon size={20} color="#e06c1b" />
                     </div>
                     <span style={styles.featureText}>{feature.text}</span>
                   </div>
@@ -199,7 +199,7 @@ const ProductDetailPage = () => {
             <div style={styles.additionalInfo}>
               <div style={styles.infoCard}>
                 <div style={styles.infoIcon}>
-                  <Truck size={20} color="#221E91" />
+                  <Truck size={20} color="#e06c1b" />
                 </div>
                 <div>
                   <h4 style={styles.infoTitle}>Hızlı Teslimat</h4>
@@ -208,7 +208,7 @@ const ProductDetailPage = () => {
               </div>
               <div style={styles.infoCard}>
                 <div style={styles.infoIcon}>
-                  <Shield size={20} color="#221E91" />
+                  <Shield size={20} color="#e06c1b" />
                 </div>
                 <div>
                   <h4 style={styles.infoTitle}>Güvenli Alışveriş</h4>
@@ -236,7 +236,7 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '8px',
-    color: '#221E91',
+    color: '#e06c1b',
     textDecoration: 'none',
     fontSize: '16px',
     fontWeight: '600',
@@ -288,7 +288,7 @@ const styles = {
   productName: {
     fontSize: '44px',
     fontWeight: '800',
-    color: '#221E91',
+    color: '#e06c1b',
     margin: '16px 0 24px',
     lineHeight: '1.2'
   },
@@ -326,7 +326,7 @@ const styles = {
   featureText: {
     fontSize: '14px',
     fontWeight: '600',
-    color: '#221E91'
+    color: '#e06c1b'
   },
   priceBox: {
     background: 'linear-gradient(135deg, rgba(34, 30, 145, 0.05) 0%, rgba(224, 108, 27, 0.05) 100%)',
@@ -345,8 +345,8 @@ const styles = {
   priceValue: {
     fontSize: '32px',
     fontWeight: '800',
-    color: '#221E91',
-    background: 'linear-gradient(135deg, #221E91, #e06c1b)',
+    color: '#e06c1b',
+    background: 'linear-gradient(135deg, #e06c1b, #e06c1b)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent'
   },
@@ -363,7 +363,7 @@ const styles = {
   },
   infoValue: {
     fontSize: '16px',
-    color: '#221E91',
+    color: '#e06c1b',
     fontWeight: '700',
   },
   quantitySection: {
@@ -373,7 +373,7 @@ const styles = {
   quantityLabel: {
     fontSize: '16px',
     fontWeight: '700',
-    color: '#221E91',
+    color: '#e06c1b',
     marginBottom: '16px',
     display: 'block',
   },
@@ -385,13 +385,13 @@ const styles = {
   quantityButton: {
     width: '48px',
     height: '48px',
-    border: '2px solid #221E91',
+    border: '2px solid #e06c1b',
     background: 'white',
     borderRadius: '10px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#221E91',
+    color: '#e06c1b',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     fontWeight: '700',
@@ -400,7 +400,7 @@ const styles = {
   quantityValue: {
     fontSize: '24px',
     fontWeight: '800',
-    color: '#221E91',
+    color: '#e06c1b',
     minWidth: '60px',
     textAlign: 'center',
   },
@@ -410,7 +410,7 @@ const styles = {
     marginTop: '32px',
     fontSize: '18px',
     fontWeight: '700',
-    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
     color: 'white',
     border: 'none',
     borderRadius: '12px',
@@ -450,7 +450,7 @@ const styles = {
   infoTitle: {
     fontSize: '16px',
     fontWeight: '700',
-    color: '#221E91',
+    color: '#e06c1b',
     marginBottom: '4px'
   },
   infoDescription: {

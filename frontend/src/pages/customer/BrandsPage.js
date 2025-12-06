@@ -54,7 +54,7 @@ const BrandsPage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
+          background: 'linear-gradient(135deg, #e06c1b 0%, #f97316 100%)',
           color: 'white',
           padding: '140px 24px 80px',
           textAlign: 'center',

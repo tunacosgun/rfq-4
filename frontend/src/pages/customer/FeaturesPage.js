@@ -119,7 +119,7 @@ const FeaturesPage = () => {
       {/* Hero Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
+          background: 'linear-gradient(135deg, #e06c1b 0%, #f97316 100%)',
           color: 'white',
           padding: '140px 24px 80px',
           textAlign: 'center',
@@ -188,9 +188,9 @@ const FeaturesPage = () => {
               <div style={{ 
                 fontSize: '48px', 
                 fontWeight: '800', 
-                color: '#221E91',
+                color: '#e06c1b',
                 marginBottom: '8px',
-                background: 'linear-gradient(135deg, #221E91, #e06c1b)',
+                background: 'linear-gradient(135deg, #e06c1b, #e06c1b)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>
@@ -204,9 +204,9 @@ const FeaturesPage = () => {
               <div style={{ 
                 fontSize: '48px', 
                 fontWeight: '800', 
-                color: '#221E91',
+                color: '#e06c1b',
                 marginBottom: '8px',
-                background: 'linear-gradient(135deg, #221E91, #e06c1b)',
+                background: 'linear-gradient(135deg, #e06c1b, #e06c1b)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>
@@ -220,9 +220,9 @@ const FeaturesPage = () => {
               <div style={{ 
                 fontSize: '48px', 
                 fontWeight: '800', 
-                color: '#221E91',
+                color: '#e06c1b',
                 marginBottom: '8px',
-                background: 'linear-gradient(135deg, #221E91, #e06c1b)',
+                background: 'linear-gradient(135deg, #e06c1b, #e06c1b)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>
@@ -236,9 +236,9 @@ const FeaturesPage = () => {
               <div style={{ 
                 fontSize: '48px', 
                 fontWeight: '800', 
-                color: '#221E91',
+                color: '#e06c1b',
                 marginBottom: '8px',
-                background: 'linear-gradient(135deg, #221E91, #e06c1b)',
+                background: 'linear-gradient(135deg, #e06c1b, #e06c1b)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>
@@ -322,14 +322,14 @@ const FeaturesPage = () => {
                     left: 0,
                     right: 0,
                     height: '4px',
-                    background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)'
+                    background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)'
                   }}></div>
                   
                   <div
                     style={{
                       width: '72px',
                       height: '72px',
-                      background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
+                      background: 'linear-gradient(135deg, #e06c1b 0%, #e06c1b 100%)',
                       borderRadius: '16px',
                       display: 'flex',
                       alignItems: 'center',
@@ -345,7 +345,7 @@ const FeaturesPage = () => {
                       fontSize: '22px',
                       fontWeight: '700',
                       marginBottom: '16px',
-                      color: '#221E91'
+                      color: '#e06c1b'
                     }}
                   >
                     {feature.title}
@@ -363,7 +363,7 @@ const FeaturesPage = () => {
       {/* CTA Section */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
+          background: 'linear-gradient(135deg, #e06c1b 0%, #f97316 100%)',
           color: 'white',
           padding: '80px 24px',
           position: 'relative',

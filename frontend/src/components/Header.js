@@ -56,7 +56,7 @@ const ModernHeader = ({ settings }) => {
   ];
 
   const headerBgColor = settings?.header_bg_color || '#FFFFFF';
-  const primaryColor = settings?.header_link_active_color || '#221E91';
+  const primaryColor = settings?.header_link_active_color || '#e06c1b';
   const cartBgColor = settings?.header_cart_button_bg || '#E06C1B';
   const cartText = settings?.header_cart_button_text || 'Sepet';
 

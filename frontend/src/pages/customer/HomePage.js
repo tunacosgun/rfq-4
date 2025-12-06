@@ -715,7 +715,7 @@ const HomePage = () => {
                   marginBottom: 14,
                 }}
               >
-                <HeadphonesIcon size={22} color="#1d4ed8" />
+                <HeadphonesIcon size={22} color="#f97316" />
                 <div
                   style={{
                     fontSize: 14,
@@ -1005,7 +1005,7 @@ const HomePage = () => {
                         justifyContent: 'center',
                         gap: 8,
                         background:
-                          'linear-gradient(135deg,#ea580c,#1d4ed8)',
+                          'linear-gradient(135deg,#ea580c,#f97316)',
                         color: '#fff',
                         border: 'none',
                       }}

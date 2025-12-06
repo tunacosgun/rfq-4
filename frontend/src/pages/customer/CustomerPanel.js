@@ -269,8 +269,8 @@ const CustomerPanelNew = () => {
                 padding: '12px 24px',
                 background: 'none',
                 border: 'none',
-                borderBottom: activeTab === 'profile' ? '2px solid #221E91' : '2px solid transparent',
-                color: activeTab === 'profile' ? '#221E91' : '#6B7280',
+                borderBottom: activeTab === 'profile' ? '2px solid #e06c1b' : '2px solid transparent',
+                color: activeTab === 'profile' ? '#e06c1b' : '#6B7280',
                 fontWeight: activeTab === 'profile' ? '600' : '400',
                 fontSize: '15px',
                 cursor: 'pointer',
@@ -290,8 +290,8 @@ const CustomerPanelNew = () => {
                 padding: '12px 24px',
                 background: 'none',
                 border: 'none',
-                borderBottom: activeTab === 'quotes' ? '2px solid #221E91' : '2px solid transparent',
-                color: activeTab === 'quotes' ? '#221E91' : '#6B7280',
+                borderBottom: activeTab === 'quotes' ? '2px solid #e06c1b' : '2px solid transparent',
+                color: activeTab === 'quotes' ? '#e06c1b' : '#6B7280',
                 fontWeight: activeTab === 'quotes' ? '600' : '400',
                 fontSize: '15px',
                 cursor: 'pointer',
@@ -311,8 +311,8 @@ const CustomerPanelNew = () => {
                 padding: '12px 24px',
                 background: 'none',
                 border: 'none',
-                borderBottom: activeTab === 'settings' ? '2px solid #221E91' : '2px solid transparent',
-                color: activeTab === 'settings' ? '#221E91' : '#6B7280',
+                borderBottom: activeTab === 'settings' ? '2px solid #e06c1b' : '2px solid transparent',
+                color: activeTab === 'settings' ? '#e06c1b' : '#6B7280',
                 fontWeight: activeTab === 'settings' ? '600' : '400',
                 fontSize: '15px',
                 cursor: 'pointer',
@@ -423,7 +423,7 @@ const CustomerPanelNew = () => {
                     type="submit"
                     disabled={saving}
                     style={{
-                      background: '#221E91',
+                      background: '#e06c1b',
                       color: 'white',
                       padding: '12px 24px',
                       borderRadius: '8px',
@@ -706,7 +706,7 @@ const CustomerPanelNew = () => {
                     type="submit"
                     disabled={saving || !passwordData.newPassword || !passwordData.confirmPassword}
                     style={{
-                      background: '#221E91',
+                      background: '#e06c1b',
                       color: 'white',
                       padding: '12px 24px',
                       borderRadius: '8px',
