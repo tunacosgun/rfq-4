@@ -155,11 +155,11 @@ const HomePage = () => {
                   )
                     .toString(16)
                     .padStart(2, '0');
-                  return `linear-gradient(135deg,#221E91${opacityHex1} 0%,#1a1775${opacityHex2} 100%), url(${settings.home_hero_bg_image})`;
+                  return `linear-gradient(135deg,rgba(224,108,27,${opacity/100}) 0%,rgba(249,115,22,${Math.min(opacity+10,100)/100}) 100%), url(${settings.home_hero_bg_image})`;
                 })()
               : settings?.home_hero_bg_image && settings?.home_hero_disable_color
               ? `url(${settings.home_hero_bg_image})`
-              : 'linear-gradient(135deg,#221E91 0%,#1a1775 100%)',
+              : 'linear-gradient(135deg,#e06c1b 0%,#f97316 100%)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           color: settings?.home_hero_text_color || '#FFFFFF',
