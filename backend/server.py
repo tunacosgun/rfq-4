@@ -194,6 +194,7 @@ class CustomerUpdate(BaseModel):
     phone: Optional[str] = None
     company: Optional[str] = None
     password: Optional[str] = None  # For password change
+    balance: Optional[float] = None  # For admin to set customer balance
 
 
 class CategoryUpdate(BaseModel):
