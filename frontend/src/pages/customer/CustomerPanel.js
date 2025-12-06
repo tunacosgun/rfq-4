@@ -330,15 +330,48 @@ const CustomerPanelNew = () => {
 
           {/* Tab Content */}
           {activeTab === 'profile' && (
-            <div style={{ 
-              background: 'white', 
-              borderRadius: '12px', 
-              padding: '32px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-            }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#111827' }}>
-                İletişim Bilgileri
-              </h2>
+            <div>
+              {/* Balance Display */}
+              <div style={{
+                background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)',
+                padding: '24px',
+                borderRadius: '12px',
+                marginBottom: '24px',
+                border: '1px solid #93C5FD'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    background: '#3B82F6',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    color: 'white',
+                    fontWeight: '700'
+                  }}>
+                    ₺
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '14px', color: '#1E40AF', marginBottom: '4px' }}>Mevcut Bakiyeniz</div>
+                    <div style={{ fontSize: '32px', fontWeight: '700', color: '#1E3A8A' }}>
+                      ₺{(customer?.balance || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div style={{ 
+                background: 'white', 
+                borderRadius: '12px', 
+                padding: '32px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+              }}>
+                <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#111827' }}>
+                  İletişim Bilgileri
+                </h2>
               <form onSubmit={handleProfileUpdate}>
                 <div style={{ display: 'grid', gap: '20px', maxWidth: '600px' }}>
                   <div>
@@ -442,6 +475,7 @@ const CustomerPanelNew = () => {
                   </Button>
                 </div>
               </form>
+              </div>
             </div>
           )}
 
