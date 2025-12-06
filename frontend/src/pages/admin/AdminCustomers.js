@@ -532,7 +532,9 @@ const AdminCustomers = () => {
       </div>
     </AdminLayout>
   );
-});
+};
+
+export default AdminCustomers;
 
 const styles = {
   container: {
