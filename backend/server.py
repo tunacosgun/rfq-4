@@ -1041,6 +1041,26 @@ async def get_customer_quotes_by_id(customer_id: str, admin: dict = Depends(get_
     
     return {"customer": customer, "quotes": quotes}
 
+@api_router.put("/admin/customers/{customer_id}")
+async def update_customer_balance(customer_id: str, data: dict, admin: dict = Depends(get_current_admin)):
+    """Update customer balance"""
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    
+    # Update balance
+    if 'balance' in data:
+        result = await db.customers.update_one(
+            {"id": customer_id},
+            {"$set": {"balance": data['balance']}}
+        )
+        if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Bakiye güncellenemedi")
+    
+    # Return updated customer
+    updated_customer = await db.customers.find_one({"id": customer_id}, {"_id": 0, "password_hash": 0})
+    return updated_customer
+
 # File Upload endpoints
 @api_router.post("/upload-file")
 async def upload_file_to_disk(file: UploadFile = File(...)):
