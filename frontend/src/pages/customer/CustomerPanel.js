@@ -77,24 +77,24 @@ const CustomerPanelNew = () => {
     }
   };
 
-  const refreshCustomerData = async () => {
-    try {
-      const response = await fetch(`${backendUrl}/api/customer/${customer.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        updateCustomer(data);
-      }
-    } catch (error) {
-      console.error('Customer refresh error:', error);
-    }
-  };
-
   // Refresh customer data when component mounts
   useEffect(() => {
-    if (customer && customer.id) {
-      refreshCustomerData();
-    }
-  }, []);
+    const refreshCustomerData = async () => {
+      if (customer && customer.id) {
+        try {
+          const response = await fetch(`${backendUrl}/api/customer/${customer.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            updateCustomer(data);
+          }
+        } catch (error) {
+          console.error('Customer refresh error:', error);
+        }
+      }
+    };
+    
+    refreshCustomerData();
+  }, [customer?.id, backendUrl, updateCustomer]);
 
   const handleLogout = () => {
     logout();
