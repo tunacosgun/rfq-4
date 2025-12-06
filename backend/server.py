@@ -1465,6 +1465,93 @@ async def delete_contact_message(message_id: str, admin: dict = Depends(get_curr
         raise HTTPException(status_code=404, detail="Mesaj bulunamadı")
     return {"message": "Mesaj silindi"}
 
+# FAQ endpoints
+@api_router.get("/faqs")
+async def get_faqs():
+    """Get all active FAQs"""
+    faqs = await db.faqs.find({"is_active": True}, {"_id": 0}).sort("order", 1).to_list(1000)
+    return faqs
+
+@api_router.get("/admin/faqs")
+async def get_all_faqs(admin: dict = Depends(get_current_admin)):
+    """Get all FAQs (admin only)"""
+    faqs = await db.faqs.find({}, {"_id": 0}).sort("order", 1).to_list(1000)
+    return faqs
+
+@api_router.post("/admin/faqs")
+async def create_faq(faq: FAQCreate, admin: dict = Depends(get_current_admin)):
+    """Create new FAQ (admin only)"""
+    new_faq = FAQ(
+        question=faq.question,
+        answer=faq.answer,
+        order=faq.order,
+        is_active=faq.is_active
+    )
+    await db.faqs.insert_one(new_faq.model_dump())
+    return new_faq
+
+@api_router.put("/admin/faqs/{faq_id}")
+async def update_faq(faq_id: str, faq_update: FAQUpdate, admin: dict = Depends(get_current_admin)):
+    """Update FAQ (admin only)"""
+    update_data = {k: v for k, v in faq_update.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    
+    result = await db.faqs.update_one({"id": faq_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="FAQ bulunamadı")
+    
+    updated_faq = await db.faqs.find_one({"id": faq_id}, {"_id": 0})
+    return updated_faq
+
+@api_router.delete("/admin/faqs/{faq_id}")
+async def delete_faq(faq_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete FAQ (admin only)"""
+    result = await db.faqs.delete_one({"id": faq_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="FAQ bulunamadı")
+    return {"message": "FAQ silindi"}
+
+# Customer management endpoints
+@api_router.delete("/admin/customers/{customer_id}")
+async def delete_customer(customer_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete customer account (admin only)"""
+    # Check if customer exists
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    
+    # Delete customer
+    await db.customers.delete_one({"id": customer_id})
+    
+    # Optionally: Delete related data (quotes, balance logs)
+    await db.quotes.delete_many({"email": customer["email"]})
+    await db.balance_logs.delete_many({"customer_id": customer_id})
+    
+    return {"message": f"Müşteri {customer['name']} ve ilgili tüm veriler silindi"}
+
+@api_router.post("/admin/customers/{customer_id}/reset-password")
+async def reset_customer_password(customer_id: str, admin: dict = Depends(get_current_admin)):
+    """Reset customer password and return new password (admin only)"""
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    
+    # Generate new random password
+    new_password = secrets.token_urlsafe(8)
+    password_hash = get_password_hash(new_password)
+    
+    # Update password
+    await db.customers.update_one(
+        {"id": customer_id},
+        {"$set": {"password_hash": password_hash}}
+    )
+    
+    return {
+        "message": "Şifre sıfırlandı",
+        "new_password": new_password,
+        "customer_email": customer["email"]
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
