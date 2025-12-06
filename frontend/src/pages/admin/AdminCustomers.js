@@ -181,14 +181,23 @@ const AdminCustomers = () => {
                       {new Date(customer.created_at).toLocaleDateString('tr-TR')}
                     </td>
                     <td style={styles.td}>
-                      <button
-                        onClick={() => handleViewQuotes(customer)}
-                        style={styles.viewButton}
-                        title="Teklifleri Görüntüle"
-                      >
-                        <Eye size={16} />
-                        Teklifler
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => handleViewQuotes(customer)}
+                          style={styles.viewButton}
+                          title="Teklifleri Görüntüle"
+                        >
+                          <Eye size={16} />
+                          Teklifler
+                        </button>
+                        <button
+                          onClick={() => handleEditBalance(customer)}
+                          style={{ ...styles.viewButton, background: '#F59E0B', color: 'white' }}
+                          title="Bakiye Düzenle"
+                        >
+                          ₺
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
