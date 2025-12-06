@@ -19,6 +19,7 @@ from enum import Enum
 import shutil
 from services.email_service import email_service
 from services.pdf_service import pdf_service
+from services.visitor_tracking import track_visitor
 
 
 ROOT_DIR = Path(__file__).parent
