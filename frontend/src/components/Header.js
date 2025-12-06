@@ -1,3 +1,4 @@
+// src/components/Header.js
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, User, LogOut, Home, Package, Info, Mail, Tag } from 'lucide-react';
@@ -22,12 +23,12 @@ const ModernHeader = ({ settings }) => {
   }, []);
 
   useEffect(() => {
-    // Close drawer on route change
+    // Route değişince drawer kapansın
     setIsDrawerOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
-    // Prevent body scroll when drawer is open
+    // Drawer açıkken body scroll kilitle
     if (isDrawerOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -47,16 +48,17 @@ const ModernHeader = ({ settings }) => {
   };
 
   const menuItems = [
-    { path: '/', label: 'Ana Sayfa', icon: Home },
-    { path: '/urunler', label: 'Ürünler', icon: Package },
+    { path: '/', label: settings?.header_menu_home || 'Ana Sayfa', icon: Home },
+    { path: '/urunler', label: settings?.header_menu_products || 'Ürünler', icon: Package },
     { path: '/markalar', label: 'Markalar', icon: Tag },
-    { path: '/hakkimizda', label: 'Hakkımızda', icon: Info },
-    { path: '/iletisim', label: 'İletişim', icon: Mail },
+    { path: '/hakkimizda', label: settings?.header_menu_about || 'Hakkımızda', icon: Info },
+    { path: '/iletisim', label: settings?.header_menu_contact || 'İletişim', icon: Mail },
   ];
 
   const headerBgColor = settings?.header_bg_color || '#FFFFFF';
   const primaryColor = settings?.header_link_active_color || '#221E91';
   const cartBgColor = settings?.header_cart_button_bg || '#E06C1B';
+  const cartText = settings?.header_cart_button_text || 'Sepet';
 
   return (
     <>
@@ -67,7 +69,7 @@ const ModernHeader = ({ settings }) => {
           top: 0,
           left: 0,
           right: 0,
-          background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : headerBgColor,
+          background: isScrolled ? (settings?.header_scrolled_bg_color || 'rgba(255, 255, 255, 0.98)') : headerBgColor,
           boxShadow: isScrolled ? '0 2px 20px rgba(0,0,0,0.08)' : 'none',
           borderBottom: '1px solid rgba(0,0,0,0.05)',
           zIndex: 1000,
@@ -135,7 +137,7 @@ const ModernHeader = ({ settings }) => {
                   style={{
                     fontSize: '15px',
                     fontWeight: isActive(item.path) ? '600' : '500',
-                    color: isActive(item.path) ? primaryColor : '#374151',
+                    color: isActive(item.path) ? primaryColor : (settings?.header_link_color || '#374151'),
                     textDecoration: 'none',
                     transition: 'color 0.2s',
                     borderBottom: isActive(item.path) ? `2px solid ${primaryColor}` : 'none',
@@ -143,7 +145,7 @@ const ModernHeader = ({ settings }) => {
                   }}
                   onMouseEnter={(e) => (e.target.style.color = primaryColor)}
                   onMouseLeave={(e) =>
-                    (e.target.style.color = isActive(item.path) ? primaryColor : '#374151')
+                    (e.target.style.color = isActive(item.path) ? primaryColor : (settings?.header_link_color || '#374151'))
                   }
                 >
                   {item.label}
@@ -155,11 +157,11 @@ const ModernHeader = ({ settings }) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               {/* Cart Button */}
               <Link
-                to="/sepet"
+                to="/teklif-sepeti"   // 🔴 ÖNEMLİ: /sepet değil, /teklif-sepeti
                 style={{
                   position: 'relative',
                   background: cartBgColor,
-                  color: 'white',
+                  color: settings?.header_cart_button_text_color || 'white',
                   padding: '10px 20px',
                   borderRadius: '8px',
                   textDecoration: 'none',
@@ -174,7 +176,7 @@ const ModernHeader = ({ settings }) => {
                 onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
               >
                 <ShoppingCart size={18} />
-                <span className="cart-text">Sepet</span>
+                <span className="cart-text">{cartText}</span>
                 {getCartCount() > 0 && (
                   <span
                     style={{
@@ -425,7 +427,7 @@ const ModernHeader = ({ settings }) => {
 
         {/* CTA Button */}
         <Link
-          to="/sepet"
+          to="/teklif-sepeti"   // 🔴 Burayı da düzelttik
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -442,7 +444,7 @@ const ModernHeader = ({ settings }) => {
           }}
         >
           <ShoppingCart size={20} />
-          Hemen Teklif Al
+          {cartText}
         </Link>
 
         {/* Logout Button */}

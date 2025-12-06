@@ -1,3 +1,4 @@
+// src/context/AdminAuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -29,7 +30,7 @@ export const AdminAuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(`${API}/admin/login`, {
+      await axios.post(`${API}/admin/login`, {
         username,
         password,
       });
@@ -58,6 +59,41 @@ export const AdminAuthProvider = ({ children }) => {
     };
   };
 
+  // 🔴 Yeni: Admin şifre değiştirme yardımcı fonksiyonu
+  const changePassword = async (currentPassword, newPassword) => {
+    if (!admin) {
+      return { success: false, error: 'Önce giriş yapmanız gerekiyor' };
+    }
+
+    try {
+      const res = await axios.post(
+        `${API}/admin/change-password`,
+        {
+          current_password: currentPassword,
+          new_password: newPassword,
+        },
+        {
+          headers: getAuthHeader(),
+        }
+      );
+
+      // Backend şifreyi başarıyla güncellediyse, context’teki şifreyi de güncelle
+      const updated = { ...admin, password: newPassword };
+      setAdmin(updated);
+      localStorage.setItem('adminAuth', JSON.stringify(updated));
+
+      return { success: true, message: res.data?.message || 'Şifre güncellendi' };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.detail ||
+          error.response?.data?.message ||
+          'Şifre güncellenemedi',
+      };
+    }
+  };
+
   return (
     <AdminAuthContext.Provider
       value={{
@@ -66,6 +102,7 @@ export const AdminAuthProvider = ({ children }) => {
         login,
         logout,
         getAuthHeader,
+        changePassword,   // 🔴 Burada export ediyoruz
         isAuthenticated: !!admin,
       }}
     >

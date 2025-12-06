@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Shield, Truck, HeadphonesIcon, Award, Package, ShoppingCart, ArrowRight, CheckCircle, Star, Users, TrendingUp } from 'lucide-react';
+import {
+  Shield,
+  Truck,
+  HeadphonesIcon,
+  Award,
+  Package,
+  ShoppingCart,
+  ArrowRight,
+  CheckCircle,
+  Star,
+  Users,
+  TrendingUp,
+} from 'lucide-react';
 import { useQuoteCart } from '../../context/QuoteCartContext';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
@@ -22,7 +34,7 @@ const HomePage = () => {
     fetchData();
   }, []);
 
-  // Update favicon dynamically
+  // Favicon
   useEffect(() => {
     if (settings?.site_favicon_url) {
       let link = document.querySelector("link[rel~='icon']");
@@ -40,7 +52,7 @@ const HomePage = () => {
       setLoading(true);
       const [productsRes, settingsRes] = await Promise.all([
         axios.get(`${API}/products`),
-        axios.get(`${API}/settings`).catch(() => ({ data: null }))
+        axios.get(`${API}/settings`).catch(() => ({ data: null })),
       ]);
       setProducts(productsRes.data);
       setSettings(settingsRes.data);
@@ -54,7 +66,7 @@ const HomePage = () => {
   const handleAddToCart = (product) => {
     addToCart(product, 1);
     toast.success(`${product.name} sepete eklendi`, {
-      position: 'top-center'
+      position: 'top-center',
     });
   };
 
@@ -62,37 +74,51 @@ const HomePage = () => {
     {
       icon: Shield,
       title: 'Kalite Garantisi',
-      description: 'Tüm ürünlerimiz uluslararası kalite standartlarına uygundur'
+      description: 'Tüm ürünlerimiz uluslararası kalite standartlarına uygundur',
     },
     {
       icon: Truck,
       title: 'Hızlı Teslimat',
-      description: 'Siparişleriniz en kısa sürede güvenle teslim edilir'
+      description: 'Siparişleriniz en kısa sürede güvenle teslim edilir',
     },
     {
       icon: HeadphonesIcon,
       title: '7/24 Destek',
-      description: 'Profesyonel müşteri hizmetleri ekibimiz yanınızda'
+      description: 'Profesyonel müşteri hizmetleri ekibimiz yanınızda',
     },
     {
       icon: Award,
       title: 'Uzman Ekip',
-      description: 'Alanında uzman kadromuzla profesyonel çözümler'
-    }
+      description: 'Alanında uzman kadromuzla profesyonel çözümler',
+    },
   ];
 
   const stats = [
     { number: '500+', label: 'Mutlu Müşteri' },
     { number: '1000+', label: 'Tamamlanan Proje' },
     { number: '15+', label: 'Yıl Deneyim' },
-    { number: '50+', label: 'Uzman Ekip' }
+    { number: '50+', label: 'Uzman Ekip' },
   ];
+
+  // Öne çıkan ürünler (yoksa ilk 6 ürün)
+  const featuredProducts = (
+    products.filter((p) => p.is_featured).length > 0
+      ? products.filter((p) => p.is_featured)
+      : products
+  ).slice(0, 6);
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
         <div style={{ textAlign: 'center' }}>
-          <div className="spinner" style={{ margin: '0 auto 16px' }}></div>
+          <div className="spinner" style={{ margin: '0 auto 16px' }} />
           <p>Yükleniyor...</p>
         </div>
       </div>
@@ -100,489 +126,891 @@ const HomePage = () => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#F3F4F6',
+      }}
+    >
       <Header settings={settings} />
 
-      {/* Hero Section */}
+      {/* HERO – 2 kolonlu yeni stil */}
       <section
         style={{
-          background: settings?.home_hero_bg_image 
-            ? (settings?.home_hero_disable_color 
-                ? `url(${settings.home_hero_bg_image})` 
-                : (() => {
-                    const opacity = settings?.home_hero_overlay_opacity || 80;
-                    const opacityHex1 = Math.round((opacity / 100) * 255).toString(16).padStart(2, '0');
-                    const opacityHex2 = Math.round((Math.min(opacity + 10, 100) / 100) * 255).toString(16).padStart(2, '0');
-                    return `linear-gradient(135deg, #221E91${opacityHex1} 0%, #1a1775${opacityHex2} 100%), url(${settings.home_hero_bg_image})`;
-                  })())
-            : `linear-gradient(135deg, #221E91 0%, #1a1775 100%)`,
+          marginTop: '72px',
+          padding: '96px 24px 72px',
+          background:
+            settings?.home_hero_bg_image && !settings?.home_hero_disable_color
+              ? (() => {
+                  const opacity = settings?.home_hero_overlay_opacity || 80;
+                  const opacityHex1 = Math.round(
+                    (opacity / 100) * 255,
+                  )
+                    .toString(16)
+                    .padStart(2, '0');
+                  const opacityHex2 = Math.round(
+                    (Math.min(opacity + 10, 100) / 100) * 255,
+                  )
+                    .toString(16)
+                    .padStart(2, '0');
+                  return `linear-gradient(135deg,#221E91${opacityHex1} 0%,#1a1775${opacityHex2} 100%), url(${settings.home_hero_bg_image})`;
+                })()
+              : settings?.home_hero_bg_image && settings?.home_hero_disable_color
+              ? `url(${settings.home_hero_bg_image})`
+              : 'linear-gradient(135deg,#221E91 0%,#1a1775 100%)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          color: 'white',
-          padding: '140px 24px 100px',
-          marginTop: '72px',
+          color: settings?.home_hero_text_color || '#FFFFFF',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
-        className="hero-section"
       >
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0,
-          background: 'radial-gradient(circle at 30% 50%, rgba(224, 108, 27, 0.15) 0%, transparent 50%)',
-          pointerEvents: 'none'
-        }}></div>
-        
-        <div style={{ maxWidth: '1280px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          <div style={{ 
-            display: 'inline-flex',
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(circle at 20% 0%, rgba(224,108,27,0.25) 0%, transparent 55%)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        <div
+          style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
+            position: 'relative',
+            zIndex: 1,
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0,1.4fr) minmax(0,1fr)',
+            gap: '40px',
             alignItems: 'center',
-            gap: '12px',
-            padding: '12px 24px',
-            background: 'rgba(224, 108, 27, 0.15)',
-            border: '1px solid rgba(224, 108, 27, 0.3)',
-            borderRadius: '50px',
-            marginBottom: '32px',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <Star size={18} fill="currentColor" />
-            <span style={{ fontSize: '16px', fontWeight: '600' }}>
-              {settings?.home_hero_badge || 'Kurumsal Çözüm Ortağınız'}
-            </span>
-          </div>
-          
-          <h1
-            style={{
-              fontSize: '64px',
-              fontWeight: '800',
-              marginBottom: '24px',
-              letterSpacing: '-1.5px',
-              lineHeight: '1.1',
-              color: settings?.home_hero_text_color || '#FFFFFF',
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-            className="hero-title"
-          >
-            {settings?.home_hero_title || 'Profesyonel Çözümler, '}
-            <span style={{ 
-              background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              display: 'block'
-            }}>
-              Güvenilir Hizmet
-            </span>
-          </h1>
-          <p
-            style={{
-              fontSize: '22px',
-              marginBottom: '40px',
-              opacity: 0.95,
-              maxWidth: '700px',
-              margin: '0 auto 40px',
-              lineHeight: '1.6',
-              color: settings?.home_hero_text_color || '#FFFFFF'
-            }}
-          >
-            {settings?.home_hero_subtitle || 'Sektörünüz için özel çözümler ve en iyi fiyat garantisi ile yanınızdayız'}
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            <Link
-              to="/urunler"
+          }}
+          className="hero-grid"
+        >
+          {/* Sol taraf – metin */}
+          <div>
+            <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '12px',
-                padding: '16px 32px',
-                background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
-                color: 'white',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '17px',
-                fontWeight: '700',
-                boxShadow: '0 8px 16px rgba(224, 108, 27, 0.3)',
-                transition: 'all 0.3s ease',
-                border: 'none'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 12px 24px rgba(224, 108, 27, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 16px rgba(224, 108, 27, 0.3)';
-              }}
-            >
-              Ürünleri Keşfet
-              <ArrowRight size={22} />
-            </Link>
-            <Link
-              to="/iletisim"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '16px 32px',
-                background: 'rgba(255,255,255,0.15)',
-                color: 'white',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '17px',
-                fontWeight: '700',
-                border: '2px solid rgba(255,255,255,0.3)',
+                gap: '8px',
+                padding: '8px 18px',
+                borderRadius: '999px',
+                background: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.35)',
+                marginBottom: '24px',
                 backdropFilter: 'blur(10px)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                fontSize: '14px',
+                fontWeight: '600',
               }}
             >
-              İletişime Geç
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section style={{ padding: '80px 24px', background: 'white' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div className="grid grid-4" style={{ gap: '32px' }}>
-            {stats.map((stat, index) => (
-              <div key={index} style={{ textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '48px', 
-                  fontWeight: '800', 
-                  color: '#221E91',
-                  marginBottom: '8px',
-                  background: 'linear-gradient(135deg, #221E91, #e06c1b)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>
-                  {stat.number}
-                </div>
-                <div style={{ fontSize: '16px', color: 'var(--text-secondary)', fontWeight: '600' }}>
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section style={{ padding: '100px 24px', background: 'linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%)' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <div style={{ 
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 20px',
-              background: 'rgba(34, 30, 145, 0.1)',
-              color: '#221E91',
-              borderRadius: '50px',
-              fontSize: '14px',
-              fontWeight: '600',
-              marginBottom: '16px'
-            }}>
-              <CheckCircle size={16} />
-              NEDEN BİZ?
+              <Star size={16} />
+              <span>
+                {settings?.home_hero_badge ||
+                  'Kurumsal tedarik için tek nokta'}
+              </span>
             </div>
-            <h2
+
+            <h1
+              className="hero-title"
               style={{
-                fontSize: '44px',
-                fontWeight: '800',
-                marginBottom: '16px',
-                color: 'var(--text-primary)'
+                fontSize: '52px',
+                lineHeight: 1.1,
+                fontWeight: 800,
+                letterSpacing: '-1.4px',
+                marginBottom: '18px',
+                textShadow: '0 12px 30px rgba(0,0,0,0.28)',
               }}
             >
-              {settings?.home_features_title || 'Üstün Hizmet Kalitesi'}
-            </h2>
-            <p style={{ fontSize: '18px', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
-              {settings?.home_features_subtitle || 'Müşteri memnuniyetini her şeyin üzerinde tutan profesyonel yaklaşımımız'}
+              {settings?.home_hero_title || 'İşiniz için akıllı tedarik'}
+              <span
+                style={{
+                  display: 'block',
+                  background:
+                    'linear-gradient(135deg,#fbbf24,#f97316,#fb7185)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                güvenilir ve hızlı çözümler
+              </span>
+            </h1>
+
+            <p
+              style={{
+                fontSize: '18px',
+                maxWidth: '580px',
+                lineHeight: 1.7,
+                opacity: 0.95,
+                marginBottom: '28px',
+              }}
+            >
+              {settings?.home_hero_subtitle ||
+                'Gıda, endüstriyel ürünler ve tüketim malzemelerinde, stok derdi olmadan, adınıza özel fiyatlarla çalışıyoruz.'}
             </p>
+
+            {/* Hero CTA’lar */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '12px',
+                marginBottom: '18px',
+              }}
+            >
+              <Link
+                to="/urunler"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '14px 26px',
+                  borderRadius: '12px',
+                  background:
+                    'linear-gradient(135deg,#f97316,#f97316,#ec4899)',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  boxShadow: '0 12px 30px rgba(249,115,22,0.45)',
+                  transition: 'transform .2s, box-shadow .2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow =
+                    '0 16px 38px rgba(249,115,22,0.55)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow =
+                    '0 12px 30px rgba(249,115,22,0.45)';
+                }}
+              >
+                Ürünleri Keşfet
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                to="/iletisim"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '14px 22px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.55)',
+                  background: 'rgba(15,23,42,0.25)',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  backdropFilter: 'blur(14px)',
+                  transition:
+                    'background .2s, border-color .2s, transform .2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background =
+                    'rgba(15,23,42,0.45)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background =
+                    'rgba(15,23,42,0.25)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                Satış ile Görüş
+              </Link>
+            </div>
+
+            {/* Hero küçük bullet’lar */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '18px',
+                fontSize: '13px',
+                opacity: 0.92,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle size={16} />
+                <span>Minimum bürokrasi, hızlı teklif</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle size={16} />
+                <span>Esnek ödeme & sevkiyat planı</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle size={16} />
+                <span>Uzun vadeli iş ortaklığı yaklaşımı</span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-4" style={{ gap: '32px' }}>
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
+          {/* Sağ taraf – kart + mini ürün vitrini */}
+          <div
+            style={{
+              background: 'rgba(15,23,42,0.72)',
+              borderRadius: '26px',
+              padding: '24px 22px',
+              border: '1px solid rgba(148,163,184,0.4)',
+              boxShadow: '0 22px 55px rgba(15,23,42,0.75)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px',
+            }}
+          >
+            {/* Stats */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2,minmax(0,1fr))',
+                gap: '12px',
+                marginBottom: '4px',
+              }}
+            >
+              {stats.slice(0, 4).map((s, i) => (
                 <div
-                  key={index}
-                  className="card"
+                  key={i}
                   style={{
-                    padding: '40px 32px',
-                    textAlign: 'center',
-                    transition: 'all 0.3s ease',
-                    background: 'white',
+                    padding: '12px 10px',
                     borderRadius: '16px',
-                    border: '1px solid rgba(34, 30, 145, 0.1)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-8px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(34, 30, 145, 0.15)';
-                    e.currentTarget.style.borderColor = 'rgba(224, 108, 27, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
-                    e.currentTarget.style.borderColor = 'rgba(34, 30, 145, 0.1)';
+                    background:
+                      'radial-gradient(circle at 0 0, rgba(251,191,36,0.3), transparent 60%)',
+                    border: '1px solid rgba(148,163,184,0.3)',
                   }}
                 >
                   <div
                     style={{
-                      width: '72px',
-                      height: '72px',
-                      background: 'linear-gradient(135deg, #221E91 0%, #e06c1b 100%)',
-                      borderRadius: '16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto 24px',
-                      boxShadow: '0 8px 20px rgba(34, 30, 145, 0.3)'
-                    }}
-                  >
-                    <Icon size={32} color="white" />
-                  </div>
-                  <h3
-                    style={{
                       fontSize: '20px',
-                      fontWeight: '700',
-                      marginBottom: '12px',
-                      color: 'var(--text-primary)'
+                      fontWeight: 800,
+                      marginBottom: 2,
                     }}
                   >
-                    {feature.title}
-                  </h3>
-                  <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.7' }}>
-                    {feature.description}
-                  </p>
+                    {s.number}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: 'rgba(226,232,240,0.9)',
+                    }}
+                  >
+                    {s.label}
+                  </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '10px 12px',
+                borderRadius: '16px',
+                background:
+                  'linear-gradient(135deg,rgba(15,23,42,0.9),rgba(30,64,175,0.9))',
+              }}
+            >
+              <Users size={18} />
+              <span
+                style={{
+                  fontSize: '13px',
+                  color: 'rgba(226,232,240,0.95)',
+                }}
+              >
+                {settings?.home_cta_title ||
+                  'Bölgenizde 200+ işletme bizimle çalışıyor.'}
+              </span>
+            </div>
+
+            {/* Mini ürün scroller */}
+            <div
+              style={{
+                background: '#020617',
+                borderRadius: '18px',
+                padding: '12px',
+                border: '1px solid rgba(30,64,175,0.5)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: 10,
+                }}
+              >
+                <TrendingUp size={16} color="#4ade80" />
+                <span
+                  style={{
+                    fontSize: 13,
+                    color: 'rgba(226,232,240,0.95)',
+                    fontWeight: 600,
+                  }}
+                >
+                  Son eklenen ürünler
+                </span>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 10,
+                  overflowX: 'auto',
+                  paddingBottom: 4,
+                }}
+              >
+                {featuredProducts.slice(0, 5).map((p) => (
+                  <Link
+                    key={p.id}
+                    to={`/urun/${p.id}`}
+                    style={{
+                      minWidth: 120,
+                      maxWidth: 160,
+                      borderRadius: 14,
+                      background: '#020617',
+                      border: '1px solid rgba(51,65,85,0.9)',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      padding: '8px 8px 10px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 6,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '100%',
+                        height: 80,
+                        borderRadius: 10,
+                        background:
+                          'linear-gradient(135deg,#f8fafc,#e5e7eb)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {p.images?.[0] ? (
+                        <img
+                          src={
+                            p.images[0].startsWith('http')
+                              ? p.images[0]
+                              : `${BACKEND_URL}${p.images[0]}`
+                          }
+                          alt={p.name}
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            objectFit: 'contain',
+                          }}
+                        />
+                      ) : (
+                        <Package size={30} color="#1f2937" />
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: '#e5e7eb',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {p.name}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: '#9ca3af',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {p.category}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section style={{ padding: '100px 24px', background: 'white' }}>
+      {/* NEDEN BİZ BLOĞU */}
+      <section
+        style={{
+          padding: '64px 24px 40px',
+          background: '#F9FAFB',
+        }}
+      >
+        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,1fr)',
+              gap: 40,
+              alignItems: 'center',
+            }}
+            className="why-grid"
+          >
+            <div>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 14px',
+                  borderRadius: 999,
+                  background: 'rgba(34,30,145,0.08)',
+                  color: '#221E91',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  marginBottom: 12,
+                }}
+              >
+                <CheckCircle size={14} />
+                NEDEN BİZ?
+              </div>
+              <h2
+                style={{
+                  fontSize: 36,
+                  fontWeight: 800,
+                  marginBottom: 12,
+                  color: 'var(--text-primary)',
+                }}
+              >
+                {settings?.home_features_title ||
+                  'Satın alma süreçlerinizi sadeleştirin'}
+              </h2>
+              <p
+                style={{
+                  fontSize: 15,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.7,
+                  marginBottom: 24,
+                  maxWidth: 520,
+                }}
+              >
+                {settings?.home_features_subtitle ||
+                  'Birden fazla tedarikçiyle uğraşmak yerine, stok yönetimi ve satın alma operasyonlarınızı tek merkezden yönetmenizi sağlıyoruz.'}
+              </p>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2,minmax(0,1fr))',
+                  gap: 16,
+                  marginBottom: 20,
+                }}
+              >
+                {features.map((f, i) => {
+                  const Icon = f.icon;
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        gap: 10,
+                        padding: '10px 10px',
+                        borderRadius: 16,
+                        background: '#fff',
+                        border:
+                          '1px solid rgba(148,163,184,0.45)',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 999,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background:
+                            'linear-gradient(135deg,#221E91,#4338ca)',
+                          boxShadow:
+                            '0 6px 14px rgba(67,56,202,0.35)',
+                        }}
+                      >
+                        <Icon size={18} color="#fff" />
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            marginBottom: 2,
+                            color: '#111827',
+                          }}
+                        >
+                          {f.title}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: '#6b7280',
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {f.description}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 16,
+                  fontSize: 13,
+                  color: '#4b5563',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <Shield size={16} color="#22c55e" />
+                  <span>Uzun vadeli sözleşme opsiyonları</span>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <Truck size={16} color="#2563eb" />
+                  <span>Düzenli sevkiyat planlaması</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Yan kutu */}
+            <div
+              style={{
+                background: '#FFFFFF',
+                borderRadius: 24,
+                padding: 24,
+                border: '1px solid rgba(148,163,184,0.5)',
+                boxShadow: '0 16px 40px rgba(15,23,42,0.08)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginBottom: 14,
+                }}
+              >
+                <HeadphonesIcon size={22} color="#1d4ed8" />
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: '#111827',
+                  }}
+                >
+                  Satış ekibimizle hemen tanışın
+                </div>
+              </div>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: '#6b7280',
+                  lineHeight: 1.7,
+                  marginBottom: 16,
+                }}
+              >
+                İhtiyacınız olan ürün gruplarını paylaşın, sizin için özel
+                fiyat çalışalım. Tüm süreci tek bir panel üzerinden takip
+                edin.
+              </p>
+              <Link
+                to="/iletisim"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 18px',
+                  borderRadius: 12,
+                  background:
+                    'linear-gradient(135deg,#221E91,#1e3a8a)',
+                  color: '#fff',
+                  textDecoration: 'none',
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                İletişime Geç
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ÖNE ÇIKAN ÜRÜNLER */}
+      <section
+        style={{
+          padding: '56px 24px 80px',
+          background: '#FFFFFF',
+        }}
+      >
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '48px',
+              alignItems: 'flex-end',
+              gap: 16,
+              marginBottom: 32,
               flexWrap: 'wrap',
-              gap: '16px'
             }}
           >
             <div>
-              <div style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 20px',
-                background: 'rgba(224, 108, 27, 0.1)',
-                color: '#e06c1b',
-                borderRadius: '50px',
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '16px'
-              }}>
-                <TrendingUp size={16} />
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 14px',
+                  borderRadius: 999,
+                  background: 'rgba(248,113,113,0.12)',
+                  color: '#b91c1c',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  marginBottom: 10,
+                }}
+              >
+                <TrendingUp size={15} />
                 POPÜLER ÜRÜNLER
               </div>
-              <h2 style={{ fontSize: '44px', fontWeight: '800', marginBottom: '8px', color: 'var(--text-primary)' }}>
-                {settings?.home_products_title || 'Öne Çıkan Ürünlerimiz'}
+              <h2
+                style={{
+                  fontSize: 30,
+                  fontWeight: 800,
+                  color: 'var(--text-primary)',
+                  marginBottom: 4,
+                }}
+              >
+                {settings?.home_products_title ||
+                  'Öne çıkan ürün gruplarımız'}
               </h2>
-              <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>
-                {settings?.home_products_subtitle || 'Kalite ve güvenin bir araya geldiği seçkin ürün yelpazemiz'}
+              <p
+                style={{
+                  fontSize: 14,
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                {settings?.home_products_subtitle ||
+                  'En çok tercih edilen ürünleri hızlıca sepete ekleyip fiyat teklifi isteyin.'}
               </p>
             </div>
+
             <Link
               to="/urunler"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                padding: '14px 24px',
-                background: 'linear-gradient(135deg, #221E91, #1a1775)',
-                color: 'white',
-                borderRadius: '10px',
+                gap: 8,
+                padding: '10px 18px',
+                borderRadius: 999,
+                background: '#111827',
+                color: '#f9fafb',
                 textDecoration: 'none',
-                fontSize: '15px',
-                fontWeight: '700',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(34, 30, 145, 0.3)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(34, 30, 145, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(34, 30, 145, 0.3)';
+                fontSize: 13,
+                fontWeight: 600,
               }}
             >
-              Tüm Ürünler
-              <ArrowRight size={20} />
+              Tüm Ürünleri Gör
+              <ArrowRight size={16} />
             </Link>
           </div>
 
-          {products.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-              <Package size={64} color="var(--text-tertiary)" style={{ margin: '0 auto 16px' }} />
-              <p style={{ fontSize: '18px', color: 'var(--text-secondary)' }}>Henüz ürün eklenmemiş</p>
+          {featuredProducts.length === 0 ? (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '60px 20px',
+              }}
+            >
+              <Package
+                size={56}
+                color="var(--text-tertiary)"
+                style={{ marginBottom: 12 }}
+              />
+              <p
+                style={{
+                  fontSize: 16,
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                Henüz ürün eklenmemiş
+              </p>
             </div>
           ) : (
-            <div className="grid grid-3" style={{ gap: '32px' }}>
-              {(products.filter(p => p.is_featured).length > 0 
-                ? products.filter(p => p.is_featured) 
-                : products
-              ).slice(0, 6).map((product) => (
+            <div
+              className="products-grid"
+              style={{
+                display: 'grid',
+                gridTemplateColumns:
+                  'repeat(3,minmax(0,1fr))',
+                gap: 24,
+              }}
+            >
+              {featuredProducts.map((product) => (
                 <div
                   key={product.id}
                   className="card"
                   style={{
-                    padding: '0',
+                    borderRadius: 18,
                     overflow: 'hidden',
-                    transition: 'all 0.3s ease',
-                    background: 'white',
-                    borderRadius: '16px',
-                    border: '1px solid rgba(34, 30, 145, 0.1)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-8px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(34, 30, 145, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
+                    border:
+                      '1px solid rgba(226,232,240,0.9)',
+                    background: '#fff',
+                    boxShadow:
+                      '0 10px 26px rgba(15,23,42,0.06)',
+                    display: 'flex',
+                    flexDirection: 'column',
                   }}
                 >
-                  <Link to={`/urun/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link
+                    to={`/urun/${product.id}`}
+                    style={{
+                      textDecoration: 'none',
+                      color: 'inherit',
+                    }}
+                  >
                     <div
                       style={{
                         width: '100%',
-                        height: '240px',
-                        background: 'linear-gradient(135deg, #f8faff, #f0f4ff)',
+                        height: 210,
+                        background:
+                          'linear-gradient(135deg,#f8fafc,#e5e7eb)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         overflow: 'hidden',
-                        position: 'relative'
+                        position: 'relative',
                       }}
                     >
                       {product.images?.[0] ? (
                         <img
-                          src={product.images[0].startsWith('http') ? product.images[0] : `${BACKEND_URL}${product.images[0]}`}
+                          src={
+                            product.images[0].startsWith('http')
+                              ? product.images[0]
+                              : `${BACKEND_URL}${product.images[0]}`
+                          }
                           alt={product.name}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.parentElement.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#221E91" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div>';
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
                           }}
                         />
                       ) : (
-                        <Package size={56} color="#221E91" />
+                        <Package size={56} color="#9ca3af" />
                       )}
-                      <div style={{
-                        position: 'absolute',
-                        top: '16px',
-                        right: '16px',
-                        background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
-                        color: 'white',
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        fontSize: '12px',
-                        fontWeight: '700'
-                      }}>
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 12,
+                          right: 12,
+                          padding: '6px 10px',
+                          borderRadius: 999,
+                          background:
+                            'linear-gradient(135deg,#f97316,#fb7185)',
+                          color: '#fff',
+                          fontSize: 11,
+                          fontWeight: 700,
+                        }}
+                      >
                         FİYAT TEKLİFİ AL
                       </div>
                     </div>
-                    <div style={{ padding: '24px' }}>
-                      <span
+
+                    <div style={{ padding: '18px 18px 10px' }}>
+                      <div
                         style={{
-                          fontSize: '12px',
-                          fontWeight: '700',
-                          color: '#e06c1b',
+                          fontSize: 11,
+                          fontWeight: 700,
                           textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
+                          letterSpacing: '.05em',
+                          color: '#f97316',
+                          marginBottom: 4,
                         }}
                       >
                         {product.category}
-                      </span>
+                      </div>
                       <h3
                         style={{
-                          fontSize: '20px',
-                          fontWeight: '700',
-                          margin: '8px 0 12px',
-                          color: 'var(--text-primary)'
+                          fontSize: 17,
+                          fontWeight: 700,
+                          marginBottom: 6,
+                          color: '#111827',
                         }}
                       >
                         {product.name}
                       </h3>
                       <p
                         style={{
-                          fontSize: '14px',
-                          color: 'var(--text-secondary)',
-                          lineHeight: '1.6',
-                          marginBottom: '16px'
+                          fontSize: 13,
+                          color: '#6b7280',
+                          lineHeight: 1.6,
+                          marginBottom: 10,
                         }}
                       >
-                        {product.description?.substring(0, 90)}...
+                        {product.description?.substring(
+                          0,
+                          100,
+                        )}
+                        {product.description &&
+                          product.description.length > 100 &&
+                          '...'}
                       </p>
-                      {product.price_range && (
-                        <p
-                          style={{
-                            fontSize: '18px',
-                            fontWeight: '700',
-                            color: '#221E91'
-                          }}
-                        >
-                          {product.price_range}
-                        </p>
-                      )}
                     </div>
                   </Link>
-                  <div style={{ padding: '0 24px 24px' }}>
+
+                  <div
+                    style={{
+                      padding: '0 18px 16px',
+                      marginTop: 'auto',
+                    }}
+                  >
                     <Button
-                      onClick={() => handleAddToCart(product)}
+                      onClick={() =>
+                        handleAddToCart(product)
+                      }
                       style={{
                         width: '100%',
-                        background: 'linear-gradient(135deg, #221E91, #1a1775)',
-                        color: 'white',
-                        height: '48px',
-                        fontWeight: '700',
+                        height: 46,
+                        borderRadius: 999,
+                        fontSize: 14,
+                        fontWeight: 700,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '8px',
+                        gap: 8,
+                        background:
+                          'linear-gradient(135deg,#1e3a8a,#1d4ed8)',
+                        color: '#fff',
                         border: 'none',
-                        borderRadius: '10px',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #1a1775, #15135c)';
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(135deg, #221E91, #1a1775)';
-                        e.currentTarget.style.transform = 'translateY(0)';
                       }}
                     >
-                      <ShoppingCart size={20} />
+                      <ShoppingCart size={18} />
                       Teklif Sepetine Ekle
                     </Button>
                   </div>
@@ -593,106 +1021,119 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Alt CTA */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #221E91 0%, #1a1775 100%)',
-          color: 'white',
-          padding: '100px 24px',
+          padding: '72px 24px 96px',
+          background:
+            'radial-gradient(circle at top,#1e293b,#020617)',
+          color: '#e5e7eb',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
       >
-        <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0,
-          background: 'radial-gradient(circle at 80% 20%, rgba(224, 108, 27, 0.15) 0%, transparent 50%)',
-          pointerEvents: 'none'
-        }}></div>
-        
-        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          <div style={{ 
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 20px',
-            background: 'rgba(255,255,255,0.15)',
-            borderRadius: '50px',
-            fontSize: '14px',
-            fontWeight: '600',
-            marginBottom: '16px',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <Users size={16} />
-            SİZE ÖZEL ÇÖZÜMLER
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(circle at 80% 0%,rgba(249,115,22,0.22),transparent 55%)',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            maxWidth: 880,
+            margin: '0 auto',
+            textAlign: 'center',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '6px 16px',
+              borderRadius: 999,
+              background: 'rgba(15,23,42,0.8)',
+              border: '1px solid rgba(148,163,184,0.6)',
+              fontSize: 12,
+              fontWeight: 600,
+              marginBottom: 14,
+            }}
+          >
+            <Users size={15} />
+            SİZE ÖZEL TEKLİF
           </div>
-          
-          <h2 style={{ fontSize: '48px', fontWeight: '900', marginBottom: '24px', letterSpacing: '-1px' }}>
-            {settings?.home_cta_title || 'Profesyonel Çözüm Ortağınız Hazır'}
+          <h2
+            style={{
+              fontSize: 32,
+              fontWeight: 800,
+              marginBottom: 12,
+            }}
+          >
+            {settings?.home_cta_title ||
+              'Tüm tedarik sürecinizi birlikte planlayalım'}
           </h2>
-          <p style={{ fontSize: '20px', opacity: 0.95, marginBottom: '40px', lineHeight: '1.7' }}>
-            {settings?.home_cta_subtitle || 'İhtiyaçlarınıza özel çözümler ve rekabetçi fiyatlar için hemen teklif alın.'}
+          <p
+            style={{
+              fontSize: 15,
+              lineHeight: 1.8,
+              maxWidth: 620,
+              margin: '0 auto 26px',
+              color: '#cbd5f5',
+            }}
+          >
+            {settings?.home_cta_subtitle ||
+              'İhtiyaç listenizi iletin, ürün gruplarına göre ayrı ayrı fiyat çalışalım. Depo stok takibi, sevkiyat planı ve raporlama sürecini birlikte kurgulayalım.'}
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: 12,
+            }}
+          >
             <Link
               to="/urunler"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '12px',
-                padding: '18px 40px',
-                background: 'linear-gradient(135deg, #e06c1b, #f0833a)',
-                color: 'white',
-                borderRadius: '12px',
+                gap: 10,
+                padding: '14px 30px',
+                borderRadius: 999,
+                background:
+                  'linear-gradient(135deg,#f97316,#fb7185)',
+                color: '#fff',
                 textDecoration: 'none',
-                fontSize: '18px',
-                fontWeight: '800',
-                boxShadow: '0 8px 16px rgba(224, 108, 27, 0.3)',
-                transition: 'all 0.3s ease',
-                border: 'none'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 12px 24px rgba(224, 108, 27, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 8px 16px rgba(224, 108, 27, 0.3)';
+                fontSize: 15,
+                fontWeight: 800,
               }}
             >
               Ürünleri İncele
-              <ArrowRight size={24} />
+              <ArrowRight size={18} />
             </Link>
             <Link
               to="/iletisim"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '12px',
-                padding: '18px 40px',
-                background: 'rgba(255,255,255,0.15)',
-                color: 'white',
-                borderRadius: '12px',
+                gap: 10,
+                padding: '14px 26px',
+                borderRadius: 999,
+                border: '1px solid rgba(148,163,184,0.9)',
+                color: '#e5e7eb',
                 textDecoration: 'none',
-                fontSize: '18px',
-                fontWeight: '800',
-                border: '2px solid rgba(255,255,255,0.3)',
-                backdropFilter: 'blur(10px)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.25)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+                fontSize: 14,
+                fontWeight: 600,
+                background: 'rgba(15,23,42,0.75)',
               }}
             >
-              Hemen Arayın
+              Satış ile Hemen Görüş
             </Link>
           </div>
         </div>
@@ -700,43 +1141,37 @@ const HomePage = () => {
 
       <Footer settings={settings} />
 
+      {/* Responsive küçük dokunuşlar */}
       <style>{`
+        .hero-title {
+          font-size: 52px;
+        }
+
+        @media (max-width: 1024px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+          }
+          .why-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
         @media (max-width: 768px) {
           .hero-title {
-            font-size: 40px !important;
+            font-size: 36px !important;
           }
-          .grid-4 {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .grid-3 {
-            grid-template-columns: 1fr;
+          .products-grid {
+            grid-template-columns: 1fr !important;
           }
         }
-        
+
         @media (max-width: 480px) {
-          .grid-4 {
-            grid-template-columns: 1fr;
+          .hero-title {
+            font-size: 30px !important;
           }
-        }
-        
-        .grid {
-          display: grid;
-        }
-        
-        .grid-4 {
-          grid-template-columns: repeat(4, 1fr);
-        }
-        
-        .grid-3 {
-          grid-template-columns: repeat(3, 1fr);
-        }
-        
-        .card {
-          transition: all 0.3s ease;
         }
       `}</style>
 
-      {/* Campaign Popup */}
       <CampaignPopup />
     </div>
   );

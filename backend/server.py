@@ -855,25 +855,27 @@ async def change_admin_password(
     data: dict,
     admin: dict = Depends(get_current_admin)
 ):
-    """Change admin password"""
-    global ADMIN_PASSWORD_HASH
-    
+    """Change admin password (DB üzerinden)"""
     current_password = data.get('current_password')
     new_password = data.get('new_password')
     
     if not current_password or not new_password:
         raise HTTPException(status_code=400, detail="Tüm alanlar gereklidir")
     
-    # Verify current password
-    if not verify_password(current_password, ADMIN_PASSWORD_HASH):
-        raise HTTPException(status_code=401, detail="Mevcut şifre yanlış")
+    # DB'deki hash ile mevcut şifreyi doğrula
+    if not verify_password(current_password, admin["password_hash"]):
+      raise HTTPException(status_code=401, detail="Mevcut şifre yanlış")
     
-    # Update password (Note: In production, this should update database)
-    ADMIN_PASSWORD_HASH = get_password_hash(new_password)
+    new_hash = get_password_hash(new_password)
+    
+    # Admin tablosundaki şifreyi güncelle
+    await db.admins.update_one(
+        {"id": admin["id"]},
+        {"$set": {"password_hash": new_hash}}
+    )
     
     return {"message": "Şifre başarıyla güncellendi"}
-
-
+    
 # Admin Customer Management endpoints
 @api_router.get("/admin/customers")
 async def get_all_customers(admin: dict = Depends(get_current_admin)):

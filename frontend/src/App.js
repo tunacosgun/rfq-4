@@ -55,6 +55,7 @@ function App() {
               <Route path="/iletisim" element={<ContactPage />} />
               <Route path="/urun/:id" element={<ProductDetailPage />} />
               <Route path="/teklif-sepeti" element={<QuoteCartPage />} />
+              <Route path="/sepet" element={<QuoteCartPage />} />
               <Route path="/teklif-gonder" element={<QuoteFormPage />} />
 
               {/* Admin Routes */}
