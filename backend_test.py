@@ -5,7 +5,7 @@ from datetime import datetime
 import base64
 
 class TurkishQuoteSystemTester:
-    def __init__(self, base_url="https://rfqmaster-ui.preview.emergentagent.com"):
+    def __init__(self, base_url="https://quotepro-6.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.auth_header = None
