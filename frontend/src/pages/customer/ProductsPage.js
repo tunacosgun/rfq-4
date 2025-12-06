@@ -125,15 +125,16 @@ const ProductsPage = () => {
             <button
               onClick={() => setSelectedCategory('all')}
               style={{
-                padding: '10px 20px',
-                borderRadius: '24px',
-                border: selectedCategory === 'all' ? 'none' : '1px solid #D1D5DB',
-                background: selectedCategory === 'all' ? '#221E91' : 'white',
-                color: selectedCategory === 'all' ? 'white' : '#374151',
-                fontSize: '14px',
+                padding: '12px 24px',
+                borderRadius: '12px',
+                border: selectedCategory === 'all' ? '2px solid #e06c1b' : '2px solid #E5E7EB',
+                background: selectedCategory === 'all' ? '#e06c1b' : 'white',
+                color: selectedCategory === 'all' ? 'white' : '#6B7280',
+                fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s',
+                boxShadow: selectedCategory === 'all' ? '0 4px 12px rgba(224, 108, 27, 0.3)' : 'none',
               }}
             >
               Tümü ({products.length})
@@ -145,15 +146,16 @@ const ProductsPage = () => {
                   key={category.id}
                   onClick={() => setSelectedCategory(category.name)}
                   style={{
-                    padding: '10px 20px',
-                    borderRadius: '24px',
-                    border: selectedCategory === category.name ? 'none' : '1px solid #D1D5DB',
-                    background: selectedCategory === category.name ? '#221E91' : 'white',
-                    color: selectedCategory === category.name ? 'white' : '#374151',
-                    fontSize: '14px',
+                    padding: '12px 24px',
+                    borderRadius: '12px',
+                    border: selectedCategory === category.name ? '2px solid #e06c1b' : '2px solid #E5E7EB',
+                    background: selectedCategory === category.name ? '#e06c1b' : 'white',
+                    color: selectedCategory === category.name ? 'white' : '#6B7280',
+                    fontSize: '15px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.3s',
+                    boxShadow: selectedCategory === category.name ? '0 4px 12px rgba(224, 108, 27, 0.3)' : 'none',
                   }}
                 >
                   {category.name} ({count})
