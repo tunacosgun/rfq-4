@@ -536,7 +536,7 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Comprehensive Frontend E2E Testing - User Report: 'sayfalar hata veriyor'"
+    - "Balance Management End-to-End Test"
   stuck_tasks: 
     - "Mobile Responsive Design"
     - "Quote Creation Process"
