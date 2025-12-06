@@ -3,8 +3,9 @@ import sys
 import json
 from datetime import datetime
 import base64
+import time
 
-class TurkishQuoteSystemTester:
+class ComprehensiveE2ETester:
     def __init__(self, base_url="https://quotepro-6.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
