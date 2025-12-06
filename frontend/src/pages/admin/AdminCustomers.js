@@ -135,6 +135,7 @@ const AdminCustomers = () => {
                 <th style={styles.th}>E-posta</th>
                 <th style={styles.th}>Şirket</th>
                 <th style={styles.th}>Telefon</th>
+                <th style={styles.th}>Bakiye</th>
                 <th style={styles.th}>Teklif Sayısı</th>
                 <th style={styles.th}>Kayıt Tarihi</th>
                 <th style={styles.th}>İşlemler</th>
@@ -143,7 +144,7 @@ const AdminCustomers = () => {
             <tbody>
               {filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={styles.emptyState}>
+                  <td colSpan="8" style={styles.emptyState}>
                     {searchTerm ? 'Aramanıza uygun müşteri bulunamadı' : 'Henüz kayıtlı müşteri yok'}
                   </td>
                 </tr>
@@ -161,6 +162,18 @@ const AdminCustomers = () => {
                     <td style={styles.td}>{customer.email}</td>
                     <td style={styles.td}>{customer.company || '-'}</td>
                     <td style={styles.td}>{customer.phone || '-'}</td>
+                    <td style={styles.td}>
+                      <span style={{ 
+                        padding: '4px 10px', 
+                        background: '#DBEAFE', 
+                        color: '#1E40AF', 
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        fontWeight: '600'
+                      }}>
+                        ₺{(customer.balance || 0).toLocaleString('tr-TR')}
+                      </span>
+                    </td>
                     <td style={styles.td}>
                       <span style={styles.quoteBadge}>{customer.quote_count}</span>
                     </td>
