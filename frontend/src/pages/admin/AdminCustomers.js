@@ -80,11 +80,13 @@ const AdminCustomers = () => {
 
 
   const handleEditBalance = (customer) => {
+    console.log('Bakiye modal açılıyor:', customer);
     setSelectedCustomer(customer);
     setBalanceAmount(0);
     setBalanceAction('add');
     setBalanceNote('');
     setShowBalanceModal(true);
+    console.log('Modal state:', true);
   };
 
   const handleUpdateBalance = async () => {
