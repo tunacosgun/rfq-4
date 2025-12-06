@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { Users, FileText, Search, Eye } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 
-const AdminCustomers = React.memo(() => {
+const AdminCustomers = () => {
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,10 +13,6 @@ const AdminCustomers = React.memo(() => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerQuotes, setCustomerQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [showBalanceModal, setShowBalanceModal] = useState(false);
-  const [balanceAmount, setBalanceAmount] = useState(0);
-  const [balanceAction, setBalanceAction] = useState('set'); // 'set', 'add', 'subtract'
-  const [balanceNote, setBalanceNote] = useState('');
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -275,12 +272,7 @@ const AdminCustomers = React.memo(() => {
                           Teklifler
                         </button>
                         <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log('Bakiye butonuna tıklandı', customer);
-                            handleEditBalance(customer);
-                          }}
+                          onClick={() => navigate(`/admin/musteriler/bakiye/${customer.id}`)}
                           style={{ 
                             padding: '8px 14px',
                             background: '#10B981',
@@ -288,7 +280,7 @@ const AdminCustomers = React.memo(() => {
                             border: 'none',
                             borderRadius: '6px',
                             cursor: 'pointer',
-                            fontSize: '16px',
+                            fontSize: '15px',
                             fontWeight: '700',
                             display: 'flex',
                             alignItems: 'center',
@@ -297,9 +289,10 @@ const AdminCustomers = React.memo(() => {
                           }}
                           onMouseEnter={(e) => e.target.style.background = '#059669'}
                           onMouseLeave={(e) => e.target.style.background = '#10B981'}
-                          title="Bakiye İşlemi"
+                          title="Bakiye İşlemi - Yeni Sayfada Aç"
                         >
                           💰 Bakiye
+                          <ExternalLink size={14} />
                         </button>
                       </div>
                     </td>
