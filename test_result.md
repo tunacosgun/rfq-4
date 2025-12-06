@@ -514,6 +514,21 @@ frontend:
         agent: "testing"
         comment: "✅ MAJOR SUCCESS! HEADER: Desktop 'Müşteri Girişi' link visible, mobile hamburger menu working, after login shows user name/Panelim button (minor desktop click issue). BRANDS PAGE: Loads correctly, shows 'Henüz tanımlı marka bulunmuyor' message, search functional, no console errors. NAVBAR: All 5 links working. CUSTOMER FLOWS: Registration (5 fields) and login working perfectly, new user created and authenticated successfully. CONTACT FORM: Submission successful with toast. PRODUCTS: 12 products displaying, 'Sepete Ekle' working. MOBILE: No horizontal overflow at 375px, fully responsive. Overall: Critical regression tests passed with 1 minor desktop header click interception issue."
 
+  - task: "Balance Management End-to-End Test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/admin/AdminCustomers.js, /app/frontend/src/pages/admin/AdminBalanceEdit.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "BALANCE MANAGEMENT END-TO-END TEST - Testing complete balance management flow: Admin login → Navigate to Müşteriler → Add Balance → Subtract Balance → Set Balance → Verification"
+      - working: true
+        agent: "testing"
+        comment: "✅ BALANCE MANAGEMENT END-TO-END TEST COMPLETED SUCCESSFULLY! All operations working perfectly: 1️⃣ Admin Login (admin/admin123) ✅ 2️⃣ Navigate to Müşteriler page (10 customers, 10 Bakiye buttons) ✅ 3️⃣ Balance management page navigation ✅ 4️⃣ Add Balance (+50): ₺100 → ₺150 ✅ 5️⃣ Subtract Balance (-20): ₺150 → ₺130 ✅ 6️⃣ Set Balance (=100): ₺130 → ₺100 ✅ 7️⃣ Final verification: ₺100 confirmed ✅. Tested customer: Panel Test Customer. All balance operations (add/subtract/set) working with proper redirects, success messages, and balance updates. Balance management system fully functional and ready for production use."
+
 metadata:
   created_by: "testing_agent"
   version: "1.2"
