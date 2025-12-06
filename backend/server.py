@@ -877,6 +877,9 @@ async def get_visitors(credentials: HTTPBasicCredentials = Depends(security)):
         visitors = await db.visitors.find({}, {"_id": 0}).sort("timestamp", -1).limit(500).to_list(500)
         return visitors
     except Exception as e:
+        logger.error(f"Visitors fetch error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # ==================== BALANCE LOG ====================
 
