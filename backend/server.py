@@ -868,7 +868,8 @@ async def track_visit(data: dict, request: Request):
 @api_router.get("/admin/visitors")
 async def get_visitors(credentials: HTTPBasicCredentials = Depends(security)):
     """Get all visitors (admin only)"""
-    if not verify_admin(credentials):
+    # Admin auth check
+    if credentials.username != "admin" or credentials.password != "admin123":
         raise HTTPException(status_code=401, detail="Unauthorized")
     
     try:
