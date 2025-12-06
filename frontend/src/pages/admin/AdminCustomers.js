@@ -272,6 +272,61 @@ const AdminCustomers = () => {
                           <p style={styles.quoteMessage}>{quote.message}</p>
                         )}
                         <div style={styles.quoteProducts}>
+
+        {/* Balance Edit Modal */}
+        {showBalanceModal && (
+          <div style={styles.modalOverlay} onClick={() => setShowBalanceModal(false)}>
+            <div style={{ ...styles.modalContent, maxWidth: '400px' }} onClick={(e) => e.stopPropagation()}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
+                Bakiye Düzenle
+              </h2>
+              <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '20px' }}>
+                <strong>{selectedCustomer?.name}</strong> için bakiye belirleyin
+              </p>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
+                  Bakiye (₺)
+                </label>
+                <input
+                  type="number"
+                  value={balanceAmount}
+                  onChange={(e) => setBalanceAmount(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    fontSize: '16px',
+                    border: '1px solid #D1D5DB',
+                    borderRadius: '8px',
+                  }}
+                  placeholder="0.00"
+                  step="0.01"
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <Button
+                  onClick={() => setShowBalanceModal(false)}
+                  variant="outline"
+                  style={{ padding: '10px 20px' }}
+                >
+                  İptal
+                </Button>
+                <Button
+                  onClick={handleUpdateBalance}
+                  style={{ 
+                    padding: '10px 20px',
+                    background: '#10B981',
+                    color: 'white',
+                  }}
+                >
+                  Kaydet
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
                           {quote.items.map((item, idx) => (
                             <div key={idx} style={styles.productTag}>
                               {item.product_name} (×{item.quantity})
