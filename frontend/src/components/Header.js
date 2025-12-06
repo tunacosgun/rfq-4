@@ -427,7 +427,7 @@ const ModernHeader = ({ settings }) => {
 
         {/* CTA Button */}
         <Link
-          to="/teklif-sepeti"   // 🔴 Burayı da düzelttik
+          to="/sepet"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -435,7 +435,7 @@ const ModernHeader = ({ settings }) => {
             gap: '12px',
             padding: '16px',
             background: cartBgColor,
-            color: 'white',
+            color: '#FFFFFF',
             borderRadius: '12px',
             textDecoration: 'none',
             fontSize: '16px',
@@ -443,8 +443,8 @@ const ModernHeader = ({ settings }) => {
             marginTop: '24px',
           }}
         >
-          <ShoppingCart size={20} />
-          {cartText}
+          <ShoppingCart size={20} color="#FFFFFF" />
+          <span style={{ color: '#FFFFFF' }}>{cartText}</span>
         </Link>
 
         {/* Logout Button */}
