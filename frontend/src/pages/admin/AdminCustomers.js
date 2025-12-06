@@ -12,6 +12,8 @@ const AdminCustomers = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerQuotes, setCustomerQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showBalanceModal, setShowBalanceModal] = useState(false);
+  const [balanceAmount, setBalanceAmount] = useState(0);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -71,6 +73,36 @@ const AdminCustomers = () => {
       }
     } catch (error) {
       toast.error('Teklifler yüklenemedi');
+    }
+  };
+
+
+  const handleEditBalance = (customer) => {
+    setSelectedCustomer(customer);
+    setBalanceAmount(customer.balance || 0);
+    setShowBalanceModal(true);
+  };
+
+  const handleUpdateBalance = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/admin/customers/${selectedCustomer.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Basic ' + btoa('admin:admin123'),
+        },
+        body: JSON.stringify({ balance: parseFloat(balanceAmount) }),
+      });
+
+      if (response.ok) {
+        toast.success('Bakiye güncellendi');
+        setShowBalanceModal(false);
+        fetchCustomers();
+      } else {
+        toast.error('Bakiye güncellenemedi');
+      }
+    } catch (error) {
+      toast.error('Bir hata oluştu');
     }
   };
 
