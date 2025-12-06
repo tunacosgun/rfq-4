@@ -4,7 +4,7 @@ import { Users, FileText, Search, Eye } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 
-const AdminCustomers = () => {
+const AdminCustomers = React.memo(() => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -780,5 +780,7 @@ const styles = {
     fontSize: '12px',
   },
 };
+
+});
 
 export default AdminCustomers;
