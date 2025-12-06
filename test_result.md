@@ -506,7 +506,7 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Comprehensive E2E Backend Testing - User Report: 'sayfalar hata veriyor'"
+    - "Comprehensive Frontend E2E Testing - User Report: 'sayfalar hata veriyor'"
   stuck_tasks: 
     - "Mobile Responsive Design"
     - "Quote Creation Process"
