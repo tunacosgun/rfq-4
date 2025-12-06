@@ -506,12 +506,7 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Tab-Based Customer Panel Interface"
-    - "Profile Information Editing"
-    - "Email Duplicate Control"
-    - "Quotes Tab Functionality"
-    - "Security Tab Password Change"
-    - "Customer Panel Responsive Design"
+    - "Comprehensive E2E Backend Testing - User Report: 'sayfalar hata veriyor'"
   stuck_tasks: 
     - "Mobile Responsive Design"
     - "Quote Creation Process"
