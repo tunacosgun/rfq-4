@@ -87,9 +87,9 @@ const AdminCustomers = React.memo(() => {
     setShowBalanceModal(true);
   }, []);
 
-  const handleUpdateBalance = async () => {
+  const handleUpdateBalance = useCallback(async () => {
     try {
-      let newBalance = selectedCustomer.balance || 0;
+      let newBalance = selectedCustomer?.balance || 0;
       const amount = parseFloat(balanceAmount);
 
       if (isNaN(amount) || amount < 0) {
@@ -110,20 +110,17 @@ const AdminCustomers = React.memo(() => {
         newBalance = amount;
       }
 
-      const response = await fetch(`${backendUrl}/api/admin/customers/${selectedCustomer.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa('admin:admin123'),
-        },
-        body: JSON.stringify({ 
-          balance: newBalance,
+      // Parallel API calls for speed
+      const [updateResponse] = await Promise.all([
+        fetch(`${backendUrl}/api/admin/customers/${selectedCustomer.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Basic ' + btoa('admin:admin123'),
+          },
+          body: JSON.stringify({ balance: newBalance }),
         }),
-      });
-
-      if (response.ok) {
-        // Log the transaction
-        await fetch(`${backendUrl}/api/admin/balance-log`, {
+        fetch(`${backendUrl}/api/admin/balance-log`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -138,18 +135,27 @@ const AdminCustomers = React.memo(() => {
             new_balance: newBalance,
             note: balanceNote,
           }),
-        });
+        })
+      ]);
 
+      if (updateResponse.ok) {
+        // Optimistic update - don't wait for fetchCustomers
+        setCustomers(prev => prev.map(c => 
+          c.id === selectedCustomer.id ? { ...c, balance: newBalance } : c
+        ));
+        setFilteredCustomers(prev => prev.map(c => 
+          c.id === selectedCustomer.id ? { ...c, balance: newBalance } : c
+        ));
+        
         toast.success('Bakiye güncellendi');
         setShowBalanceModal(false);
-        fetchCustomers();
       } else {
         toast.error('Bakiye güncellenemedi');
       }
     } catch (error) {
       toast.error('Bir hata oluştu');
     }
-  };
+  }, [selectedCustomer, balanceAmount, balanceAction, balanceNote, backendUrl]);
 
   const handleCloseModal = () => {
     setShowModal(false);
