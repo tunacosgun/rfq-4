@@ -509,7 +509,7 @@ const CustomerPanelNew = () => {
                           ))}
                         </div>
 
-                        {quote.pricing && quote.pricing.length > 0 && (
+                        {quote.pricing && quote.pricing.length > 0 && quote.status === 'fiyat_verildi' && (
                           <div style={{ 
                             padding: '16px', 
                             background: '#F0FDF4', 
@@ -517,7 +517,99 @@ const CustomerPanelNew = () => {
                             border: '1px solid #BBF7D0'
                           }}>
                             <strong style={{ display: 'block', marginBottom: '12px', color: '#065F46' }}>
-                              Fiyat Detayları:
+                              Fiyat Detayları - Ürün Seçin:
+                            </strong>
+                            {quote.pricing.map((price, idx) => {
+                              const isSelected = (selectedItems[quote.id] || []).includes(idx);
+                              return (
+                                <div 
+                                  key={idx} 
+                                  style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center',
+                                    gap: '12px',
+                                    padding: '10px 12px',
+                                    background: isSelected ? '#D1FAE5' : '#F9FAFB', 
+                                    borderRadius: '6px',
+                                    marginBottom: '8px',
+                                    fontSize: '14px',
+                                    color: '#047857',
+                                    cursor: 'pointer',
+                                    border: isSelected ? '2px solid #10B981' : '2px solid transparent',
+                                    transition: 'all 0.2s'
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleItemSelection(quote.id, idx);
+                                  }}
+                                >
+                                  <input 
+                                    type="checkbox" 
+                                    checked={isSelected}
+                                    onChange={() => toggleItemSelection(quote.id, idx)}
+                                    onClick={(e) => e.stopPropagation()}
+                                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                                  />
+                                  <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between' }}>
+                                    <span>{price.product_name}</span>
+                                    <span style={{ fontWeight: '600' }}>
+                                      ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            <div style={{
+                              marginTop: '12px',
+                              paddingTop: '12px',
+                              borderTop: '1px solid #BBF7D0',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              fontWeight: '700',
+                              fontSize: '16px',
+                              color: '#065F46'
+                            }}>
+                              <span>Seçili Ürünler Toplamı:</span>
+                              <span>
+                                ₺{calculateSelectedTotal(quote).toLocaleString('tr-TR')}
+                              </span>
+                            </div>
+                            
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleConvertToOrder(quote.id);
+                              }}
+                              style={{
+                                width: '100%',
+                                marginTop: '16px',
+                                padding: '14px',
+                                background: '#10B981',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                              }}
+                              onMouseEnter={(e) => e.target.style.background = '#059669'}
+                              onMouseLeave={(e) => e.target.style.background = '#10B981'}
+                            >
+                              Seçili Ürünlerle Sipariş Oluştur ({(selectedItems[quote.id] || []).length} ürün)
+                            </button>
+                          </div>
+                        )}
+                        
+                        {quote.pricing && quote.pricing.length > 0 && quote.status === 'onaylandi' && (
+                          <div style={{ 
+                            padding: '16px', 
+                            background: '#DBEAFE', 
+                            borderRadius: '8px',
+                            border: '1px solid #93C5FD'
+                          }}>
+                            <strong style={{ display: 'block', marginBottom: '12px', color: '#1E40AF' }}>
+                              Sipariş Detayları:
                             </strong>
                             {quote.pricing.map((price, idx) => (
                               <div key={idx} style={{ 
@@ -525,7 +617,7 @@ const CustomerPanelNew = () => {
                                 justifyContent: 'space-between',
                                 marginBottom: '8px',
                                 fontSize: '14px',
-                                color: '#047857'
+                                color: '#1E40AF'
                               }}>
                                 <span>{price.product_name}</span>
                                 <span style={{ fontWeight: '600' }}>
@@ -536,12 +628,12 @@ const CustomerPanelNew = () => {
                             <div style={{
                               marginTop: '12px',
                               paddingTop: '12px',
-                              borderTop: '1px solid #BBF7D0',
+                              borderTop: '1px solid #93C5FD',
                               display: 'flex',
                               justifyContent: 'space-between',
                               fontWeight: '700',
                               fontSize: '16px',
-                              color: '#065F46'
+                              color: '#1E40AF'
                             }}>
                               <span>Toplam:</span>
                               <span>
