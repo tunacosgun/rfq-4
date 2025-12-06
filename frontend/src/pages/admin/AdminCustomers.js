@@ -780,6 +780,3 @@ const styles = {
     fontSize: '12px',
   },
 };
-
-
-export default AdminCustomers;
