@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { Users, FileText, Search, Eye } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -79,15 +79,13 @@ const AdminCustomers = React.memo(() => {
   };
 
 
-  const handleEditBalance = (customer) => {
-    console.log('Bakiye modal açılıyor:', customer);
+  const handleEditBalance = useCallback((customer) => {
     setSelectedCustomer(customer);
     setBalanceAmount(0);
     setBalanceAction('add');
     setBalanceNote('');
     setShowBalanceModal(true);
-    console.log('Modal state:', true);
-  };
+  }, []);
 
   const handleUpdateBalance = async () => {
     try {
