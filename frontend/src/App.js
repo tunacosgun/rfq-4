@@ -29,6 +29,7 @@ import AdminSecurity from './pages/admin/AdminSecurity';
 import AdminBrands from './pages/admin/AdminBrands';
 import AdminCustomers from './pages/admin/AdminCustomers';
 import AdminVisitors from './pages/admin/AdminVisitors';
+import AdminBalanceEdit from './pages/admin/AdminBalanceEdit';
 import CustomerLogin from './pages/customer/CustomerLogin';
 import CustomerRegister from './pages/customer/CustomerRegister';
 import CustomerPanel from './pages/customer/CustomerPanel';
@@ -73,6 +74,7 @@ function App() {
               <Route path="/admin/guvenlik" element={<AdminSecurity />} />
               <Route path="/admin/markalar" element={<AdminBrands />} />
               <Route path="/admin/ziyaretciler" element={<AdminVisitors />} />
+              <Route path="/admin/musteriler/bakiye/:customerId" element={<AdminBalanceEdit />} />
               <Route path="/admin/musteriler" element={<AdminCustomers />} />
               <Route path="/admin/ayarlar" element={<AdminSettings />} />
               <Route path="/admin/renkler" element={<ColorManagement />} />
