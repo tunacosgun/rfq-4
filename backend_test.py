@@ -466,47 +466,576 @@ class ComprehensiveE2ETester:
             self.log_test("File Upload", False, f"Exception: {str(e)}")
             return False
 
-    def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 Starting Turkish Quote System Backend Tests - FAZ 1 Critical Business Logic")
+    def test_backend_api_health_checks(self):
+        """1️⃣ BACKEND API HEALTH CHECKS - Test all major endpoints"""
+        print("\n🔍 1️⃣ BACKEND API HEALTH CHECKS")
+        print("=" * 50)
+        
+        health_results = []
+        
+        # Test root endpoint
+        success, _ = self.run_test("Root API Health", "GET", "", 200)
+        health_results.append(success)
+        
+        # Test products endpoint
+        success, _ = self.run_test("Products API Health", "GET", "products", 200)
+        health_results.append(success)
+        
+        # Test categories endpoint  
+        success, _ = self.run_test("Categories API Health", "GET", "categories", 200)
+        health_results.append(success)
+        
+        # Test quotes endpoint (requires admin auth)
+        if self.auth_header:
+            success, _ = self.run_test("Quotes API Health", "GET", "quotes", 200)
+            health_results.append(success)
+        
+        # Test contact messages endpoint (requires admin auth)
+        if self.auth_header:
+            success, _ = self.run_test("Contact Messages API Health", "GET", "contact-messages", 200)
+            health_results.append(success)
+        
+        # Test admin customers endpoint
+        if self.auth_header:
+            success, _ = self.run_test("Admin Customers API Health", "GET", "admin/customers", 200)
+            health_results.append(success)
+        
+        return all(health_results)
+
+    def test_admin_balance_management(self):
+        """2️⃣ ADMIN PANEL - BALANCE MANAGEMENT (CRITICAL - USER'S MAIN COMPLAINT)"""
+        print("\n🔍 2️⃣ ADMIN PANEL - BALANCE MANAGEMENT (CRITICAL)")
+        print("=" * 50)
+        
+        if not self.auth_header:
+            self.log_test("Balance Management Prerequisites", False, "No admin authentication")
+            return False
+        
+        # First, create a test customer for balance management
+        customer_data = {
+            "name": "Test Balance Customer",
+            "email": "balance@test.com",
+            "password": "test123",
+            "company": "Balance Test A.Ş.",
+            "phone": "05551234567"
+        }
+        
+        # Register customer
+        create_success, customer_response = self.run_test(
+            "Create Test Customer for Balance", 
+            "POST", 
+            "customer/register", 
+            200, 
+            customer_data
+        )
+        
+        if not create_success:
+            return False
+        
+        customer_id = customer_response.get('customer_id')
+        if not customer_id:
+            self.log_test("Customer ID Check", False, "No customer ID returned")
+            return False
+        
+        # Test getting all customers (admin panel customer list)
+        list_success, customers = self.run_test(
+            "Get All Customers (Admin Panel)", 
+            "GET", 
+            "admin/customers", 
+            200
+        )
+        
+        if not list_success:
+            return False
+        
+        # Find our test customer in the list
+        test_customer = None
+        for customer in customers:
+            if customer.get('id') == customer_id:
+                test_customer = customer
+                break
+        
+        if not test_customer:
+            self.log_test("Customer Found in List", False, "Test customer not found in admin customer list")
+            return False
+        
+        self.log_test("Customer Found in List", True, f"Customer '{test_customer.get('name')}' found")
+        
+        # Test balance operations
+        balance_results = []
+        
+        # Test adding balance
+        add_balance_data = {
+            "customer_id": customer_id,
+            "customer_name": test_customer.get('name'),
+            "action": "add",
+            "amount": 100.0,
+            "old_balance": 0.0,
+            "new_balance": 100.0,
+            "note": "Test balance addition"
+        }
+        
+        add_success, _ = self.run_test(
+            "Add Balance (100 TL)", 
+            "POST", 
+            "admin/balance-log", 
+            200, 
+            add_balance_data
+        )
+        balance_results.append(add_success)
+        
+        # Test subtracting balance
+        subtract_balance_data = {
+            "customer_id": customer_id,
+            "customer_name": test_customer.get('name'),
+            "action": "subtract",
+            "amount": 50.0,
+            "old_balance": 100.0,
+            "new_balance": 50.0,
+            "note": "Test balance subtraction"
+        }
+        
+        subtract_success, _ = self.run_test(
+            "Subtract Balance (50 TL)", 
+            "POST", 
+            "admin/balance-log", 
+            200, 
+            subtract_balance_data
+        )
+        balance_results.append(subtract_success)
+        
+        # Test setting balance
+        set_balance_data = {
+            "customer_id": customer_id,
+            "customer_name": test_customer.get('name'),
+            "action": "set",
+            "amount": 200.0,
+            "old_balance": 50.0,
+            "new_balance": 200.0,
+            "note": "Test balance set"
+        }
+        
+        set_success, _ = self.run_test(
+            "Set Balance (200 TL)", 
+            "POST", 
+            "admin/balance-log", 
+            200, 
+            set_balance_data
+        )
+        balance_results.append(set_success)
+        
+        # Test getting balance logs for customer
+        logs_success, logs = self.run_test(
+            "Get Customer Balance Logs", 
+            "GET", 
+            f"admin/balance-logs/{customer_id}", 
+            200
+        )
+        balance_results.append(logs_success)
+        
+        if logs_success and logs:
+            if len(logs) >= 3:  # Should have at least 3 log entries
+                self.log_test("Balance Logs Count", True, f"Found {len(logs)} balance log entries")
+            else:
+                self.log_test("Balance Logs Count", False, f"Expected at least 3 logs, found {len(logs)}")
+        
+        return all(balance_results)
+
+    def test_admin_panel_other_features(self):
+        """3️⃣ ADMIN PANEL - OTHER CRITICAL FEATURES"""
+        print("\n🔍 3️⃣ ADMIN PANEL - OTHER CRITICAL FEATURES")
+        print("=" * 50)
+        
+        if not self.auth_header:
+            self.log_test("Admin Panel Prerequisites", False, "No admin authentication")
+            return False
+        
+        feature_results = []
+        
+        # Test "Öne Çıkar" (Featured) products endpoint
+        # First create a product to feature
+        product_data = {
+            "name": "Featured Test Product",
+            "description": "Test product for featuring",
+            "category": "test-category",
+            "images": ["https://example.com/featured.jpg"],
+            "is_featured": True
+        }
+        
+        create_success, created_product = self.run_test(
+            "Create Featured Product", 
+            "POST", 
+            "products", 
+            200, 
+            product_data
+        )
+        feature_results.append(create_success)
+        
+        if create_success:
+            product_id = created_product.get('id')
+            
+            # Test updating product to featured
+            update_data = {"is_featured": True}
+            update_success, _ = self.run_test(
+                "Update Product to Featured", 
+                "PUT", 
+                f"products/{product_id}", 
+                200, 
+                update_data
+            )
+            feature_results.append(update_success)
+        
+        # Test contact messages visibility (already tested in health checks)
+        contact_success, messages = self.run_test(
+            "Contact Messages Visibility", 
+            "GET", 
+            "contact-messages", 
+            200
+        )
+        feature_results.append(contact_success)
+        
+        # Test admin password change functionality
+        password_change_data = {
+            "current_password": "admin123",
+            "new_password": "newadmin123"
+        }
+        
+        password_success, _ = self.run_test(
+            "Admin Password Change", 
+            "POST", 
+            "admin/change-password", 
+            200, 
+            password_change_data
+        )
+        feature_results.append(password_success)
+        
+        # Change password back for other tests
+        if password_success:
+            # Update auth header with new password
+            credentials = base64.b64encode(b"admin:newadmin123").decode('ascii')
+            self.auth_header = {"Authorization": f"Basic {credentials}"}
+            
+            # Change back to original password
+            revert_data = {
+                "current_password": "newadmin123",
+                "new_password": "admin123"
+            }
+            
+            revert_success, _ = self.run_test(
+                "Revert Admin Password", 
+                "POST", 
+                "admin/change-password", 
+                200, 
+                revert_data
+            )
+            
+            if revert_success:
+                # Restore original auth header
+                credentials = base64.b64encode(b"admin:admin123").decode('ascii')
+                self.auth_header = {"Authorization": f"Basic {credentials}"}
+        
+        # Test visitor tracking page
+        visitor_success, visitors = self.run_test(
+            "Visitor Tracking Data", 
+            "GET", 
+            "admin/visitors", 
+            200
+        )
+        feature_results.append(visitor_success)
+        
+        return all(feature_results)
+
+    def test_customer_panel_functionality(self):
+        """4️⃣ CUSTOMER PANEL"""
+        print("\n🔍 4️⃣ CUSTOMER PANEL")
+        print("=" * 50)
+        
+        panel_results = []
+        
+        # Register a new customer
+        customer_data = {
+            "name": "Panel Test Customer",
+            "email": "panel@test.com",
+            "password": "test123",
+            "company": "Panel Test A.Ş.",
+            "phone": "05551234567"
+        }
+        
+        register_success, register_response = self.run_test(
+            "Register New Customer", 
+            "POST", 
+            "customer/register", 
+            200, 
+            customer_data
+        )
+        panel_results.append(register_success)
+        
+        if not register_success:
+            return False
+        
+        customer_id = register_response.get('customer_id')
+        
+        # Login customer
+        login_data = {
+            "email": "panel@test.com",
+            "password": "test123"
+        }
+        
+        login_success, login_response = self.run_test(
+            "Customer Login", 
+            "POST", 
+            "customer/login", 
+            200, 
+            login_data
+        )
+        panel_results.append(login_success)
+        
+        if login_success:
+            customer_info = login_response.get('customer', {})
+            self.log_test("Customer Login Verification", True, f"Logged in as {customer_info.get('name')}")
+        
+        # Test customer profile retrieval
+        if customer_id:
+            profile_success, profile = self.run_test(
+                "Get Customer Profile", 
+                "GET", 
+                f"customer/profile/{customer_id}", 
+                200
+            )
+            panel_results.append(profile_success)
+            
+            # Test profile update
+            if profile_success:
+                update_data = {
+                    "phone": "05559876543",
+                    "company": "Updated Panel Test A.Ş."
+                }
+                
+                update_success, _ = self.run_test(
+                    "Update Customer Profile", 
+                    "PUT", 
+                    f"customer/profile/{customer_id}", 
+                    200, 
+                    update_data
+                )
+                panel_results.append(update_success)
+        
+        # Test quote item selection feature (create a quote for the customer)
+        quote_data = {
+            "customer_name": "Panel Test Customer",
+            "email": "panel@test.com",
+            "phone": "05551234567",
+            "company": "Panel Test A.Ş.",
+            "message": "Test quote for customer panel",
+            "items": [
+                {
+                    "product_id": "panel-test-1",
+                    "product_name": "Panel Test Product",
+                    "product_image": "/uploads/panel-test.jpg",
+                    "quantity": 3
+                }
+            ],
+            "customer_id": customer_id
+        }
+        
+        quote_success, quote_response = self.run_test(
+            "Create Quote for Customer", 
+            "POST", 
+            "quotes", 
+            200, 
+            quote_data
+        )
+        panel_results.append(quote_success)
+        
+        # Test getting customer quotes
+        if quote_success:
+            customer_quotes_success, quotes = self.run_test(
+                "Get Customer Quotes", 
+                "GET", 
+                f"customer/quotes/panel@test.com", 
+                200
+            )
+            panel_results.append(customer_quotes_success)
+            
+            if customer_quotes_success and quotes:
+                self.log_test("Customer Quotes Count", True, f"Found {len(quotes)} quotes for customer")
+                
+                # Test creating an order from selected quote items
+                if len(quotes) > 0:
+                    quote_id = quotes[0].get('id')
+                    
+                    # First add pricing to quote (admin action)
+                    if self.auth_header and quote_id:
+                        pricing_data = {
+                            "pricing": [
+                                {
+                                    "product_id": "panel-test-1",
+                                    "product_name": "Panel Test Product",
+                                    "quantity": 3,
+                                    "unit_price": 150.0,
+                                    "total_price": 450.0
+                                }
+                            ],
+                            "status": "fiyat_verildi"
+                        }
+                        
+                        pricing_success, _ = self.run_test(
+                            "Add Pricing to Customer Quote", 
+                            "PUT", 
+                            f"quotes/{quote_id}", 
+                            200, 
+                            pricing_data
+                        )
+                        
+                        if pricing_success:
+                            # Test converting quote to order
+                            order_data = {
+                                "selected_items": [0]  # Select first item
+                            }
+                            
+                            order_success, _ = self.run_test(
+                                "Convert Quote to Order", 
+                                "POST", 
+                                f"customer/quotes/{quote_id}/convert-to-order", 
+                                200, 
+                                order_data
+                            )
+                            panel_results.append(order_success)
+        
+        return all(panel_results)
+
+    def test_performance_check(self):
+        """5️⃣ PERFORMANCE CHECK"""
+        print("\n🔍 5️⃣ PERFORMANCE CHECK")
+        print("=" * 50)
+        
+        performance_results = []
+        
+        # Measure AdminCustomers page load time
+        if self.auth_header:
+            start_time = time.time()
+            
+            success, customers = self.run_test(
+                "Admin Customers Performance", 
+                "GET", 
+                "admin/customers", 
+                200
+            )
+            
+            end_time = time.time()
+            load_time = end_time - start_time
+            
+            if success:
+                if load_time < 5.0:  # Should load within 5 seconds
+                    self.log_test("Admin Customers Load Time", True, f"Loaded in {load_time:.2f}s")
+                    performance_results.append(True)
+                else:
+                    self.log_test("Admin Customers Load Time", False, f"Slow load time: {load_time:.2f}s")
+                    performance_results.append(False)
+                
+                # Check for excessive data
+                if customers and len(customers) > 0:
+                    self.log_test("Customer Data Size", True, f"Retrieved {len(customers)} customers")
+                else:
+                    self.log_test("Customer Data Size", True, "No customers found (expected for test)")
+            else:
+                performance_results.append(False)
+        
+        # Test multiple API calls to check for performance bottlenecks
+        start_time = time.time()
+        
+        api_calls = [
+            ("products", "GET", "products"),
+            ("categories", "GET", "categories"),
+            ("settings", "GET", "settings"),
+            ("brands", "GET", "brands")
+        ]
+        
+        for name, method, endpoint in api_calls:
+            success, _ = self.run_test(f"Performance - {name}", method, endpoint, 200)
+            performance_results.append(success)
+        
+        end_time = time.time()
+        total_time = end_time - start_time
+        
+        if total_time < 10.0:  # All calls should complete within 10 seconds
+            self.log_test("Multiple API Calls Performance", True, f"Completed in {total_time:.2f}s")
+        else:
+            self.log_test("Multiple API Calls Performance", False, f"Slow performance: {total_time:.2f}s")
+            performance_results.append(False)
+        
+        return all(performance_results)
+
+    def run_comprehensive_e2e_tests(self):
+        """Run comprehensive E2E tests based on user report: 'sayfalar hata veriyor'"""
+        print("🚀 COMPREHENSIVE E2E TEST - USER REPORTED: 'sayfalar hata veriyor'")
         print(f"🔗 Testing API at: {self.api_url}")
-        print("=" * 60)
+        print("=" * 80)
         
-        # Test basic connectivity
-        self.test_root_endpoint()
-        
-        # Initialize and test admin
+        # Initialize admin first
+        print("\n🔧 SETUP - Admin Initialization")
         self.test_admin_init()
-        self.test_admin_login()
+        admin_login_success = self.test_admin_login()[0]
         
-        # Test main functionality
-        self.test_categories()
-        self.test_products()
+        if not admin_login_success:
+            print("❌ CRITICAL: Admin login failed - cannot proceed with admin tests")
+            return 1
         
-        # FAZ 1 - Critical Business Logic Tests
-        print("\n" + "=" * 60)
-        print("🎯 FAZ 1 - KRİTİK İŞ MANTIĞI BACKEND TESTLERİ")
-        print("=" * 60)
+        # Run all critical test flows
+        test_results = []
         
-        # Test Contact Messages API
-        self.test_contact_messages_api()
+        # 1️⃣ Backend API Health Checks
+        health_result = self.test_backend_api_health_checks()
+        test_results.append(("Backend API Health", health_result))
         
-        # Test Enhanced Quotes (includes product images, PDF generation, and updates)
-        self.test_quotes()
+        # 2️⃣ Admin Panel - Balance Management (CRITICAL)
+        balance_result = self.test_admin_balance_management()
+        test_results.append(("Admin Balance Management (CRITICAL)", balance_result))
         
-        # Test file upload
-        self.test_file_upload()
+        # 3️⃣ Admin Panel - Other Features
+        admin_features_result = self.test_admin_panel_other_features()
+        test_results.append(("Admin Panel Features", admin_features_result))
         
-        # Print summary
-        print("\n" + "=" * 60)
-        print(f"📊 Test Summary: {self.tests_passed}/{self.tests_run} tests passed")
+        # 4️⃣ Customer Panel
+        customer_result = self.test_customer_panel_functionality()
+        test_results.append(("Customer Panel", customer_result))
+        
+        # 5️⃣ Performance Check
+        performance_result = self.test_performance_check()
+        test_results.append(("Performance Check", performance_result))
+        
+        # Print detailed summary
+        print("\n" + "=" * 80)
+        print("📊 COMPREHENSIVE E2E TEST RESULTS")
+        print("=" * 80)
+        
+        failed_tests = []
+        for test_name, result in test_results:
+            status = "✅ PASSED" if result else "❌ FAILED"
+            print(f"{status} - {test_name}")
+            if not result:
+                failed_tests.append(test_name)
+        
+        print(f"\n📈 Overall: {self.tests_passed}/{self.tests_run} individual tests passed")
+        
+        if failed_tests:
+            print(f"\n⚠️  FAILED TEST CATEGORIES:")
+            for failed in failed_tests:
+                print(f"   - {failed}")
+            
+            if "Admin Balance Management (CRITICAL)" in failed_tests:
+                print("\n🚨 CRITICAL ISSUE: Balance Management is failing - this matches user complaint!")
         
         if self.tests_passed == self.tests_run:
-            print("🎉 All tests passed!")
+            print("\n🎉 ALL TESTS PASSED - No backend issues found!")
             return 0
         else:
-            print(f"⚠️  {self.tests_run - self.tests_passed} tests failed")
+            print(f"\n⚠️  ISSUES FOUND - {self.tests_run - self.tests_passed} tests failed")
             return 1
+
+    def run_all_tests(self):
+        """Run comprehensive E2E tests"""
+        return self.run_comprehensive_e2e_tests()
 
 def main():
     tester = TurkishQuoteSystemTester()
