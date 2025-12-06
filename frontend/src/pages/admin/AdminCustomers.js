@@ -14,6 +14,10 @@ const AdminCustomers = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customerQuotes, setCustomerQuotes] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showBalanceModal, setShowBalanceModal] = useState(false);
+  const [balanceAmount, setBalanceAmount] = useState(0);
+  const [balanceAction, setBalanceAction] = useState('add');
+  const [balanceNote, setBalanceNote] = useState('');
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
