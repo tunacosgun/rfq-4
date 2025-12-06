@@ -1038,7 +1038,7 @@ class ComprehensiveE2ETester:
         return self.run_comprehensive_e2e_tests()
 
 def main():
-    tester = TurkishQuoteSystemTester()
+    tester = ComprehensiveE2ETester()
     return tester.run_all_tests()
 
 if __name__ == "__main__":
