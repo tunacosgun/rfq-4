@@ -321,17 +321,94 @@ const AdminCustomers = () => {
         {/* Balance Edit Modal */}
         {showBalanceModal && (
           <div style={styles.modalOverlay} onClick={() => setShowBalanceModal(false)}>
-            <div style={{ ...styles.modalContent, maxWidth: '400px' }} onClick={(e) => e.stopPropagation()}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '20px' }}>
-                Bakiye Düzenle
+            <div style={{ ...styles.modalContent, maxWidth: '500px' }} onClick={(e) => e.stopPropagation()}>
+              <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '12px' }}>
+                💰 Bakiye İşlemi
               </h2>
-              <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '20px' }}>
-                <strong>{selectedCustomer?.name}</strong> için bakiye belirleyin
-              </p>
+              <div style={{ 
+                background: '#F3F4F6', 
+                padding: '12px 16px', 
+                borderRadius: '8px', 
+                marginBottom: '24px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>Müşteri</div>
+                  <div style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedCustomer?.name}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '4px' }}>Mevcut Bakiye</div>
+                  <div style={{ fontSize: '18px', fontWeight: '700', color: '#3B82F6' }}>
+                    ₺{(selectedCustomer?.balance || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+              </div>
               
+              {/* Action Type */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>
+                  İşlem Tipi
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                  <button
+                    onClick={() => setBalanceAction('add')}
+                    style={{
+                      padding: '12px',
+                      border: balanceAction === 'add' ? '2px solid #10B981' : '2px solid #E5E7EB',
+                      background: balanceAction === 'add' ? '#D1FAE5' : 'white',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: balanceAction === 'add' ? '#059669' : '#6B7280',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    ➕ Ekle
+                  </button>
+                  <button
+                    onClick={() => setBalanceAction('subtract')}
+                    style={{
+                      padding: '12px',
+                      border: balanceAction === 'subtract' ? '2px solid #EF4444' : '2px solid #E5E7EB',
+                      background: balanceAction === 'subtract' ? '#FEE2E2' : 'white',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: balanceAction === 'subtract' ? '#DC2626' : '#6B7280',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    ➖ Düş
+                  </button>
+                  <button
+                    onClick={() => setBalanceAction('set')}
+                    style={{
+                      padding: '12px',
+                      border: balanceAction === 'set' ? '2px solid #F59E0B' : '2px solid #E5E7EB',
+                      background: balanceAction === 'set' ? '#FEF3C7' : 'white',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: balanceAction === 'set' ? '#D97706' : '#6B7280',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    ⚙️ Belirle
+                  </button>
+                </div>
+              </div>
+
+              {/* Amount */}
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
-                  Bakiye (₺)
+                  {balanceAction === 'add' ? 'Eklenecek Tutar (₺)' : 
+                   balanceAction === 'subtract' ? 'Düşülecek Tutar (₺)' : 
+                   'Yeni Bakiye (₺)'}
                 </label>
                 <input
                   type="number"
@@ -339,13 +416,55 @@ const AdminCustomers = () => {
                   onChange={(e) => setBalanceAmount(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '12px',
-                    fontSize: '16px',
-                    border: '1px solid #D1D5DB',
+                    padding: '14px',
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    border: '2px solid #D1D5DB',
                     borderRadius: '8px',
                   }}
                   placeholder="0.00"
                   step="0.01"
+                  min="0"
+                />
+                
+                {/* Preview */}
+                {balanceAmount > 0 && balanceAction !== 'set' && (
+                  <div style={{ 
+                    marginTop: '10px', 
+                    padding: '10px', 
+                    background: '#F9FAFB',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    color: '#374151'
+                  }}>
+                    Yeni bakiye: <strong>
+                      ₺{(
+                        balanceAction === 'add' 
+                          ? (selectedCustomer?.balance || 0) + parseFloat(balanceAmount || 0)
+                          : (selectedCustomer?.balance || 0) - parseFloat(balanceAmount || 0)
+                      ).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                    </strong>
+                  </div>
+                )}
+              </div>
+
+              {/* Note */}
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
+                  Not (Opsiyonel)
+                </label>
+                <input
+                  type="text"
+                  value={balanceNote}
+                  onChange={(e) => setBalanceNote(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    fontSize: '14px',
+                    border: '1px solid #D1D5DB',
+                    borderRadius: '8px',
+                  }}
+                  placeholder="Ödeme, sipariş, iade vb."
                 />
               </div>
 
@@ -353,19 +472,23 @@ const AdminCustomers = () => {
                 <Button
                   onClick={() => setShowBalanceModal(false)}
                   variant="outline"
-                  style={{ padding: '10px 20px' }}
+                  style={{ padding: '12px 24px' }}
                 >
                   İptal
                 </Button>
                 <Button
                   onClick={handleUpdateBalance}
                   style={{ 
-                    padding: '10px 20px',
-                    background: '#10B981',
+                    padding: '12px 24px',
+                    background: balanceAction === 'add' ? '#10B981' : 
+                                balanceAction === 'subtract' ? '#EF4444' : '#F59E0B',
                     color: 'white',
+                    fontWeight: '600'
                   }}
                 >
-                  Kaydet
+                  {balanceAction === 'add' ? '➕ Ekle' : 
+                   balanceAction === 'subtract' ? '➖ Düş' : 
+                   '⚙️ Güncelle'}
                 </Button>
               </div>
             </div>
