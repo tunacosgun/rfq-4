@@ -106,46 +106,6 @@ const Footer = ({ settings }) => {
                     <Facebook size={18} />
                   </a>
                 )}
-                {settings?.footer_twitter_url && settings.footer_twitter_url !== '#' && (
-                  <a
-                    href={settings.footer_twitter_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="footer-social-icon"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'rgba(255,255,255,0.1)',
-                      borderRadius: '8px',
-                      textDecoration: 'none'
-                    }}
-                  >
-                    <Twitter size={18} />
-                  </a>
-                )}
-                {settings?.footer_linkedin_url && settings.footer_linkedin_url !== '#' && (
-                  <a
-                    href={settings.footer_linkedin_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="footer-social-icon"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: 'rgba(255,255,255,0.1)',
-                      borderRadius: '8px',
-                      textDecoration: 'none'
-                    }}
-                  >
-                    <Linkedin size={18} />
-                  </a>
-                )}
                 {settings?.footer_instagram_url && settings.footer_instagram_url !== '#' && (
                   <a
                     href={settings.footer_instagram_url}
