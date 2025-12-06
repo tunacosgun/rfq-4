@@ -81,6 +81,61 @@ const AdminCustomers = () => {
   };
 
 
+  const handleResetPassword = async (customer) => {
+    if (!window.confirm(`${customer.name} için yeni şifre oluşturulsun mu?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/customers/${customer.id}/reset-password`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Basic ' + btoa('admin:admin123'),
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Yeni şifre oluşturuldu!\n\nEmail: ${data.customer_email}\nYeni Şifre: ${data.new_password}\n\nBu şifreyi müşteriye iletin.`);
+        toast.success('Şifre sıfırlandı!');
+      } else {
+        toast.error('Şifre sıfırlanamadı');
+      }
+    } catch (error) {
+      toast.error('Bir hata oluştu');
+    }
+  };
+
+  const handleDeleteCustomer = async (customer) => {
+    if (!window.confirm(`${customer.name} müşterisini ve tüm verilerini (teklifler, bakiye kayıtları) silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/admin/customers/${customer.id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: 'Basic ' + btoa('admin:admin123'),
+          },
+        }
+      );
+
+      if (response.ok) {
+        toast.success('Müşteri silindi!');
+        fetchCustomers(); // Refresh list
+      } else {
+        toast.error('Müşteri silinemedi');
+      }
+    } catch (error) {
+      toast.error('Bir hata oluştu');
+    }
+  };
+
   const handleEditBalance = (customer) => {
     console.log('Bakiye modal açılıyor', customer);
     setSelectedCustomer(customer);
