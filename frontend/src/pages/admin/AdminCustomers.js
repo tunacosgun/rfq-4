@@ -14,6 +14,8 @@ const AdminCustomers = () => {
   const [showModal, setShowModal] = useState(false);
   const [showBalanceModal, setShowBalanceModal] = useState(false);
   const [balanceAmount, setBalanceAmount] = useState(0);
+  const [balanceAction, setBalanceAction] = useState('set'); // 'set', 'add', 'subtract'
+  const [balanceNote, setBalanceNote] = useState('');
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -79,22 +81,65 @@ const AdminCustomers = () => {
 
   const handleEditBalance = (customer) => {
     setSelectedCustomer(customer);
-    setBalanceAmount(customer.balance || 0);
+    setBalanceAmount(0);
+    setBalanceAction('add');
+    setBalanceNote('');
     setShowBalanceModal(true);
   };
 
   const handleUpdateBalance = async () => {
     try {
+      let newBalance = selectedCustomer.balance || 0;
+      const amount = parseFloat(balanceAmount);
+
+      if (isNaN(amount) || amount < 0) {
+        toast.error('Geçerli bir tutar girin');
+        return;
+      }
+
+      // Calculate new balance based on action
+      if (balanceAction === 'add') {
+        newBalance = newBalance + amount;
+      } else if (balanceAction === 'subtract') {
+        newBalance = newBalance - amount;
+        if (newBalance < 0) {
+          toast.error('Bakiye eksi olamaz');
+          return;
+        }
+      } else if (balanceAction === 'set') {
+        newBalance = amount;
+      }
+
       const response = await fetch(`${backendUrl}/api/admin/customers/${selectedCustomer.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Basic ' + btoa('admin:admin123'),
         },
-        body: JSON.stringify({ balance: parseFloat(balanceAmount) }),
+        body: JSON.stringify({ 
+          balance: newBalance,
+        }),
       });
 
       if (response.ok) {
+        // Log the transaction
+        await fetch(`${backendUrl}/api/admin/balance-log`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Basic ' + btoa('admin:admin123'),
+          },
+          body: JSON.stringify({
+            customer_id: selectedCustomer.id,
+            customer_name: selectedCustomer.name,
+            action: balanceAction,
+            amount: amount,
+            old_balance: selectedCustomer.balance || 0,
+            new_balance: newBalance,
+            note: balanceNote,
+          }),
+        });
+
         toast.success('Bakiye güncellendi');
         setShowBalanceModal(false);
         fetchCustomers();
