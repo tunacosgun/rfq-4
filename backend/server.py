@@ -809,6 +809,14 @@ async def customer_login(data: CustomerLogin):
         }
     }
 
+@api_router.get("/customer/{customer_id}")
+async def get_customer_by_id(customer_id: str):
+    """Get customer by ID"""
+    customer = await db.customers.find_one({"id": customer_id}, {"_id": 0, "password_hash": 0})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Müşteri bulunamadı")
+    return customer
+
 @api_router.get("/customer/quotes/{customer_email}")
 async def get_customer_quotes(customer_email: str):
     """Get customer's quotes"""
