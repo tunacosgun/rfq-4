@@ -877,6 +877,51 @@ async def get_visitors(credentials: HTTPBasicCredentials = Depends(security)):
         visitors = await db.visitors.find({}, {"_id": 0}).sort("timestamp", -1).limit(500).to_list(500)
         return visitors
     except Exception as e:
+
+# ==================== BALANCE LOG ====================
+
+@api_router.post("/admin/balance-log")
+async def log_balance_transaction(data: dict, credentials: HTTPBasicCredentials = Depends(security)):
+    """Log balance transaction"""
+    if credentials.username != "admin" or credentials.password != "admin123":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    try:
+        log_entry = {
+            "id": str(uuid.uuid4()),
+            "customer_id": data.get("customer_id"),
+            "customer_name": data.get("customer_name"),
+            "action": data.get("action"),  # 'add', 'subtract', 'set'
+            "amount": data.get("amount"),
+            "old_balance": data.get("old_balance"),
+            "new_balance": data.get("new_balance"),
+            "note": data.get("note", ""),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.balance_logs.insert_one(log_entry)
+        return {"status": "logged"}
+    except Exception as e:
+        logger.error(f"Balance log error: {e}")
+        return {"status": "error"}
+
+
+@api_router.get("/admin/balance-logs/{customer_id}")
+async def get_customer_balance_logs(customer_id: str, credentials: HTTPBasicCredentials = Depends(security)):
+    """Get balance transaction history for a customer"""
+    if credentials.username != "admin" or credentials.password != "admin123":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    try:
+        logs = await db.balance_logs.find(
+            {"customer_id": customer_id},
+            {"_id": 0}
+        ).sort("timestamp", -1).limit(50).to_list(50)
+        return logs
+    except Exception as e:
+        logger.error(f"Balance logs fetch error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
         logger.error(f"Visitors fetch error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
