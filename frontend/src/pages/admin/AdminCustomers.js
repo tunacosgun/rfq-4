@@ -538,7 +538,7 @@ const AdminCustomers = React.memo(() => {
       </div>
     </AdminLayout>
   );
-};
+});
 
 const styles = {
   container: {
