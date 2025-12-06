@@ -806,6 +806,41 @@ async def get_customer_quotes(customer_email: str):
             quote['created_at'] = datetime.fromisoformat(quote['created_at'])
     return quotes
 
+@api_router.post("/customer/quotes/{quote_id}/convert-to-order")
+async def convert_quote_to_order(quote_id: str, data: dict):
+    """Convert selected quote items to order"""
+    quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    if not quote:
+        raise HTTPException(status_code=404, detail="Teklif bulunamadı")
+    
+    if quote['status'] != 'fiyat_verildi':
+        raise HTTPException(status_code=400, detail="Sadece fiyatlandırılmış teklifler sipariş haline çevrilebilir")
+    
+    selected_items = data.get('selected_items', [])
+    if not selected_items:
+        raise HTTPException(status_code=400, detail="En az bir ürün seçilmelidir")
+    
+    # Filter pricing for selected items only
+    if quote.get('pricing'):
+        selected_pricing = [quote['pricing'][idx] for idx in selected_items if idx < len(quote['pricing'])]
+    else:
+        raise HTTPException(status_code=400, detail="Fiyatlandırılmamış teklif")
+    
+    # Update quote status and store selected items
+    await db.quotes.update_one(
+        {"id": quote_id},
+        {
+            "$set": {
+                "status": "onaylandi",
+                "pricing": selected_pricing,
+                "approved_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    return {"message": "Sipariş başarıyla oluşturuldu", "order_id": quote_id}
+
+
 
 @api_router.get("/customer/profile/{customer_id}")
 async def get_customer_profile(customer_id: str):
