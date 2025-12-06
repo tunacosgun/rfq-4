@@ -270,7 +270,12 @@ const AdminCustomers = () => {
                           Teklifler
                         </button>
                         <button
-                          onClick={() => handleEditBalance(customer)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log('Bakiye butonuna tıklandı', customer);
+                            handleEditBalance(customer);
+                          }}
                           style={{ 
                             padding: '8px 14px',
                             background: '#10B981',
