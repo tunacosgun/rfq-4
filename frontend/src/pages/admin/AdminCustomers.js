@@ -299,6 +299,38 @@ const AdminCustomers = () => {
                           💰 Bakiye
                           <ExternalLink size={14} />
                         </button>
+                        <button
+                          onClick={() => handleResetPassword(customer)}
+                          style={{ 
+                            padding: '8px 14px',
+                            background: '#F59E0B',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            fontWeight: '600'
+                          }}
+                          title="Şifre Sıfırla"
+                        >
+                          🔑 Şifre
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCustomer(customer)}
+                          style={{ 
+                            padding: '8px 14px',
+                            background: '#EF4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            fontWeight: '600'
+                          }}
+                          title="Müşteriyi Sil"
+                        >
+                          🗑️ Sil
+                        </button>
                       </div>
                     </td>
                   </tr>
