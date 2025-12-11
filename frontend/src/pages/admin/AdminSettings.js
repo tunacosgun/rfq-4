@@ -36,6 +36,19 @@ const AdminSettings = () => {
     site_favicon_url: '',
     // Online Katalog
     catalog_pdf_url: '',
+    
+    // Email Templates
+    email_header_color: '#e06c1b',
+    email_logo_url: '',
+    email_footer_text: '',
+    quote_email_subject: '',
+    quote_email_greeting: '',
+    quote_email_intro: '',
+    quote_email_details_title: '',
+    quote_email_button_text: '',
+    quote_email_footer_note: '',
+    quote_email_signature: '',
+    
     home_features_title: '',
     home_features_subtitle: '',
     home_products_title: '',
