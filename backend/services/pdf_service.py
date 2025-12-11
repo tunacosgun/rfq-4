@@ -257,7 +257,11 @@ class PDFService:
 
         total_amount = 0
 
-        for item in quote_data['items']:
+        # If quote is approved (onaylandi) and has pricing, use pricing data with updated quantities
+        # Otherwise, use original items
+        items_to_display = pricing_data if (pricing_data and quote_data.get('status') == 'onaylandi') else quote_data['items']
+
+        for item in items_to_display:
             product_name = item['product_name']
             quantity = item['quantity']
             product_image = item.get('product_image')
@@ -280,15 +284,23 @@ class PDFService:
             item_total = '-'
 
             if pricing_data:
-                pricing_item = next(
-                    (p for p in pricing_data if p['product_id'] == item['product_id']),
-                    None
-                )
-                if pricing_item:
-                    unit_price = f"{pricing_item['unit_price']:.2f} TL"
-                    item_total_val = pricing_item['unit_price'] * quantity
+                # If using pricing data directly, unit_price is already in the item
+                if quote_data.get('status') == 'onaylandi':
+                    unit_price = f"{item.get('unit_price', 0):.2f} TL"
+                    item_total_val = item.get('total_price', 0)
                     item_total = f"{item_total_val:.2f} TL"
                     total_amount += item_total_val
+                else:
+                    # Original flow: match pricing by product_id
+                    pricing_item = next(
+                        (p for p in pricing_data if p['product_id'] == item['product_id']),
+                        None
+                    )
+                    if pricing_item:
+                        unit_price = f"{pricing_item['unit_price']:.2f} TL"
+                        item_total_val = pricing_item['unit_price'] * quantity
+                        item_total = f"{item_total_val:.2f} TL"
+                        total_amount += item_total_val
 
             table_data.append([img_element, product_name, str(quantity), unit_price, item_total])
 
