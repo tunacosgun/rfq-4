@@ -382,9 +382,20 @@ const CustomerLogin = () => {
                 )}
               </Button>
 
+              {/* Divider */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                margin: '24px 0 16px',
+                gap: '16px'
+              }}>
+                <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent 0%, #E5E7EB 50%, transparent 100%)' }}></div>
+                <span style={{ fontSize: '13px', color: '#9CA3AF', fontWeight: '500' }}>VEYA</span>
+                <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent 0%, #E5E7EB 50%, transparent 100%)' }}></div>
+              </div>
+
               {/* Google Sign-In Button */}
               <div style={{
-                marginTop: '16px',
                 display: 'flex',
                 justifyContent: 'center'
               }}>
