@@ -404,6 +404,18 @@ const AdminSettings = () => {
               </div>
 
               <div style={styles.formGroup}>
+                <label style={styles.label}>Online Katalog PDF URL</label>
+                <Input
+                  value={settings.catalog_pdf_url}
+                  onChange={(e) => handleChange('catalog_pdf_url', e.target.value)}
+                  placeholder="https://example.com/katalog.pdf"
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  PDF katalog linki. Boş bırakılırsa navbar'da görünmez.
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
                 <label style={styles.label}>Telefon</label>
                 <Input
                   value={settings.company_phone}
