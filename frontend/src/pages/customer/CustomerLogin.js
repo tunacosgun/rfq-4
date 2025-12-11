@@ -262,6 +262,23 @@ const CustomerLogin = () => {
                 />
               </div>
 
+              {/* Forgot Password Link */}
+              <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+                <Link
+                  to="/forgot-password"
+                  style={{
+                    color: '#6B7280',
+                    fontSize: '14px',
+                    textDecoration: 'none',
+                    fontWeight: '500'
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = '#e06c1b'}
+                  onMouseLeave={(e) => e.target.style.color = '#6B7280'}
+                >
+                  Şifremi Unuttum?
+                </Link>
+              </div>
+
               <Button
                 type="submit"
                 disabled={loading}
