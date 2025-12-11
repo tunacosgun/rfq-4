@@ -216,5 +216,92 @@ class EmailService:
             pdf_data,
             f"Teklif_{quote_id}.pdf" if pdf_data else None
         )
+    
+    def send_password_reset_email(self, email: str, name: str, reset_link: str, settings: dict = None, is_admin: bool = False) -> bool:
+        """Send password reset email"""
+        s = settings or {}
+        company_name = s.get('company_name', 'Özmen Gıda')
+        header_color = s.get('email_header_color', '#e06c1b')
+        logo_url = s.get('email_logo_url', '')
+        
+        user_type = "Admin" if is_admin else "Müşteri"
+        subject = f"Şifre Sıfırlama Talebi - {company_name}"
+        
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 20px;">
+                <tr>
+                    <td align="center">
+                        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <!-- Header -->
+                            <tr>
+                                <td style="background: linear-gradient(135deg, {header_color} 0%, #c75a14 100%); padding: 40px 30px; text-align: center;">
+                                    {f'<img src="{logo_url}" alt="Logo" style="max-width: 150px; height: auto; margin-bottom: 20px;">' if logo_url else ''}
+                                    <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">{company_name}</h1>
+                                    <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">🔐 Şifre Sıfırlama</p>
+                                </td>
+                            </tr>
+                            
+                            <!-- Content -->
+                            <tr>
+                                <td style="padding: 40px 30px;">
+                                    <h2 style="margin: 0 0 20px 0; color: #111827; font-size: 24px; font-weight: 600;">Merhaba {name}!</h2>
+                                    <p style="margin: 0 0 15px 0; color: #6b7280; font-size: 16px; line-height: 1.6;">
+                                        {user_type} hesabınız için şifre sıfırlama talebinde bulundunuz.
+                                    </p>
+                                    <p style="margin: 0 0 25px 0; color: #6b7280; font-size: 16px; line-height: 1.6;">
+                                        Şifrenizi sıfırlamak için aşağıdaki butona tıklayın:
+                                    </p>
+                                    
+                                    <!-- Reset Button -->
+                                    <div style="text-align: center; margin: 30px 0;">
+                                        <a href="{reset_link}" style="display: inline-block; padding: 16px 40px; background: linear-gradient(135deg, {header_color} 0%, #c75a14 100%); color: white; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 700; box-shadow: 0 4px 12px rgba(224, 108, 27, 0.3);">
+                                            Şifremi Sıfırla
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Warning Box -->
+                                    <div style="background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 16px; margin: 25px 0; border-radius: 8px;">
+                                        <p style="margin: 0; color: #92400E; font-size: 14px; line-height: 1.6;">
+                                            ⚠️ <strong>Önemli:</strong> Bu link 1 saat geçerlidir. Eğer şifre sıfırlama talebinde bulunmadıysanız, bu emaili görmezden gelebilirsiniz.
+                                        </p>
+                                    </div>
+                                    
+                                    <p style="margin: 25px 0 0 0; color: #9ca3af; font-size: 14px; line-height: 1.6;">
+                                        Buton çalışmıyorsa şu linki tarayıcınıza kopyalayın:<br>
+                                        <a href="{reset_link}" style="color: {header_color}; word-break: break-all;">{reset_link}</a>
+                                    </p>
+                                    
+                                    <!-- Signature -->
+                                    <div style="margin-top: 40px; padding-top: 25px; border-top: 2px solid #e5e7eb;">
+                                        <p style="margin: 0; color: #6b7280; font-size: 15px; line-height: 1.6;">
+                                            Saygılarımızla,<br>
+                                            {company_name} Ekibi
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Footer -->
+                            <tr>
+                                <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+                                    <p style="margin: 0; color: #9ca3af; font-size: 13px;">Bu email otomatik olarak gönderilmiştir.</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </body>
+        </html>
+        """
+        
+        return self.send_email(email, subject, html_content)
 
 email_service = EmailService()
