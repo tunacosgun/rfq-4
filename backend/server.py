@@ -462,6 +462,20 @@ class CompanySettings(BaseModel):
     footer_link_hover_color: str = "#22C55E"
     footer_divider_color: str = "#374151"
     
+    # Email Templates
+    email_header_color: str = "#e06c1b"
+    email_logo_url: str = ""
+    email_footer_text: str = "Bu email otomatik olarak gönderilmiştir. Lütfen yanıtlamayınız."
+    
+    # Quote Email Template
+    quote_email_subject: str = "Teklif Talebiniz - #{quote_id}"
+    quote_email_greeting: str = "Sayın {customer_name},"
+    quote_email_intro: str = "Teklif talebiniz için teşekkür ederiz. Ekteki PDF dosyasında detaylı teklif bilgilerinizi bulabilirsiniz."
+    quote_email_details_title: str = "Teklif Özeti"
+    quote_email_button_text: str = "Teklifi Görüntüle"
+    quote_email_footer_note: str = "Herhangi bir sorunuz için bizimle iletişime geçmekten çekinmeyin."
+    quote_email_signature: str = "Saygılarımızla,<br>Özmen Gıda Ekibi"
+    
     # Header / Navbar
     header_logo_url: str = ""
     header_company_name: str = "Özmen Gıda"
