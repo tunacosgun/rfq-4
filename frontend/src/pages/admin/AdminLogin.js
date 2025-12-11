@@ -79,6 +79,21 @@ const AdminLogin = () => {
             </div>
           </div>
 
+          {/* Forgot Password Link */}
+          <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+            <Link
+              to="/admin/forgot-password"
+              style={{
+                color: '#6B7280',
+                fontSize: '14px',
+                textDecoration: 'none',
+                fontWeight: '500'
+              }}
+            >
+              Şifremi Unuttum?
+            </Link>
+          </div>
+
           <Button
             type="submit"
             disabled={loading}
