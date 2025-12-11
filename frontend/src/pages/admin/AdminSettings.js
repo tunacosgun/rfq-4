@@ -34,6 +34,8 @@ const AdminSettings = () => {
     
     // Favicon
     site_favicon_url: '',
+    // Online Katalog
+    catalog_pdf_url: '',
     home_features_title: '',
     home_features_subtitle: '',
     home_products_title: '',
