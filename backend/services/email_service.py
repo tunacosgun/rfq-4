@@ -216,14 +216,5 @@ class EmailService:
             pdf_data,
             f"Teklif_{quote_id}.pdf" if pdf_data else None
         )
-            <p>Sorularınız için bizimle iletişime geçebilirsiniz.</p>
-            <br>
-            <p>İyi günler dileriz.</p>
-        </body>
-        </html>
-        """
-        
-        attachment_filename = f"teklif_{quote_data['id'][:8]}.pdf" if pdf_data else None
-        return self.send_email(customer_email, subject, html_content, pdf_data, attachment_filename)
 
 email_service = EmailService()
