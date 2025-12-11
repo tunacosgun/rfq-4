@@ -28,6 +28,28 @@ const CustomerLogin = () => {
     }
   }, [isAuthenticated, navigate, location]);
 
+  const handleGoogleResponse = async (response) => {
+    try {
+      const res = await fetch(`${backendUrl}/api/customer/google-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        login(data.customer, data.token);
+        toast.success('Google ile giriş başarılı!');
+      } else {
+        const error = await res.json();
+        toast.error(error.detail || 'Google girişi başarısız');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Bir hata oluştu');
+    }
+  };
+
   const fetchSettings = async () => {
     try {
       const response = await fetch(`${backendUrl}/api/settings`);
