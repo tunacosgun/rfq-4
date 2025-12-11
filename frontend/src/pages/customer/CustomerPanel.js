@@ -16,6 +16,7 @@ const CustomerPanelNew = () => {
   const [settings, setSettings] = useState(null);
   const [expandedQuote, setExpandedQuote] = useState(null);
   const [selectedItems, setSelectedItems] = useState({});
+  const [editedQuantities, setEditedQuantities] = useState({}); // { quoteId: { productId: quantity } }
   
   // Profile form state
   const [profileData, setProfileData] = useState({
