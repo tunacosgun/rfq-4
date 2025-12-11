@@ -64,6 +64,12 @@ function App() {
               <Route path="/sepet" element={<QuoteCartPage />} />
               <Route path="/teklif-gonder" element={<QuoteFormPage />} />
 
+              {/* Password Reset Routes */}
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+              <Route path="/admin/reset-password" element={<ResetPassword />} />
+
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
