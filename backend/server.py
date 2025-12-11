@@ -344,12 +344,20 @@ class Brand(BaseModel):
     name: str
     logo_url: Optional[str] = None
     description: Optional[str] = None
+    product_ids: List[str] = []  # İlişkili ürün ID'leri
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class BrandCreate(BaseModel):
     name: str
     logo_url: Optional[str] = None
     description: Optional[str] = None
+    product_ids: Optional[List[str]] = []
+
+class BrandUpdate(BaseModel):
+    name: Optional[str] = None
+    logo_url: Optional[str] = None
+    description: Optional[str] = None
+    product_ids: Optional[List[str]] = None
 
 class ContactMessageUpdate(BaseModel):
     status: Optional[str] = None
