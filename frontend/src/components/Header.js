@@ -453,7 +453,7 @@ const ModernHeader = ({ settings }) => {
               >
                 <Icon size={22} />
                 {item.label}
-              </Link>
+              </LinkComponent>
             );
           })}
         </nav>
