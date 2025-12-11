@@ -26,6 +26,38 @@ const CustomerLogin = () => {
       const from = location.state?.from?.pathname || '/musteri-panel';
       navigate(from, { replace: true });
     }
+    
+    // Load Google Sign-In script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+    
+    // Initialize Google Sign-In after script loads
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: '999451918468-j9gr7a8ak9tl6em78qfsq030aqr1birc.apps.googleusercontent.com',
+          callback: handleGoogleResponse
+        });
+        
+        window.google.accounts.id.renderButton(
+          document.getElementById('googleSignInDiv'),
+          {
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            width: '100%',
+            locale: 'tr'
+          }
+        );
+      }
+    };
+    
+    return () => {
+      document.body.removeChild(script);
+    };
   }, [isAuthenticated, navigate, location]);
 
   const handleGoogleResponse = async (response) => {
