@@ -349,6 +349,8 @@ class CompanySettings(BaseModel):
     
     # Favicon
     site_favicon_url: str = ""
+    # Online Katalog
+    catalog_pdf_url: str = ""
     home_features_title: str = "Neden Bizi Seçmelisiniz?"
     home_features_subtitle: str = "Müşterilerimize sunduğumuz benzersiz avantajlar"
     home_products_title: str = "Öne Çıkan Ürünler"
