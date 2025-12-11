@@ -88,6 +88,7 @@ function App() {
               <Route path="/admin/musteriler/bakiye/:customerId" element={<AdminBalanceEdit />} />
               <Route path="/admin/musteriler" element={<AdminCustomers />} />
               <Route path="/admin/faq" element={<AdminFAQ />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
               <Route path="/admin/ayarlar" element={<AdminSettings />} />
               <Route path="/admin/renkler" element={<ColorManagement />} />
               
