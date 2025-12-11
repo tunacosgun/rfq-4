@@ -58,7 +58,7 @@ const CustomerLogin = () => {
     return () => {
       document.body.removeChild(script);
     };
-  }, [isAuthenticated, navigate, location]);
+  }, [isAuthenticated, navigate, location, handleGoogleResponse]);
 
   const handleGoogleResponse = useCallback(async (response) => {
     try {
