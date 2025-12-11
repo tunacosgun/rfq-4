@@ -414,23 +414,30 @@ const ModernHeader = ({ settings }) => {
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {menuItems.map((item) => {
             const Icon = item.icon;
+            const itemStyle = {
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              padding: '16px 20px',
+              borderRadius: '10px',
+              textDecoration: 'none',
+              fontSize: '16px',
+              fontWeight: '500',
+              color: isActive(item.path) ? 'white' : '#D1D5DB',
+              background: isActive(item.path) ? 'rgba(255,255,255,0.1)' : 'transparent',
+              transition: 'all 0.2s',
+            };
+            
+            const LinkComponent = item.isExternal ? 'a' : Link;
+            const linkProps = item.isExternal 
+              ? { href: item.path, target: '_blank', rel: 'noopener noreferrer' }
+              : { to: item.path };
+            
             return (
-              <Link
+              <LinkComponent
                 key={item.path}
-                to={item.path}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '16px',
-                  padding: '16px 20px',
-                  borderRadius: '10px',
-                  textDecoration: 'none',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  color: isActive(item.path) ? 'white' : '#D1D5DB',
-                  background: isActive(item.path) ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  transition: 'all 0.2s',
-                }}
+                {...linkProps}
+                style={itemStyle}
                 onMouseEnter={(e) => {
                   if (!isActive(item.path)) {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
