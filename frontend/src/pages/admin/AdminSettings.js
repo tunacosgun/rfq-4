@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { Save, Home, ShoppingBag, Award, Users, Phone, Layout } from 'lucide-react';
+import { Save, Home, ShoppingBag, Award, Users, Phone, Layout, Mail } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { toast } from 'sonner';
