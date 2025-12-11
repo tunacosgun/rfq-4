@@ -31,6 +31,7 @@ import AdminCustomers from './pages/admin/AdminCustomers';
 import AdminVisitors from './pages/admin/AdminVisitors';
 import AdminBalanceEdit from './pages/admin/AdminBalanceEdit';
 import AdminFAQ from './pages/admin/AdminFAQ';
+import AdminUsers from './pages/admin/AdminUsers';
 import CustomerLogin from './pages/customer/CustomerLogin';
 import CustomerRegister from './pages/customer/CustomerRegister';
 import CustomerPanel from './pages/customer/CustomerPanel';
