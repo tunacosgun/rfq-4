@@ -1689,6 +1689,141 @@ const AdminSettings = () => {
               </div>
             </div>
           )}
+
+          {/* Email Templates Tab */}
+          {activeTab === 'email' && (
+            <div>
+              <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '20px', color: 'var(--text-primary)' }}>
+                📧 Email Şablonları
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', lineHeight: '1.6' }}>
+                Müşterilere gönderilecek email içeriklerini buradan özelleştirin. Değişkenler: <code>{'{customer_name}'}</code>, <code>{'{quote_id}'}</code>
+              </p>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Email Başlık Rengi</label>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <input
+                    type="color"
+                    value={settings.email_header_color || '#e06c1b'}
+                    onChange={(e) => handleChange('email_header_color', e.target.value)}
+                    style={{ width: '60px', height: '44px', padding: '4px', border: '1px solid var(--border)', borderRadius: '8px' }}
+                  />
+                  <Input
+                    value={settings.email_header_color}
+                    onChange={(e) => handleChange('email_header_color', e.target.value)}
+                    placeholder="#e06c1b"
+                    style={{ maxWidth: '150px' }}
+                  />
+                </div>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Email Logo URL</label>
+                <Input
+                  value={settings.email_logo_url}
+                  onChange={(e) => handleChange('email_logo_url', e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  Email üstünde görünecek logo. Boş bırakılabilir.
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Email Alt Bilgi Metni</label>
+                <Input
+                  value={settings.email_footer_text}
+                  onChange={(e) => handleChange('email_footer_text', e.target.value)}
+                  placeholder="Bu email otomatik olarak gönderilmiştir."
+                />
+              </div>
+
+              <h4 style={{ fontSize: '18px', fontWeight: '600', marginTop: '32px', marginBottom: '16px', color: 'var(--text-primary)' }}>
+                Teklif Email İçeriği
+              </h4>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Email Konusu</label>
+                <Input
+                  value={settings.quote_email_subject}
+                  onChange={(e) => handleChange('quote_email_subject', e.target.value)}
+                  placeholder="Teklif Talebiniz - #{quote_id}"
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  Kullanılabilir değişkenler: {'{quote_id}'}, {'{customer_name}'}
+                </small>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Selamlama Metni</label>
+                <Input
+                  value={settings.quote_email_greeting}
+                  onChange={(e) => handleChange('quote_email_greeting', e.target.value)}
+                  placeholder="Sayın {customer_name},"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Giriş Metni</label>
+                <textarea
+                  value={settings.quote_email_intro}
+                  onChange={(e) => handleChange('quote_email_intro', e.target.value)}
+                  placeholder="Teklif talebiniz için teşekkür ederiz..."
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontFamily: 'inherit',
+                    resize: 'vertical'
+                  }}
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Teklif Detayları Başlığı</label>
+                <Input
+                  value={settings.quote_email_details_title}
+                  onChange={(e) => handleChange('quote_email_details_title', e.target.value)}
+                  placeholder="Teklif Özeti"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Alt Not</label>
+                <Input
+                  value={settings.quote_email_footer_note}
+                  onChange={(e) => handleChange('quote_email_footer_note', e.target.value)}
+                  placeholder="Herhangi bir sorunuz için bizimle iletişime geçin."
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>İmza</label>
+                <textarea
+                  value={settings.quote_email_signature}
+                  onChange={(e) => handleChange('quote_email_signature', e.target.value)}
+                  placeholder="Saygılarımızla,<br>Özmen Gıda Ekibi"
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    fontFamily: 'inherit',
+                    resize: 'vertical'
+                  }}
+                />
+                <small style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
+                  HTML etiketleri kullanabilirsiniz: {'<br>'} satır atlar, {'<strong>'} kalın yapar
+                </small>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </AdminLayout>
