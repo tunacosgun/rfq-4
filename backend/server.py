@@ -988,6 +988,80 @@ async def admin_reset_password(reset: PasswordReset):
     
     return {"message": "Şifreniz başarıyla değiştirildi"}
 
+# Google OAuth Login
+@api_router.post("/auth/google")
+async def google_auth(data: dict):
+    """Authenticate with Google OAuth"""
+    try:
+        token = data.get('credential')
+        if not token:
+            raise HTTPException(status_code=400, detail="Token eksik")
+        
+        # Verify Google token
+        google_client_id = os.environ.get('GOOGLE_CLIENT_ID')
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            google_requests.Request(),
+            google_client_id
+        )
+        
+        # Get user info from Google
+        email = idinfo.get('email')
+        name = idinfo.get('name', '')
+        google_id = idinfo.get('sub')
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Email alınamadı")
+        
+        # Check if customer exists
+        customer = await db.customers.find_one({"email": email}, {"_id": 0})
+        
+        if customer:
+            # Customer exists, login
+            customer_data = {
+                "id": customer["id"],
+                "name": customer["name"],
+                "email": customer["email"],
+                "phone": customer.get("phone", ""),
+                "company": customer.get("company", ""),
+                "balance": customer.get("balance", 0)
+            }
+        else:
+            # New customer, auto-register
+            new_customer = {
+                "id": str(uuid.uuid4()),
+                "name": name,
+                "email": email,
+                "phone": "",
+                "company": "",
+                "password_hash": "",  # No password for Google login
+                "google_id": google_id,
+                "balance": 0,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.customers.insert_one(new_customer)
+            
+            customer_data = {
+                "id": new_customer["id"],
+                "name": new_customer["name"],
+                "email": new_customer["email"],
+                "phone": "",
+                "company": "",
+                "balance": 0
+            }
+        
+        return {
+            "success": True,
+            "customer": customer_data,
+            "login_method": "google"
+        }
+        
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail="Geçersiz Google token")
+    except Exception as e:
+        logger.error(f"Google auth error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Google ile giriş yapılamadı")
+
 @api_router.get("/customer/{customer_id}")
 async def get_customer_by_id(customer_id: str):
     """Get customer by ID"""
