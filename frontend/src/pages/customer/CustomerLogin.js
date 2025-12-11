@@ -17,6 +17,42 @@ const CustomerLogin = () => {
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
+  // Define functions BEFORE useEffect
+  const fetchSettings = useCallback(async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/settings`);
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error('Settings fetch error:', error);
+    }
+  }, [backendUrl]);
+
+  const handleGoogleResponse = useCallback(async (response) => {
+    try {
+      const res = await fetch(`${backendUrl}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        login(data.customer);
+        toast.success('Google ile giriş başarılı!');
+      } else {
+        const error = await res.json();
+        toast.error(error.detail || 'Google girişi başarısız');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Bir hata oluştu');
+    }
+  }, [backendUrl, login]);
+
+  // NOW use them in useEffect
   useEffect(() => {
     fetchSettings();
   }, [fetchSettings]);
@@ -61,40 +97,6 @@ const CustomerLogin = () => {
       }
     };
   }, [isAuthenticated, navigate, location, handleGoogleResponse]);
-
-  const handleGoogleResponse = useCallback(async (response) => {
-    try {
-      const res = await fetch(`${backendUrl}/api/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: response.credential }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        login(data.customer, data.token);
-        toast.success('Google ile giriş başarılı!');
-      } else {
-        const error = await res.json();
-        toast.error(error.detail || 'Google girişi başarısız');
-      }
-    } catch (error) {
-      console.error('Google login error:', error);
-      toast.error('Bir hata oluştu');
-    }
-  }, [backendUrl, login]);
-
-  const fetchSettings = useCallback(async () => {
-    try {
-      const response = await fetch(`${backendUrl}/api/settings`);
-      if (response.ok) {
-        const data = await response.json();
-        setSettings(data);
-      }
-    } catch (error) {
-      console.error('Settings fetch error:', error);
-    }
-  }, [backendUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
