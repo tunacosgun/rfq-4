@@ -381,6 +381,15 @@ const CustomerLogin = () => {
                   </>
                 )}
               </Button>
+
+              {/* Google Sign-In Button */}
+              <div style={{
+                marginTop: '16px',
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <div id="googleSignInDiv" style={{ width: '100%' }}></div>
+              </div>
             </div>
           </form>
 
