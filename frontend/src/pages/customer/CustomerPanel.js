@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, FileText, Settings, LogOut, Save, Mail, Phone, Building, Lock } from 'lucide-react';
+import { User, FileText, Settings, LogOut, Save, Mail, Phone, Building, Lock, TrendingUp, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
@@ -34,7 +34,7 @@ const CustomerPanelNew = () => {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      navigate('/musteri/giris');
+      navigate('/musteri-giris');
     }
   }, [isAuthenticated, authLoading, navigate]);
 
@@ -225,79 +225,284 @@ const CustomerPanelNew = () => {
 
   const getStatusBadge = (status) => {
     const styles = {
-      beklemede: { bg: '#FEF3C7', color: '#92400E', text: 'Beklemede' },
-      inceleniyor: { bg: '#DBEAFE', color: '#1E40AF', text: 'İnceleniyor' },
-      fiyat_verildi: { bg: '#D1FAE5', color: '#065F46', text: 'Fiyat Verildi' },
-      onaylandi: { bg: '#D1FAE5', color: '#065F46', text: 'Onaylandı' },
-      reddedildi: { bg: '#FEE2E2', color: '#991B1B', text: 'Reddedildi' },
+      beklemede: { bg: '#FEF3C7', color: '#92400E', text: 'Beklemede', icon: Clock },
+      inceleniyor: { bg: '#DBEAFE', color: '#1E40AF', text: 'İnceleniyor', icon: TrendingUp },
+      fiyat_verildi: { bg: '#D1FAE5', color: '#065F46', text: 'Fiyat Verildi', icon: CheckCircle },
+      onaylandi: { bg: '#D1FAE5', color: '#065F46', text: 'Onaylandı', icon: CheckCircle },
+      reddedildi: { bg: '#FEE2E2', color: '#991B1B', text: 'Reddedildi', icon: AlertCircle },
     };
 
     const style = styles[status] || styles.beklemede;
+    const IconComponent = style.icon;
 
     return (
       <span
         style={{
-          padding: '4px 12px',
-          borderRadius: '12px',
+          padding: '6px 14px',
+          borderRadius: '20px',
           fontSize: '13px',
           fontWeight: '600',
           backgroundColor: style.bg,
           color: style.color,
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px'
         }}
       >
+        <IconComponent size={14} />
         {style.text}
       </span>
     );
   };
 
+  // Dashboard istatistikleri
+  const totalQuotes = quotes.length;
+  const pendingQuotes = quotes.filter(
+    (q) => q.status === 'beklemede' || q.status === 'inceleniyor'
+  ).length;
+  const pricedQuotes = quotes.filter((q) => q.status === 'fiyat_verildi').length;
+  const approvedQuotes = quotes.filter((q) => q.status === 'onaylandi').length;
+
   if (authLoading || loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#F9FAFB' }}>
         <div className="spinner" style={{ margin: '0 auto' }}></div>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F9FAFB' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'linear-gradient(to bottom, #F9FAFB 0%, #F3F4F6 100%)' }}>
       <Header settings={settings} />
 
-      <div style={{ flex: 1, padding: '100px 24px 40px', marginTop: '70px' }}>
+      <div style={{ flex: 1, padding: '32px 24px 40px', marginTop: '80px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ marginBottom: '32px' }}>
-            <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#111827', marginBottom: '8px' }}>
+            <h1 style={{ 
+              fontSize: '36px', 
+              fontWeight: '800', 
+              background: 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '8px',
+              letterSpacing: '-0.5px'
+            }}>
               Müşteri Paneli
             </h1>
-            <p style={{ fontSize: '16px', color: '#6B7280' }}>
-              Hoş geldiniz, {customer?.name}
+            <p style={{ fontSize: '17px', color: '#6B7280', fontWeight: '500' }}>
+              Hoş geldiniz, <span style={{ color: '#e06c1b', fontWeight: '600' }}>{customer?.name}</span>
             </p>
+          </div>
+
+          {/* Özet Kartlar (Dashboard) */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: '20px',
+              marginBottom: '40px',
+            }}
+          >
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                borderRadius: '16px',
+                padding: '24px',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                border: '1px solid #E5E7EB',
+                transition: 'all 0.3s ease',
+                cursor: 'default'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)';
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ fontSize: '14px', color: '#6B7280', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Toplam Teklif</div>
+                <div style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  background: 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)', 
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 10px rgba(224, 108, 27, 0.3)'
+                }}>
+                  <FileText size={20} style={{ color: 'white' }} />
+                </div>
+              </div>
+              <div style={{ fontSize: '32px', fontWeight: '800', color: '#111827', marginBottom: '8px' }}>{totalQuotes}</div>
+              <div style={{ fontSize: '13px', color: '#9CA3AF', lineHeight: '1.5' }}>
+                Tüm zamanlardaki teklif sayınız
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+                borderRadius: '16px',
+                padding: '24px',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                border: '1px solid #FCD34D',
+                transition: 'all 0.3s ease',
+                cursor: 'default'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)';
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ fontSize: '14px', color: '#92400E', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Bekleyen</div>
+                <div style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)', 
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                }}>
+                  <Clock size={20} style={{ color: 'white' }} />
+                </div>
+              </div>
+              <div style={{ fontSize: '32px', fontWeight: '800', color: '#92400E', marginBottom: '8px' }}>{pendingQuotes}</div>
+              <div style={{ fontSize: '13px', color: '#78350F', lineHeight: '1.5' }}>
+                Değerlendirme sürecindeki teklifler
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)',
+                borderRadius: '16px',
+                padding: '24px',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                border: '1px solid #6EE7B7',
+                transition: 'all 0.3s ease',
+                cursor: 'default'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)';
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ fontSize: '14px', color: '#065F46', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fiyat Verildi</div>
+                <div style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', 
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                }}>
+                  <TrendingUp size={20} style={{ color: 'white' }} />
+                </div>
+              </div>
+              <div style={{ fontSize: '32px', fontWeight: '800', color: '#065F46', marginBottom: '8px' }}>{pricedQuotes}</div>
+              <div style={{ fontSize: '13px', color: '#047857', lineHeight: '1.5' }}>
+                Siparişe dönüştürebileceğiniz teklifler
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)',
+                borderRadius: '16px',
+                padding: '24px',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                border: '1px solid #93C5FD',
+                transition: 'all 0.3s ease',
+                cursor: 'default'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)';
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ fontSize: '14px', color: '#1E40AF', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Onaylanan</div>
+                <div style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)', 
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                }}>
+                  <CheckCircle size={20} style={{ color: 'white' }} />
+                </div>
+              </div>
+              <div style={{ fontSize: '32px', fontWeight: '800', color: '#1E40AF', marginBottom: '8px' }}>{approvedQuotes}</div>
+              <div style={{ fontSize: '13px', color: '#1E3A8A', lineHeight: '1.5' }}>
+                Siparişe dönüşmüş teklifleriniz
+              </div>
+            </div>
           </div>
 
           {/* Tabs */}
           <div style={{ 
             display: 'flex', 
-            gap: '8px', 
+            gap: '12px', 
             borderBottom: '2px solid #E5E7EB',
             marginBottom: '32px',
-            overflowX: 'auto'
+            overflowX: 'auto',
+            padding: '0 4px'
           }}>
             <button
               onClick={() => setActiveTab('profile')}
               style={{
-                padding: '12px 24px',
-                background: 'none',
+                padding: '14px 28px',
+                background: activeTab === 'profile' ? 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)' : 'transparent',
                 border: 'none',
-                borderBottom: activeTab === 'profile' ? '2px solid #e06c1b' : '2px solid transparent',
-                color: activeTab === 'profile' ? '#e06c1b' : '#6B7280',
-                fontWeight: activeTab === 'profile' ? '600' : '400',
+                borderRadius: activeTab === 'profile' ? '12px 12px 0 0' : '0',
+                color: activeTab === 'profile' ? 'white' : '#6B7280',
+                fontWeight: activeTab === 'profile' ? '700' : '500',
                 fontSize: '15px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                whiteSpace: 'nowrap'
+                gap: '10px',
+                whiteSpace: 'nowrap',
+                boxShadow: activeTab === 'profile' ? '0 -4px 12px rgba(224, 108, 27, 0.2)' : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== 'profile') {
+                  e.currentTarget.style.color = '#e06c1b';
+                  e.currentTarget.style.background = '#FFF7ED';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== 'profile') {
+                  e.currentTarget.style.color = '#6B7280';
+                  e.currentTarget.style.background = 'transparent';
+                }
               }}
             >
               <User size={18} />
@@ -306,19 +511,32 @@ const CustomerPanelNew = () => {
             <button
               onClick={() => setActiveTab('quotes')}
               style={{
-                padding: '12px 24px',
-                background: 'none',
+                padding: '14px 28px',
+                background: activeTab === 'quotes' ? 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)' : 'transparent',
                 border: 'none',
-                borderBottom: activeTab === 'quotes' ? '2px solid #e06c1b' : '2px solid transparent',
-                color: activeTab === 'quotes' ? '#e06c1b' : '#6B7280',
-                fontWeight: activeTab === 'quotes' ? '600' : '400',
+                borderRadius: activeTab === 'quotes' ? '12px 12px 0 0' : '0',
+                color: activeTab === 'quotes' ? 'white' : '#6B7280',
+                fontWeight: activeTab === 'quotes' ? '700' : '500',
                 fontSize: '15px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                whiteSpace: 'nowrap'
+                gap: '10px',
+                whiteSpace: 'nowrap',
+                boxShadow: activeTab === 'quotes' ? '0 -4px 12px rgba(224, 108, 27, 0.2)' : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== 'quotes') {
+                  e.currentTarget.style.color = '#e06c1b';
+                  e.currentTarget.style.background = '#FFF7ED';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== 'quotes') {
+                  e.currentTarget.style.color = '#6B7280';
+                  e.currentTarget.style.background = 'transparent';
+                }
               }}
             >
               <FileText size={18} />
@@ -327,19 +545,32 @@ const CustomerPanelNew = () => {
             <button
               onClick={() => setActiveTab('settings')}
               style={{
-                padding: '12px 24px',
-                background: 'none',
+                padding: '14px 28px',
+                background: activeTab === 'settings' ? 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)' : 'transparent',
                 border: 'none',
-                borderBottom: activeTab === 'settings' ? '2px solid #e06c1b' : '2px solid transparent',
-                color: activeTab === 'settings' ? '#e06c1b' : '#6B7280',
-                fontWeight: activeTab === 'settings' ? '600' : '400',
+                borderRadius: activeTab === 'settings' ? '12px 12px 0 0' : '0',
+                color: activeTab === 'settings' ? 'white' : '#6B7280',
+                fontWeight: activeTab === 'settings' ? '700' : '500',
                 fontSize: '15px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                whiteSpace: 'nowrap'
+                gap: '10px',
+                whiteSpace: 'nowrap',
+                boxShadow: activeTab === 'settings' ? '0 -4px 12px rgba(224, 108, 27, 0.2)' : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (activeTab !== 'settings') {
+                  e.currentTarget.style.color = '#e06c1b';
+                  e.currentTarget.style.background = '#FFF7ED';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== 'settings') {
+                  e.currentTarget.style.color = '#6B7280';
+                  e.currentTarget.style.background = 'transparent';
+                }
               }}
             >
               <Settings size={18} />
@@ -352,30 +583,44 @@ const CustomerPanelNew = () => {
             <div>
               {/* Balance Display */}
               <div style={{
-                background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)',
-                padding: '24px',
-                borderRadius: '12px',
-                marginBottom: '24px',
-                border: '1px solid #93C5FD'
+                background: 'linear-gradient(135deg, #DBEAFE 0%, #93C5FD 100%)',
+                padding: '32px',
+                borderRadius: '20px',
+                marginBottom: '28px',
+                border: '2px solid #3B82F6',
+                boxShadow: '0 10px 25px rgba(59, 130, 246, 0.15)',
+                position: 'relative',
+                overflow: 'hidden'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '-50px',
+                  right: '-50px',
+                  width: '200px',
+                  height: '200px',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '50%',
+                  filter: 'blur(40px)'
+                }}></div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
                   <div style={{
-                    width: '48px',
-                    height: '48px',
-                    background: '#3B82F6',
-                    borderRadius: '12px',
+                    width: '64px',
+                    height: '64px',
+                    background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
+                    borderRadius: '16px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '24px',
+                    fontSize: '28px',
                     color: 'white',
-                    fontWeight: '700'
+                    fontWeight: '800',
+                    boxShadow: '0 8px 20px rgba(59, 130, 246, 0.4)'
                   }}>
                     ₺
                   </div>
                   <div>
-                    <div style={{ fontSize: '14px', color: '#1E40AF', marginBottom: '4px' }}>Mevcut Bakiyeniz</div>
-                    <div style={{ fontSize: '32px', fontWeight: '700', color: '#1E3A8A' }}>
+                    <div style={{ fontSize: '14px', color: '#1E40AF', marginBottom: '6px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Mevcut Bakiyeniz</div>
+                    <div style={{ fontSize: '40px', fontWeight: '900', color: '#1E3A8A', letterSpacing: '-1px' }}>
                       ₺{(customer?.balance || 0).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                   </div>
@@ -384,18 +629,19 @@ const CustomerPanelNew = () => {
               
               <div style={{ 
                 background: 'white', 
-                borderRadius: '12px', 
-                padding: '32px',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                borderRadius: '20px', 
+                padding: '36px',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                border: '1px solid #E5E7EB'
               }}>
-                <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#111827' }}>
+                <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '28px', color: '#111827' }}>
                   İletişim Bilgileri
                 </h2>
               <form onSubmit={handleProfileUpdate}>
-                <div style={{ display: 'grid', gap: '20px', maxWidth: '600px' }}>
+                <div style={{ display: 'grid', gap: '24px', maxWidth: '600px' }}>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
-                      <User size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      <User size={16} style={{ marginRight: '8px' }} />
                       Ad Soyad *
                     </label>
                     <input
@@ -405,17 +651,27 @@ const CustomerPanelNew = () => {
                       required
                       style={{
                         width: '100%',
-                        padding: '12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                        padding: '14px 16px',
+                        border: '2px solid #E5E7EB',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#e06c1b';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(224, 108, 27, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E5E7EB';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
-                      <Mail size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      <Mail size={16} style={{ marginRight: '8px' }} />
                       E-posta *
                     </label>
                     <input
@@ -425,17 +681,27 @@ const CustomerPanelNew = () => {
                       required
                       style={{
                         width: '100%',
-                        padding: '12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                        padding: '14px 16px',
+                        border: '2px solid #E5E7EB',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#e06c1b';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(224, 108, 27, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E5E7EB';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
-                      <Phone size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      <Phone size={16} style={{ marginRight: '8px' }} />
                       Telefon
                     </label>
                     <input
@@ -444,17 +710,27 @@ const CustomerPanelNew = () => {
                       onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                       style={{
                         width: '100%',
-                        padding: '12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                        padding: '14px 16px',
+                        border: '2px solid #E5E7EB',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#e06c1b';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(224, 108, 27, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E5E7EB';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
-                      <Building size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      <Building size={16} style={{ marginRight: '8px' }} />
                       Şirket
                     </label>
                     <input
@@ -463,10 +739,20 @@ const CustomerPanelNew = () => {
                       onChange={(e) => setProfileData({ ...profileData, company: e.target.value })}
                       style={{
                         width: '100%',
-                        padding: '12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                        padding: '14px 16px',
+                        border: '2px solid #E5E7EB',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#e06c1b';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(224, 108, 27, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E5E7EB';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
                   </div>
@@ -475,18 +761,33 @@ const CustomerPanelNew = () => {
                     type="submit"
                     disabled={saving}
                     style={{
-                      background: '#e06c1b',
+                      background: saving ? '#D1D5DB' : 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)',
                       color: 'white',
-                      padding: '12px 24px',
-                      borderRadius: '8px',
+                      padding: '14px 28px',
+                      borderRadius: '12px',
                       border: 'none',
-                      fontWeight: '600',
+                      fontWeight: '700',
+                      fontSize: '15px',
                       cursor: saving ? 'not-allowed' : 'pointer',
                       opacity: saving ? 0.6 : 1,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      justifyContent: 'center'
+                      gap: '10px',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s',
+                      boxShadow: saving ? 'none' : '0 4px 12px rgba(224, 108, 27, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!saving) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 16px rgba(224, 108, 27, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!saving) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(224, 108, 27, 0.3)';
+                      }
                     }}
                   >
                     <Save size={18} />
@@ -499,17 +800,30 @@ const CustomerPanelNew = () => {
           )}
 
           {activeTab === 'quotes' && (
-            <div style={{ display: 'grid', gap: '16px' }}>
+            <div style={{ display: 'grid', gap: '20px' }}>
               {quotes.length === 0 ? (
                 <div style={{
                   background: 'white',
-                  borderRadius: '12px',
-                  padding: '64px 32px',
+                  borderRadius: '20px',
+                  padding: '80px 32px',
                   textAlign: 'center',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+                  border: '2px dashed #E5E7EB'
                 }}>
-                  <FileText size={48} style={{ color: '#D1D5DB', margin: '0 auto 16px' }} />
-                  <p style={{ fontSize: '16px', color: '#6B7280' }}>Henüz teklif talebiniz yok</p>
+                  <div style={{
+                    width: '80px',
+                    height: '80px',
+                    background: 'linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)',
+                    borderRadius: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 20px'
+                  }}>
+                    <FileText size={40} style={{ color: '#9CA3AF' }} />
+                  </div>
+                  <p style={{ fontSize: '18px', color: '#6B7280', fontWeight: '600' }}>Henüz teklif talebiniz yok</p>
+                  <p style={{ fontSize: '14px', color: '#9CA3AF', marginTop: '8px' }}>Teklif oluşturduğunuzda burada görünecektir</p>
                 </div>
               ) : (
                 quotes.map((quote) => (
@@ -517,22 +831,29 @@ const CustomerPanelNew = () => {
                     key={quote.id}
                     style={{
                       background: 'white',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                      borderRadius: '16px',
+                      padding: '24px',
+                      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      transition: 'all 0.3s ease',
+                      border: '1px solid #E5E7EB'
                     }}
                     onClick={() => setExpandedQuote(expandedQuote === quote.id ? null : quote.id)}
-                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'}
-                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 10px 20px -5px rgba(0,0,0,0.1)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '6px' }}>
+                        <div style={{ fontSize: '18px', fontWeight: '700', color: '#111827', marginBottom: '8px' }}>
                           Teklif #{quote.id.substring(0, 8).toUpperCase()}
                         </div>
-                        <div style={{ fontSize: '14px', color: '#6B7280' }}>
+                        <div style={{ fontSize: '14px', color: '#6B7280', fontWeight: '500' }}>
                           {new Date(quote.created_at).toLocaleDateString('tr-TR', {
                             year: 'numeric',
                             month: 'long',
@@ -544,32 +865,34 @@ const CustomerPanelNew = () => {
                     </div>
 
                     {expandedQuote === quote.id && (
-                      <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #E5E7EB' }}>
-                        <div style={{ marginBottom: '16px' }}>
-                          <strong style={{ display: 'block', marginBottom: '8px', color: '#374151' }}>Ürünler:</strong>
+                      <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '2px solid #F3F4F6' }}>
+                        <div style={{ marginBottom: '20px' }}>
+                          <strong style={{ display: 'block', marginBottom: '12px', color: '#374151', fontSize: '15px', fontWeight: '700' }}>Ürünler:</strong>
                           {quote.items.map((item, idx) => (
                             <div key={idx} style={{ 
-                              padding: '8px 12px', 
-                              background: '#F9FAFB', 
-                              borderRadius: '6px',
-                              marginBottom: '6px',
+                              padding: '12px 16px', 
+                              background: 'linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%)', 
+                              borderRadius: '10px',
+                              marginBottom: '8px',
                               display: 'flex',
-                              justifyContent: 'space-between'
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              border: '1px solid #E5E7EB'
                             }}>
-                              <span>{item.product_name}</span>
-                              <span style={{ fontWeight: '600' }}>× {item.quantity}</span>
+                              <span style={{ fontWeight: '500', color: '#374151' }}>{item.product_name}</span>
+                              <span style={{ fontWeight: '700', color: '#e06c1b', background: '#FFF7ED', padding: '4px 12px', borderRadius: '8px' }}>× {item.quantity}</span>
                             </div>
                           ))}
                         </div>
 
                         {quote.pricing && quote.pricing.length > 0 && quote.status === 'fiyat_verildi' && (
                           <div style={{ 
-                            padding: '16px', 
-                            background: '#F0FDF4', 
-                            borderRadius: '8px',
-                            border: '1px solid #BBF7D0'
+                            padding: '20px', 
+                            background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)', 
+                            borderRadius: '16px',
+                            border: '2px solid #86EFAC'
                           }}>
-                            <strong style={{ display: 'block', marginBottom: '12px', color: '#065F46' }}>
+                            <strong style={{ display: 'block', marginBottom: '16px', color: '#065F46', fontSize: '16px', fontWeight: '700' }}>
                               Fiyat Detayları - Ürün Seçin:
                             </strong>
                             {quote.pricing.map((price, idx) => {
@@ -580,20 +903,27 @@ const CustomerPanelNew = () => {
                                   style={{ 
                                     display: 'flex', 
                                     alignItems: 'center',
-                                    gap: '12px',
-                                    padding: '10px 12px',
-                                    background: isSelected ? '#D1FAE5' : '#F9FAFB', 
-                                    borderRadius: '6px',
-                                    marginBottom: '8px',
+                                    gap: '14px',
+                                    padding: '14px 16px',
+                                    background: isSelected ? 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)' : 'white', 
+                                    borderRadius: '12px',
+                                    marginBottom: '10px',
                                     fontSize: '14px',
                                     color: '#047857',
                                     cursor: 'pointer',
-                                    border: isSelected ? '2px solid #10B981' : '2px solid transparent',
-                                    transition: 'all 0.2s'
+                                    border: isSelected ? '2px solid #10B981' : '2px solid #E5E7EB',
+                                    transition: 'all 0.2s',
+                                    fontWeight: '500'
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     toggleItemSelection(quote.id, idx);
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (!isSelected) e.currentTarget.style.background = '#F9FAFB';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!isSelected) e.currentTarget.style.background = 'white';
                                   }}
                                 >
                                   <input 
@@ -601,11 +931,11 @@ const CustomerPanelNew = () => {
                                     checked={isSelected}
                                     onChange={() => toggleItemSelection(quote.id, idx)}
                                     onClick={(e) => e.stopPropagation()}
-                                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                                    style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#10B981' }}
                                   />
-                                  <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between' }}>
-                                    <span>{price.product_name}</span>
-                                    <span style={{ fontWeight: '600' }}>
+                                  <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontWeight: '600' }}>{price.product_name}</span>
+                                    <span style={{ fontWeight: '700', color: '#065F46' }}>
                                       ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
                                     </span>
                                   </div>
@@ -613,13 +943,13 @@ const CustomerPanelNew = () => {
                               );
                             })}
                             <div style={{
-                              marginTop: '12px',
-                              paddingTop: '12px',
-                              borderTop: '1px solid #BBF7D0',
+                              marginTop: '16px',
+                              paddingTop: '16px',
+                              borderTop: '2px solid #86EFAC',
                               display: 'flex',
                               justifyContent: 'space-between',
-                              fontWeight: '700',
-                              fontSize: '16px',
+                              fontWeight: '800',
+                              fontSize: '18px',
                               color: '#065F46'
                             }}>
                               <span>Seçili Ürünler Toplamı:</span>
@@ -633,21 +963,33 @@ const CustomerPanelNew = () => {
                                 e.stopPropagation();
                                 handleConvertToOrder(quote.id);
                               }}
+                              disabled={(selectedItems[quote.id] || []).length === 0}
                               style={{
                                 width: '100%',
-                                marginTop: '16px',
-                                padding: '14px',
-                                background: '#10B981',
+                                marginTop: '20px',
+                                padding: '16px',
+                                background: (selectedItems[quote.id] || []).length === 0 ? '#D1D5DB' : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
                                 color: 'white',
                                 border: 'none',
-                                borderRadius: '8px',
-                                fontSize: '15px',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s'
+                                borderRadius: '12px',
+                                fontSize: '16px',
+                                fontWeight: '700',
+                                cursor: (selectedItems[quote.id] || []).length === 0 ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s',
+                                boxShadow: (selectedItems[quote.id] || []).length === 0 ? 'none' : '0 4px 12px rgba(16, 185, 129, 0.3)'
                               }}
-                              onMouseEnter={(e) => e.target.style.background = '#059669'}
-                              onMouseLeave={(e) => e.target.style.background = '#10B981'}
+                              onMouseEnter={(e) => {
+                                if ((selectedItems[quote.id] || []).length > 0) {
+                                  e.target.style.transform = 'translateY(-2px)';
+                                  e.target.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.4)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if ((selectedItems[quote.id] || []).length > 0) {
+                                  e.target.style.transform = 'translateY(0)';
+                                  e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+                                }
+                              }}
                             >
                               Seçili Ürünlerle Sipariş Oluştur ({(selectedItems[quote.id] || []).length} ürün)
                             </button>
@@ -656,36 +998,40 @@ const CustomerPanelNew = () => {
                         
                         {quote.pricing && quote.pricing.length > 0 && quote.status === 'onaylandi' && (
                           <div style={{ 
-                            padding: '16px', 
-                            background: '#DBEAFE', 
-                            borderRadius: '8px',
-                            border: '1px solid #93C5FD'
+                            padding: '20px', 
+                            background: 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)', 
+                            borderRadius: '16px',
+                            border: '2px solid #60A5FA'
                           }}>
-                            <strong style={{ display: 'block', marginBottom: '12px', color: '#1E40AF' }}>
+                            <strong style={{ display: 'block', marginBottom: '16px', color: '#1E40AF', fontSize: '16px', fontWeight: '700' }}>
                               Sipariş Detayları:
                             </strong>
                             {quote.pricing.map((price, idx) => (
                               <div key={idx} style={{ 
                                 display: 'flex', 
                                 justifyContent: 'space-between',
-                                marginBottom: '8px',
+                                marginBottom: '10px',
                                 fontSize: '14px',
-                                color: '#1E40AF'
+                                color: '#1E40AF',
+                                padding: '12px 16px',
+                                background: 'white',
+                                borderRadius: '10px',
+                                fontWeight: '500'
                               }}>
-                                <span>{price.product_name}</span>
-                                <span style={{ fontWeight: '600' }}>
+                                <span style={{ fontWeight: '600' }}>{price.product_name}</span>
+                                <span style={{ fontWeight: '700', color: '#1E3A8A' }}>
                                   ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
                                 </span>
                               </div>
                             ))}
                             <div style={{
-                              marginTop: '12px',
-                              paddingTop: '12px',
-                              borderTop: '1px solid #93C5FD',
+                              marginTop: '16px',
+                              paddingTop: '16px',
+                              borderTop: '2px solid #60A5FA',
                               display: 'flex',
                               justifyContent: 'space-between',
-                              fontWeight: '700',
-                              fontSize: '16px',
+                              fontWeight: '800',
+                              fontSize: '18px',
                               color: '#1E40AF'
                             }}>
                               <span>Toplam:</span>
@@ -706,18 +1052,19 @@ const CustomerPanelNew = () => {
           {activeTab === 'settings' && (
             <div style={{ 
               background: 'white', 
-              borderRadius: '12px', 
-              padding: '32px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+              borderRadius: '20px', 
+              padding: '36px',
+              boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+              border: '1px solid #E5E7EB'
             }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#111827' }}>
+              <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '28px', color: '#111827' }}>
                 Şifre Değiştir
               </h2>
               <form onSubmit={handlePasswordUpdate}>
-                <div style={{ display: 'grid', gap: '20px', maxWidth: '600px' }}>
+                <div style={{ display: 'grid', gap: '24px', maxWidth: '600px' }}>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
-                      <Lock size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      <Lock size={16} style={{ marginRight: '8px' }} />
                       Yeni Şifre
                     </label>
                     <input
@@ -727,17 +1074,27 @@ const CustomerPanelNew = () => {
                       minLength={6}
                       style={{
                         width: '100%',
-                        padding: '12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                        padding: '14px 16px',
+                        border: '2px solid #E5E7EB',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#e06c1b';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(224, 108, 27, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E5E7EB';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#374151' }}>
-                      <Lock size={16} style={{ display: 'inline', marginRight: '6px' }} />
+                    <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+                      <Lock size={16} style={{ marginRight: '8px' }} />
                       Yeni Şifre (Tekrar)
                     </label>
                     <input
@@ -747,10 +1104,20 @@ const CustomerPanelNew = () => {
                       minLength={6}
                       style={{
                         width: '100%',
-                        padding: '12px',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '8px',
-                        fontSize: '14px'
+                        padding: '14px 16px',
+                        border: '2px solid #E5E7EB',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        transition: 'all 0.2s',
+                        outline: 'none'
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#e06c1b';
+                        e.target.style.boxShadow = '0 0 0 3px rgba(224, 108, 27, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#E5E7EB';
+                        e.target.style.boxShadow = 'none';
                       }}
                     />
                   </div>
@@ -759,18 +1126,33 @@ const CustomerPanelNew = () => {
                     type="submit"
                     disabled={saving || !passwordData.newPassword || !passwordData.confirmPassword}
                     style={{
-                      background: '#e06c1b',
+                      background: (saving || !passwordData.newPassword || !passwordData.confirmPassword) ? '#D1D5DB' : 'linear-gradient(135deg, #e06c1b 0%, #c75a14 100%)',
                       color: 'white',
-                      padding: '12px 24px',
-                      borderRadius: '8px',
+                      padding: '14px 28px',
+                      borderRadius: '12px',
                       border: 'none',
-                      fontWeight: '600',
+                      fontWeight: '700',
+                      fontSize: '15px',
                       cursor: (saving || !passwordData.newPassword || !passwordData.confirmPassword) ? 'not-allowed' : 'pointer',
                       opacity: (saving || !passwordData.newPassword || !passwordData.confirmPassword) ? 0.6 : 1,
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      justifyContent: 'center'
+                      gap: '10px',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s',
+                      boxShadow: (saving || !passwordData.newPassword || !passwordData.confirmPassword) ? 'none' : '0 4px 12px rgba(224, 108, 27, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!saving && passwordData.newPassword && passwordData.confirmPassword) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 16px rgba(224, 108, 27, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!saving && passwordData.newPassword && passwordData.confirmPassword) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(224, 108, 27, 0.3)';
+                      }
                     }}
                   >
                     <Save size={18} />
@@ -780,23 +1162,35 @@ const CustomerPanelNew = () => {
               </form>
 
               <div style={{
-                marginTop: '32px',
-                paddingTop: '32px',
-                borderTop: '1px solid #E5E7EB'
+                marginTop: '40px',
+                paddingTop: '40px',
+                borderTop: '2px solid #F3F4F6'
               }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: '#374151' }}>Hesap İşlemleri</h3>
                 <Button
                   onClick={handleLogout}
                   style={{
-                    background: '#EF4444',
+                    background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
                     color: 'white',
-                    padding: '12px 24px',
-                    borderRadius: '8px',
+                    padding: '14px 28px',
+                    borderRadius: '12px',
                     border: 'none',
-                    fontWeight: '600',
+                    fontWeight: '700',
+                    fontSize: '15px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    gap: '10px',
+                    transition: 'all 0.3s',
+                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(239, 68, 68, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
                   }}
                 >
                   <LogOut size={18} />

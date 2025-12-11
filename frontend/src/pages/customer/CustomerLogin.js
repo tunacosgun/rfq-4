@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Mail, Lock, User } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Shield } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { toast } from 'sonner';
 import { useCustomerAuth } from '../../context/CustomerAuthContext';
@@ -68,50 +68,127 @@ const CustomerLogin = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F9FAFB' }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      background: 'linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Decorative Background Elements */}
+      <div style={{
+        position: 'absolute',
+        top: '-100px',
+        right: '-100px',
+        width: '400px',
+        height: '400px',
+        background: 'linear-gradient(135deg, rgba(224, 108, 27, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
+        borderRadius: '50%',
+        filter: 'blur(60px)',
+        zIndex: 0
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        bottom: '-150px',
+        left: '-150px',
+        width: '500px',
+        height: '500px',
+        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(224, 108, 27, 0.08) 100%)',
+        borderRadius: '50%',
+        filter: 'blur(80px)',
+        zIndex: 0
+      }}></div>
+
       <Header settings={settings} />
 
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '100px 24px 48px', marginTop: '70px' }}>
+      <div style={{ 
+        flex: 1, 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        padding: '32px 24px 48px', 
+        marginTop: '80px',
+        position: 'relative',
+        zIndex: 1
+      }}>
         <div style={{
           background: 'white',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          padding: '48px',
-          maxWidth: '460px',
+          borderRadius: '24px',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.1)',
+          padding: '56px',
+          maxWidth: '480px',
           width: '100%',
+          position: 'relative',
+          border: '1px solid rgba(255,255,255,0.8)'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          {/* Top Accent */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '80px',
+            height: '4px',
+            background: 'linear-gradient(90deg, #e06c1b 0%, #3B82F6 100%)',
+            borderRadius: '0 0 4px 4px'
+          }}></div>
+
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <div style={{
-              width: '64px',
-              height: '64px',
-              background: 'linear-gradient(135deg, #e06c1b 0%, #3B82F6 100%)',
-              borderRadius: '16px',
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #e06c1b 0%, #c75a14 50%, #3B82F6 100%)',
+              borderRadius: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 20px',
+              margin: '0 auto 24px',
+              boxShadow: '0 8px 24px rgba(224, 108, 27, 0.3)',
+              position: 'relative'
             }}>
-              <User size={32} color="white" />
+              <div style={{
+                position: 'absolute',
+                inset: '-4px',
+                background: 'linear-gradient(135deg, #e06c1b 0%, #3B82F6 100%)',
+                borderRadius: '22px',
+                opacity: 0.2,
+                filter: 'blur(8px)'
+              }}></div>
+              <User size={40} color="white" style={{ position: 'relative', zIndex: 1 }} />
             </div>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#111827', marginBottom: '8px' }}>
+            <h1 style={{ 
+              fontSize: '32px', 
+              fontWeight: '800', 
+              background: 'linear-gradient(135deg, #e06c1b 0%, #3B82F6 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '12px',
+              letterSpacing: '-0.5px'
+            }}>
               Müşteri Girişi
             </h1>
-            <p style={{ fontSize: '15px', color: '#6B7280' }}>
-              Hesabınıza giriş yapın
+            <p style={{ 
+              fontSize: '15px', 
+              color: '#6B7280',
+              fontWeight: '500'
+            }}>
+              Hesabınıza güvenli giriş yapın
             </p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gap: '20px' }}>
+            <div style={{ display: 'grid', gap: '24px' }}>
               <div>
                 <label style={{
-                  display: 'block',
-                  marginBottom: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '10px',
                   fontSize: '14px',
-                  fontWeight: '500',
+                  fontWeight: '600',
                   color: '#374151',
                 }}>
-                  <Mail size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+                  <Mail size={16} style={{ marginRight: '8px' }} />
                   E-posta *
                 </label>
                 <input
@@ -121,25 +198,38 @@ const CustomerLogin = () => {
                   required
                   style={{
                     width: '100%',
-                    padding: '14px',
-                    border: '1px solid #D1D5DB',
-                    borderRadius: '10px',
+                    padding: '16px',
+                    border: '2px solid #E5E7EB',
+                    borderRadius: '12px',
                     fontSize: '15px',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.3s',
+                    outline: 'none',
+                    background: '#F9FAFB'
                   }}
                   placeholder="ornek@email.com"
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#e06c1b';
+                    e.target.style.background = 'white';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(224, 108, 27, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#E5E7EB';
+                    e.target.style.background = '#F9FAFB';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
               <div>
                 <label style={{
-                  display: 'block',
-                  marginBottom: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '10px',
                   fontSize: '14px',
-                  fontWeight: '500',
+                  fontWeight: '600',
                   color: '#374151',
                 }}>
-                  <Lock size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />
+                  <Lock size={16} style={{ marginRight: '8px' }} />
                   Şifre *
                 </label>
                 <input
@@ -150,13 +240,25 @@ const CustomerLogin = () => {
                   minLength={6}
                   style={{
                     width: '100%',
-                    padding: '14px',
-                    border: '1px solid #D1D5DB',
-                    borderRadius: '10px',
+                    padding: '16px',
+                    border: '2px solid #E5E7EB',
+                    borderRadius: '12px',
                     fontSize: '15px',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.3s',
+                    outline: 'none',
+                    background: '#F9FAFB'
                   }}
                   placeholder="••••••••"
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#e06c1b';
+                    e.target.style.background = 'white';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(224, 108, 27, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#E5E7EB';
+                    e.target.style.background = '#F9FAFB';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
@@ -165,39 +267,131 @@ const CustomerLogin = () => {
                 disabled={loading}
                 style={{
                   width: '100%',
-                  padding: '14px',
-                  background: 'linear-gradient(135deg, #e06c1b 0%, #3B82F6 100%)',
+                  padding: '16px',
+                  background: loading ? '#D1D5DB' : 'linear-gradient(135deg, #e06c1b 0%, #c75a14 50%, #3B82F6 100%)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '10px',
+                  borderRadius: '12px',
                   fontSize: '16px',
-                  fontWeight: '600',
+                  fontWeight: '700',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   opacity: loading ? 0.7 : 1,
-                  transition: 'all 0.2s',
+                  transition: 'all 0.3s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  boxShadow: loading ? 'none' : '0 4px 16px rgba(224, 108, 27, 0.3)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(224, 108, 27, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading) {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(224, 108, 27, 0.3)';
+                  }
                 }}
               >
-                {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+                {loading ? (
+                  <>
+                    <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '3px' }}></div>
+                    Giriş Yapılıyor...
+                  </>
+                ) : (
+                  <>
+                    Giriş Yap
+                    <ArrowRight size={20} />
+                  </>
+                )}
               </Button>
             </div>
           </form>
 
+          {/* Security Badge */}
           <div style={{
-            marginTop: '24px',
-            textAlign: 'center',
-            fontSize: '14px',
-            color: '#6B7280',
+            marginTop: '28px',
+            padding: '16px',
+            background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)',
+            borderRadius: '12px',
+            border: '1px solid #86EFAC',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
           }}>
-            Hesabınız yok mu?{' '}
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}>
+              <Shield size={20} color="white" />
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '700', color: '#065F46', marginBottom: '2px' }}>
+                Güvenli Bağlantı
+              </div>
+              <div style={{ fontSize: '12px', color: '#047857' }}>
+                Bilgileriniz 256-bit SSL ile korunmaktadır
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            margin: '32px 0',
+            gap: '16px'
+          }}>
+            <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent 0%, #E5E7EB 50%, transparent 100%)' }}></div>
+            <span style={{ fontSize: '13px', color: '#9CA3AF', fontWeight: '500' }}>YENİ MİSİNİZ?</span>
+            <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent 0%, #E5E7EB 50%, transparent 100%)' }}></div>
+          </div>
+
+          {/* Register Link */}
+          <div style={{
+            textAlign: 'center',
+            fontSize: '15px',
+            color: '#6B7280',
+            fontWeight: '500'
+          }}>
+            Henüz hesabınız yok mu?{' '}
             <Link
               to="/musteri-kayit"
               style={{
                 color: '#e06c1b',
-                fontWeight: '600',
+                fontWeight: '700',
                 textDecoration: 'none',
+                position: 'relative',
+                display: 'inline-block'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#c75a14';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#e06c1b';
               }}
             >
-              Kayıt Ol
+              Hemen Kayıt Olun
+              <div style={{
+                position: 'absolute',
+                bottom: '-2px',
+                left: 0,
+                right: 0,
+                height: '2px',
+                background: 'linear-gradient(90deg, #e06c1b 0%, #3B82F6 100%)',
+                borderRadius: '2px'
+              }}></div>
             </Link>
           </div>
         </div>

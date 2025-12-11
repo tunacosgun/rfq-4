@@ -30,7 +30,9 @@ const AboutPage = () => {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get(`${API}/settings`).catch(() => ({ data: null }));
+      const res = await axios
+        .get(`${API}/settings`)
+        .catch(() => ({ data: null }));
       setSettings(res.data);
     } catch (error) {
       toast.error('Ayarlar yüklenemedi');
@@ -41,22 +43,22 @@ const AboutPage = () => {
 
   const stats = [
     {
-      number: settings?.about_stat1_number || '10+',
+      number: settings?.about_stat1_number || '50+',
       label: settings?.about_stat1_label || 'Yıllık Deneyim',
       icon: Award,
     },
     {
-      number: settings?.about_stat2_number || '500+',
-      label: settings?.about_stat2_label || 'Mutlu Müşteri',
+      number: settings?.about_stat2_number || '100+',
+      label: settings?.about_stat2_label || 'Kurumsal Müşteri',
       icon: Users,
     },
     {
       number: settings?.about_stat3_number || '1000+',
-      label: settings?.about_stat3_label || 'Tamamlanan Proje',
+      label: settings?.about_stat3_label || 'Tamamlanan Sipariş',
       icon: Target,
     },
     {
-      number: settings?.about_stat4_number || '98%',
+      number: settings?.about_stat4_number || '95%',
       label: settings?.about_stat4_label || 'Müşteri Memnuniyeti',
       icon: Star,
     },
@@ -68,21 +70,21 @@ const AboutPage = () => {
       title: 'Misyonumuz',
       description:
         settings?.about_mission ||
-        'Müşterilerimize en kaliteli ürünleri en uygun fiyatlarla sunarak, sektörde öncü olmak.',
+        'Müşterilerimize en kaliteli ürünleri, sürdürülebilir ve izlenebilir tedarik zinciriyle sunmak.',
     },
     {
       icon: Award,
       title: 'Vizyonumuz',
       description:
         settings?.about_vision ||
-        'Global pazarda rekabetçi bir oyuncu olarak, sürdürülebilir büyüme sağlamak.',
+        'Bölgesel bir oyuncudan, global arenada çözüm ortağı olarak tercih edilen kurumsal tedarikçi olmak.',
     },
     {
       icon: Users,
       title: 'Değerlerimiz',
       description:
         settings?.about_values ||
-        'Dürüstlük, kalite, müşteri odaklılık ve yenilikçilik temel değerlerimizdir.',
+        'Dürüstlük, şeffaflık, kalite, sürdürülebilirlik ve uzun vadeli iş ortaklığı temel değerlerimizdir.',
     },
   ];
 
@@ -116,398 +118,203 @@ const AboutPage = () => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <div className="spinner" style={{ margin: '0 auto 16px' }}></div>
-          <p>Yükleniyor...</p>
+      <div className="about-loading">
+        <div className="about-loading-card">
+          <div className="about-spinner" />
+          <p className="about-loading-title">Sayfa yükleniyor</p>
+          <p className="about-loading-text">Lütfen birkaç saniye bekleyin…</p>
         </div>
+
+        <style jsx>{`
+          .about-loading {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(
+                circle at top left,
+                rgba(224, 108, 27, 0.08),
+                transparent 55%
+              ),
+              #f3f4f6;
+          }
+          .about-loading-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 30px;
+            box-shadow: 0 22px 45px rgba(15, 23, 42, 0.16);
+            border: 1px solid rgba(209, 213, 219, 0.85);
+            text-align: center;
+          }
+          .about-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            border: 3px solid rgba(34, 30, 145, 0.16);
+            border-top-color: #221e91;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 10px;
+          }
+          .about-loading-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: #111827;
+          }
+          .about-loading-text {
+            font-size: 13px;
+            color: #6b7280;
+          }
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F3F4F6' }}>
+    <div className="about-page">
       <Header settings={settings} />
 
       {/* HERO */}
-      <section
-        style={{
-          marginTop: '72px',
-          padding: '96px 24px 72px',
-          background: 'linear-gradient(135deg,#111827 0%,#f97316 50%,#020617 100%)',
-          color: '#ffffff',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(circle at 15% 0%,rgba(224,108,27,0.35) 0%,transparent 55%)',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          style={{
-            maxWidth: '1280px',
-            margin: '0 auto',
-            position: 'relative',
-            zIndex: 1,
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0,1.3fr) minmax(0,1fr)',
-            gap: 40,
-            alignItems: 'center',
-          }}
-          className="about-hero-grid"
-        >
-          {/* Left text */}
-          <div>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '8px 18px',
-                borderRadius: 999,
-                background: 'rgba(15,23,42,0.6)',
-                border: '1px solid rgba(148,163,184,0.7)',
-                marginBottom: 20,
-                fontSize: 13,
-                fontWeight: 600,
-                backdropFilter: 'blur(14px)',
-              }}
-            >
+      <section className="about-hero">
+        <div className="about-hero-gradient" />
+        <div className="about-hero-inner about-animate-up">
+          <div className="about-hero-left">
+            <div className="about-hero-pill">
               <Shield size={16} />
-              GÜVENİLİR TEDARİK ORTAĞINIZ
+              <span>Güvenilir Tedarik Ortağınız</span>
             </div>
 
-            <h1
-              style={{
-                fontSize: 46,
-                lineHeight: 1.1,
-                fontWeight: 900,
-                letterSpacing: '-1.2px',
-                marginBottom: 16,
-              }}
-              className="about-hero-title"
-            >
-              {settings?.about_hero_title || 'Hakkımızda'}
-              <span
-                style={{
-                  display: 'block',
-                  background: 'linear-gradient(135deg,#f97316,#fb7185)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  marginTop: 6,
-                }}
-              >
-                deneyim, kalite ve güven
+            <h1 className="about-hero-title">
+              {settings?.about_hero_title || 'Özmen Gıda 53 yıldır yanınızda'}
+              <span className="about-hero-title-accent">
+                {settings?.about_hero_subtitle_main ||
+                  'deneyim, kalite ve güven'}
               </span>
             </h1>
 
-            <p
-              style={{
-                fontSize: 17,
-                maxWidth: 580,
-                lineHeight: 1.7,
-                opacity: 0.95,
-                marginBottom: 24,
-              }}
-            >
+            <p className="about-hero-text">
               {settings?.about_hero_subtitle ||
-                'Yılların deneyimi ve mükemmellik anlayışıyla, müşterilerimize sadece ürün değil; süreç tasarımı, lojistik ve sürdürülebilir iş ortaklığı sunuyoruz.'}
+                'Güvene bağlı tedarik anlayışımızla; ürün, marka ve hizmet portföyümüzü sürekli geliştirerek müşterilerimizin tüm tedarik süreçlerinde uçtan uca çözüm ortağı oluyoruz.'}
             </p>
 
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 12,
-                fontSize: 13,
-                opacity: 0.95,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div className="about-hero-badges">
+              <div className="about-hero-badge">
                 <CheckCircle2 size={16} />
-                <span>Kurumsal tedarik için uçtan uca çözüm</span>
+                Kurumsal tedarik için uçtan uca çözüm
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div className="about-hero-badge">
                 <CheckCircle2 size={16} />
-                <span>Şeffaf süreçler ve güçlü raporlama</span>
+                Şeffaf süreçler ve güçlü raporlama
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div className="about-hero-badge">
                 <CheckCircle2 size={16} />
-                <span>Uzun vadeli iş ortaklığı yaklaşımı</span>
+                Uzun vadeli iş ortaklığı yaklaşımı
               </div>
             </div>
           </div>
 
-          {/* Right – stats card */}
-          <div
-            style={{
-              borderRadius: 26,
-              padding: 24,
-              background: 'rgba(15,23,42,0.85)',
-              border: '1px solid rgba(148,163,184,0.5)',
-              boxShadow: '0 22px 55px rgba(15,23,42,0.75)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 18,
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Rocket size={22} color="#f97316" />
-              <div style={{ fontSize: 14, fontWeight: 700 }}>Büyüme Yolculuğumuz</div>
-            </div>
+          {/* Sağ: istatistik kartı */}
+          <div className="about-hero-right about-animate-up-delayed">
+            <div className="about-stats-card">
+              <div className="about-stats-header">
+                <div className="about-stats-pill">
+                  <Rocket size={16} />
+                  <span>Büyüme Yolculuğumuz</span>
+                </div>
+                <p className="about-stats-sub">
+                  {settings?.about_short_intro ||
+                    'Bölgesel bir tedarikçiden, ulusal ve uluslararası müşterilere hizmet veren güçlü bir iş ortağına dönüşen bir hikâye.'}
+                </p>
+              </div>
 
-            <p
-              style={{
-                fontSize: 13,
-                color: 'rgba(226,232,240,0.9)',
-                lineHeight: 1.7,
-              }}
-            >
-              {settings?.about_short_intro ||
-                'Bölgesel bir tedarikçiden, ulusal ve uluslararası müşterilere hizmet veren güçlü bir iş ortağına dönüşen bir hikâye.'}
-            </p>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2,minmax(0,1fr))',
-                gap: 12,
-              }}
-            >
-              {stats.slice(0, 4).map((stat, i) => {
-                const Icon = stat.icon;
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      padding: '10px 12px',
-                      borderRadius: 16,
-                      border: '1px solid rgba(148,163,184,0.6)',
-                      background:
-                        'radial-gradient(circle at 0 0,rgba(251,191,36,0.25),transparent 60%)',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                      <div
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: 999,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          background: 'rgba(15,23,42,0.9)',
-                        }}
-                      >
-                        <Icon size={16} color="#facc15" />
+              <div className="about-stats-grid">
+                {stats.map((stat, i) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={i} className="about-stat-item">
+                      <div className="about-stat-top">
+                        <div className="about-stat-icon">
+                          <Icon size={16} />
+                        </div>
+                        <span className="about-stat-label">{stat.label}</span>
                       </div>
-                      <div style={{ fontSize: 13, color: '#e5e7eb' }}>{stat.label}</div>
+                      <div className="about-stat-number">{stat.number}</div>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 20,
-                        fontWeight: 800,
-                        color: '#f9fafb',
-                      }}
-                    >
-                      {stat.number}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
 
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                fontSize: 12,
-                color: '#9ca3af',
-                marginTop: 4,
-              }}
-            >
-              <Globe size={14} />
-              {settings?.about_geo_info || 'Türkiye genelinde ve seçili Avrupa ülkelerinde aktif operasyonlar.'}
+              <div className="about-stats-footer">
+                <Globe size={14} />
+                <span>
+                  {settings?.about_geo_info ||
+                    'Türkiye genelinde ve seçili Avrupa ülkelerinde aktif operasyonlar.'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Kurumsal hikâye – image + text */}
-      <section
-        style={{
-          padding: '80px 24px',
-          background: '#F9FAFB',
-        }}
-      >
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,1fr)',
-              gap: 56,
-              alignItems: 'center',
-            }}
-            className="about-main-grid"
-          >
-            {/* Image */}
-            <div
-              style={{
-                borderRadius: 26,
-                overflow: 'hidden',
-                boxShadow: '0 22px 40px rgba(15,23,42,0.15)',
-                position: 'relative',
-                background: '#020617',
-              }}
-            >
+      {/* KURUMSAL HİKÂYE */}
+      <section className="about-story">
+        <div className="about-container about-animate-up">
+          <div className="about-main-grid">
+            {/* Görsel */}
+            <div className="about-story-image-wrapper">
               {settings?.about_image_url ? (
                 <img
                   src={settings.about_image_url}
-                  alt="Hakkımızda"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  alt="Özmen Gıda"
+                  className="about-story-image"
                 />
               ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    height: 360,
-                    background: 'linear-gradient(135deg,#ea580c,#f97316,#f97316)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Award size={80} color="#f9fafb" />
+                <div className="about-story-placeholder">
+                  <Award size={72} color="#fefce8" />
                 </div>
               )}
-
-              <div
-                style={{
-                  position: 'absolute',
-                  left: 18,
-                  bottom: 18,
-                  padding: '10px 16px',
-                  borderRadius: 16,
-                  background: 'rgba(15,23,42,0.85)',
-                  border: '1px solid rgba(148,163,184,0.7)',
-                  color: '#e5e7eb',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13,
-                  backdropFilter: 'blur(10px)',
-                }}
-              >
+              <div className="about-story-badge">
                 <Globe size={16} />
-                {settings?.about_badge || 'Global tedarik ağı & güçlü lojistik'}
+                <span>
+                  {settings?.about_badge ||
+                    'Global tedarik ağı ve güçlü lojistik altyapı'}
+                </span>
               </div>
             </div>
 
-            {/* Text */}
-            <div>
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '6px 16px',
-                  borderRadius: 999,
-                  background: 'rgba(34,30,145,0.08)',
-                  color: '#e06c1b',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  marginBottom: 14,
-                }}
-              >
-                <Rocket size={15} />
-                KURUMSAL KİMLİK
+            {/* Metin */}
+            <div className="about-story-text">
+              <div className="about-section-pill">
+                <Rocket size={16} />
+                <span>Kurumsal Kimlik</span>
               </div>
 
-              <h2
-                style={{
-                  fontSize: 32,
-                  fontWeight: 800,
-                  marginBottom: 12,
-                  color: '#111827',
-                }}
-              >
+              <h2 className="about-section-title">
                 {settings?.company_name || 'Özmen Gıda'} kimdir?
               </h2>
 
-              <p
-                style={{
-                  fontSize: 15,
-                  color: '#4b5563',
-                  lineHeight: 1.8,
-                  marginBottom: 14,
-                }}
-              >
+              <p className="about-story-paragraph">
                 {settings?.about_description ||
-                  'Sektörde uzun yıllara dayanan deneyimimizle; gıda ve endüstriyel ürün gruplarında, zincir marketlerden yerel işletmelere kadar geniş bir müşteri portföyüne hizmet veriyoruz.'}
-              </p>
-              <p
-                style={{
-                  fontSize: 15,
-                  color: '#4b5563',
-                  lineHeight: 1.8,
-                }}
-              >
-                Geçmişten bugüne kazandığımız operasyonel tecrübe, güçlü tedarikçi ağımız ve teknolojik altyapımızla,
-                müşterilerimizin satın alma süreçlerini sadeleştiren, maliyetlerini optimize eden ve risklerini azaltan
-                çözümler üretiyoruz.
+                  'Sektörde uzun yıllara dayanan deneyimimizle; gıda ve temizlik ürün gruplarında, zincir marketlerden yerel işletmelere kadar geniş bir müşteri portföyüne hizmet veriyoruz.'}
               </p>
 
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 14,
-                  marginTop: 22,
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '10px 16px',
-                    borderRadius: 999,
-                    background: 'rgba(34,30,145,0.08)',
-                    color: '#e06c1b',
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                >
+              <p className="about-story-paragraph">
+                Geçmişten bugüne kazandığımız operasyonel tecrübe, güçlü
+                tedarikçi ağımız ve teknolojik altyapımızla; müşterilerimizin
+                satın alma süreçlerini sadeleştiren, maliyetlerini optimize
+                eden ve risklerini azaltan çözümler geliştiriyoruz.
+              </p>
+
+              <div className="about-story-tags">
+                <div className="about-story-tag">
                   <CheckCircle2 size={16} />
                   Kalite & izlenebilir tedarik zinciri
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '10px 16px',
-                    borderRadius: 999,
-                    background: 'rgba(249,115,22,0.08)',
-                    color: '#ea580c',
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                >
+                <div className="about-story-tag orange">
                   <CheckCircle2 size={16} />
                   Uzman ekip & danışmanlık
                 </div>
@@ -517,122 +324,33 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Misyon, vizyon, değerler */}
-      <section
-        style={{
-          padding: '80px 24px',
-          background: '#FFFFFF',
-        }}
-      >
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '6px 16px',
-                borderRadius: 999,
-                background: 'rgba(34,30,145,0.08)',
-                color: '#e06c1b',
-                fontSize: 13,
-                fontWeight: 600,
-                marginBottom: 12,
-              }}
-            >
-              <Target size={15} />
-              KURUMSAL DEĞERLER
+      {/* MİSYON – VİZYON – DEĞERLER */}
+      <section className="about-values">
+        <div className="about-container">
+          <div className="about-values-header about-animate-up">
+            <div className="about-section-pill">
+              <Target size={16} />
+              <span>Kurumsal Değerler</span>
             </div>
-            <h2
-              style={{
-                fontSize: 32,
-                fontWeight: 800,
-                marginBottom: 8,
-                color: '#111827',
-              }}
-            >
+            <h2 className="about-section-title">
               Misyon, vizyon ve değerlerimiz
             </h2>
-            <p
-              style={{
-                fontSize: 15,
-                color: '#6b7280',
-                maxWidth: 560,
-                margin: '0 auto',
-              }}
-            >
-              Stratejilerimizi; sürdürülebilirlik, şeffaflık ve uzun vadeli iş birliği prensipleri üzerine inşa ediyoruz.
+            <p className="about-section-sub">
+              Stratejilerimizi; sürdürülebilirlik, şeffaflık ve uzun vadeli iş
+              birliği prensipleri üzerine inşa ediyoruz.
             </p>
           </div>
 
-          <div
-            className="about-values-grid"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3,minmax(0,1fr))',
-              gap: 28,
-            }}
-          >
+          <div className="about-values-grid">
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
-                <div
-                  key={index}
-                  className="card"
-                  style={{
-                    padding: '36px 28px',
-                    background: '#ffffff',
-                    borderRadius: 18,
-                    border: '1px solid rgba(226,232,240,0.9)',
-                    boxShadow: '0 12px 28px rgba(15,23,42,0.06)',
-                    textAlign: 'left',
-                    transition: 'all 0.25s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-6px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(15,23,42,0.18)';
-                    e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(15,23,42,0.06)';
-                    e.currentTarget.style.borderColor = 'rgba(226,232,240,0.9)';
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 46,
-                      height: 46,
-                      borderRadius: 14,
-                      background: 'linear-gradient(135deg,#e06c1b,#f59e0b)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: 14,
-                      boxShadow: '0 10px 22px rgba(67,56,202,0.45)',
-                    }}
-                  >
-                    <Icon size={26} color="#ffffff" />
+                <div key={index} className="about-value-card about-animate-up">
+                  <div className="about-value-icon">
+                    <Icon size={24} />
                   </div>
-                  <h3
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      marginBottom: 8,
-                      color: '#111827',
-                    }}
-                  >
-                    {value.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      color: '#6b7280',
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {value.description}
-                  </p>
+                  <h3 className="about-value-title">{value.title}</h3>
+                  <p className="about-value-text">{value.description}</p>
                 </div>
               );
             })}
@@ -641,140 +359,48 @@ const AboutPage = () => {
       </section>
 
       {/* FAQ */}
-      <section
-        style={{
-          padding: '80px 24px 96px',
-          background: 'linear-gradient(135deg,#eff6ff 0%,#eef2ff 100%)',
-        }}
-      >
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 44 }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '6px 16px',
-                borderRadius: 999,
-                background: 'rgba(37,99,235,0.12)',
-                color: '#f97316',
-                fontSize: 13,
-                fontWeight: 600,
-                marginBottom: 12,
-              }}
-            >
-              <HelpCircle size={15} />
-              SIK SORULAN SORULAR
+      <section className="about-faq">
+        <div className="about-container">
+          <div className="about-faq-header about-animate-up">
+            <div className="about-faq-header-left">
+              <div className="about-faq-pill">
+                <HelpCircle size={16} />
+                <span>Sık Sorulan Sorular</span>
+              </div>
+              <h2 className="about-section-title">Sık Sorulan Sorular</h2>
+              <p className="about-section-sub">
+                Teklif süreçleri, teslimat ve çalışma modellerimizle ilgili
+                aklınıza gelebilecek temel soruları burada topladık.
+              </p>
             </div>
-            <h2
-              style={{
-                fontSize: 30,
-                fontWeight: 800,
-                marginBottom: 8,
-                color: '#111827',
-              }}
-            >
-              Sık Sorulan Sorular
-            </h2>
-            <p
-              style={{
-                fontSize: 15,
-                color: '#6b7280',
-                maxWidth: 540,
-                margin: '0 auto',
-              }}
-            >
-              Teklif süreçleri, teslimat ve çalışma modellerimizle ilgili aklınıza gelebilecek temel soruları burada
-              toparladık.
-            </p>
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 12,
-            }}
-          >
+          <div className="about-faq-list">
             {faqItems.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  borderRadius: 14,
-                  background: '#ffffff',
-                  border: '1px solid rgba(209,213,219,0.9)',
-                  boxShadow: '0 8px 20px rgba(15,23,42,0.05)',
-                  overflow: 'hidden',
-                }}
-              >
+              <div key={index} className="about-faq-item about-animate-up">
                 <button
                   type="button"
                   onClick={() =>
                     setOpenFaqIndex((prev) => (prev === index ? -1 : index))
                   }
-                  style={{
-                    width: '100%',
-                    padding: '16px 20px',
-                    background: 'transparent',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                  }}
+                  className="about-faq-question"
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 10,
-                      textAlign: 'left',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 999,
-                        background: 'rgba(37,99,235,0.08)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      <HelpCircle size={18} color="#f97316" />
+                  <div className="about-faq-question-left">
+                    <div className="about-faq-icon">
+                      <HelpCircle size={18} />
                     </div>
-                    <span
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: '#111827',
-                      }}
-                    >
-                      {item.question}
-                    </span>
+                    <span>{item.question}</span>
                   </div>
                   <div
-                    style={{
-                      transition: 'transform 0.2s ease',
-                      transform: openFaqIndex === index ? 'rotate(180deg)' : 'rotate(0deg)',
-                    }}
+                    className={`about-faq-arrow ${
+                      openFaqIndex === index ? 'open' : ''
+                    }`}
                   >
-                    <ChevronDown size={18} color="#6b7280" />
+                    <ChevronDown size={18} />
                   </div>
                 </button>
                 {openFaqIndex === index && (
-                  <div
-                    style={{
-                      padding: '0 20px 16px 62px',
-                      fontSize: 14,
-                      color: '#4b5563',
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {item.answer}
-                  </div>
+                  <div className="about-faq-answer">{item.answer}</div>
                 )}
               </div>
             ))}
@@ -784,38 +410,594 @@ const AboutPage = () => {
 
       <Footer settings={settings} />
 
-      <style>{`
-        .grid {
-          display: grid;
-        }
-        .grid-4 {
-          grid-template-columns: repeat(4, 1fr);
-        }
-        .grid-3 {
-          grid-template-columns: repeat(3, 1fr);
-        }
-        .card {
-          transition: all 0.3s ease;
+      <style jsx>{`
+        :root {
+          --primary: #221e91;
+          --primary-dark: #1a1775;
+          --secondary: #e06c1b;
+          --secondary-light: #f97316;
+          --bg-page: #f5f5f7;
+          --card-radius: 22px;
         }
 
+        .about-page {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          background: var(--bg-page);
+        }
+
+        .about-container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+
+        /* ANIMATIONS */
+        .about-animate-up {
+          opacity: 0;
+          transform: translateY(16px);
+          animation: fadeUp 0.6s ease forwards;
+        }
+
+        .about-animate-up-delayed {
+          opacity: 0;
+          transform: translateY(18px);
+          animation: fadeUp 0.6s ease 0.15s forwards;
+        }
+
+        @keyframes fadeUp {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* HERO – AÇIK TEMA */
+        .about-hero {
+          margin-top: 72px;
+          padding: 90px 0 70px;
+          position: relative;
+          background: radial-gradient(
+              circle at 0% 0%,
+              rgba(244, 114, 182, 0.08),
+              transparent 55%
+            ),
+            linear-gradient(135deg, #fff7ed 0%, #eef2ff 40%, #ffffff 100%);
+          color: #0f172a;
+          overflow: hidden;
+          border-bottom: 1px solid #e5e7eb;
+        }
+
+        .about-hero-gradient {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(
+            circle at 90% 0%,
+            rgba(244, 114, 182, 0.16),
+            transparent 55%
+          );
+          pointer-events: none;
+        }
+
+        .about-hero-inner {
+          position: relative;
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+          display: grid;
+          grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+          gap: 40px;
+          align-items: center;
+        }
+
+        .about-hero-left {
+          z-index: 1;
+        }
+
+        .about-hero-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 7px 16px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid rgba(209, 213, 219, 0.9);
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 16px;
+          backdrop-filter: blur(8px);
+          color: #4b5563;
+        }
+
+        .about-hero-title {
+          font-size: 38px;
+          line-height: 1.1;
+          font-weight: 900;
+          letter-spacing: -0.8px;
+          margin-bottom: 10px;
+          color: #111827;
+        }
+
+        .about-hero-title-accent {
+          display: block;
+          background: linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--secondary-light)
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-top: 6px;
+        }
+
+        .about-hero-text {
+          font-size: 15px;
+          line-height: 1.8;
+          max-width: 560px;
+          color: #4b5563;
+          margin-bottom: 18px;
+        }
+
+        .about-hero-badges {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 13px;
+        }
+
+        .about-hero-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 14px;
+          border-radius: 999px;
+          background: #ffffff;
+          border: 1px solid #e5e7eb;
+          color: #374151;
+          box-shadow: 0 4px 10px rgba(148, 163, 184, 0.3);
+        }
+
+        .about-hero-right {
+          z-index: 1;
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .about-stats-card {
+          width: 100%;
+          max-width: 380px;
+          border-radius: var(--card-radius);
+          background: #ffffff;
+          border: 1px solid rgba(226, 232, 240, 0.95);
+          box-shadow: 0 18px 40px rgba(148, 163, 184, 0.45);
+          padding: 18px 18px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .about-stats-header {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .about-stats-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 5px 12px;
+          border-radius: 999px;
+          background: rgba(248, 250, 252, 0.9);
+          border: 1px solid rgba(226, 232, 240, 1);
+          font-size: 12px;
+          font-weight: 600;
+          color: #4b5563;
+        }
+
+        .about-stats-sub {
+          font-size: 12px;
+          color: #6b7280;
+          line-height: 1.7;
+        }
+
+        .about-stats-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .about-stat-item {
+          padding: 10px 11px;
+          border-radius: 16px;
+          background: linear-gradient(
+            135deg,
+            #ffffff,
+            rgba(249, 250, 251, 0.96)
+          );
+          border: 1px solid rgba(226, 232, 240, 1);
+          transition: transform 0.18s ease, box-shadow 0.18s ease,
+            border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .about-stat-item:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 14px 30px rgba(148, 163, 184, 0.6);
+          border-color: rgba(249, 115, 22, 0.7);
+          background: linear-gradient(
+            135deg,
+            #ffffff,
+            rgba(255, 247, 237, 0.95)
+          );
+        }
+
+        .about-stat-top {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 4px;
+        }
+
+        .about-stat-icon {
+          width: 26px;
+          height: 26px;
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(249, 250, 251, 1);
+          color: var(--secondary);
+        }
+
+        .about-stat-label {
+          font-size: 12px;
+          color: #4b5563;
+        }
+
+        .about-stat-number {
+          font-size: 20px;
+          font-weight: 800;
+          color: #111827;
+        }
+
+        .about-stats-footer {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          color: #6b7280;
+          border-top: 1px solid rgba(229, 231, 235, 0.95);
+          padding-top: 10px;
+        }
+
+        /* STORY */
+        .about-story {
+          padding: 76px 0 70px;
+          background: #f9fafb;
+        }
+
+        .about-main-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+          gap: 52px;
+          align-items: center;
+        }
+
+        .about-story-image-wrapper {
+          border-radius: 26px;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 22px 44px rgba(148, 163, 184, 0.5);
+          background: #ffffff;
+        }
+
+        .about-story-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .about-story-placeholder {
+          width: 100%;
+          height: 360px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--secondary-light)
+          );
+        }
+
+        .about-story-badge {
+          position: absolute;
+          left: 18px;
+          bottom: 18px;
+          padding: 9px 16px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.92);
+          border: 1px solid rgba(226, 232, 240, 1);
+          color: #374151;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 13px;
+          backdrop-filter: blur(10px);
+        }
+
+        .about-story-text {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .about-section-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 14px;
+          border-radius: 999px;
+          background: rgba(34, 30, 145, 0.06);
+          color: var(--secondary);
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 4px;
+        }
+
+        .about-section-title {
+          font-size: 28px;
+          font-weight: 800;
+          color: #111827;
+          margin-bottom: 6px;
+        }
+
+        .about-section-sub {
+          font-size: 15px;
+          color: #6b7280;
+          max-width: 580px;
+          margin-top: 4px;
+        }
+
+        .about-story-paragraph {
+          font-size: 15px;
+          color: #4b5563;
+          line-height: 1.8;
+          margin-top: 8px;
+        }
+
+        .about-story-tags {
+          margin-top: 20px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .about-story-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 9px 14px;
+          border-radius: 999px;
+          background: rgba(34, 30, 145, 0.06);
+          color: var(--secondary);
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .about-story-tag.orange {
+          background: rgba(249, 115, 22, 0.09);
+          color: #ea580c;
+        }
+
+        /* VALUES */
+        .about-values {
+          padding: 72px 0 80px;
+          background: #ffffff;
+          border-top: 1px solid #e5e7eb;
+        }
+
+        .about-values-header {
+          text-align: center;
+          margin-bottom: 42px;
+        }
+
+        .about-values-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 26px;
+        }
+
+        .about-value-card {
+          padding: 32px 26px;
+          border-radius: 18px;
+          background: #ffffff;
+          border: 1px solid rgba(226, 232, 240, 0.95);
+          box-shadow: 0 14px 32px rgba(148, 163, 184, 0.35);
+          transition: transform 0.2s ease, box-shadow 0.2s ease,
+            border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .about-value-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 22px 44px rgba(148, 163, 184, 0.6);
+          border-color: rgba(249, 115, 22, 0.55);
+          background: linear-gradient(
+            135deg,
+            #ffffff,
+            rgba(255, 247, 237, 0.96)
+          );
+        }
+
+        .about-value-icon {
+          width: 46px;
+          height: 46px;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(
+            135deg,
+            var(--secondary),
+            var(--secondary-light)
+          );
+          color: #ffffff;
+          margin-bottom: 12px;
+          box-shadow: 0 12px 26px rgba(249, 115, 22, 0.5);
+        }
+
+        .about-value-title {
+          font-size: 18px;
+          font-weight: 700;
+          color: #111827;
+          margin-bottom: 6px;
+        }
+
+        .about-value-text {
+          font-size: 14px;
+          color: #6b7280;
+          line-height: 1.7;
+        }
+
+        /* FAQ */
+        .about-faq {
+          padding: 80px 0 96px;
+          background: linear-gradient(135deg, #f3f4ff 0%, #e5edff 100%);
+        }
+
+        .about-faq-header {
+          margin-bottom: 32px;
+        }
+
+        .about-faq-header-left {
+          max-width: 560px;
+        }
+
+        .about-faq-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 14px;
+          border-radius: 999px;
+          background: rgba(37, 99, 235, 0.12);
+          color: var(--secondary);
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 10px;
+        }
+
+        .about-faq-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .about-faq-item {
+          border-radius: 14px;
+          background: #ffffff;
+          border: 1px solid rgba(209, 213, 219, 0.9);
+          box-shadow: 0 10px 26px rgba(148, 163, 184, 0.4);
+          overflow: hidden;
+        }
+
+        .about-faq-question {
+          width: 100%;
+          padding: 16px 20px;
+          background: transparent;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          cursor: pointer;
+        }
+
+        .about-faq-question-left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          text-align: left;
+        }
+
+        .about-faq-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 999px;
+          background: rgba(37, 99, 235, 0.08);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--secondary);
+        }
+
+        .about-faq-question span {
+          font-size: 15px;
+          font-weight: 600;
+          color: #111827;
+        }
+
+        .about-faq-arrow {
+          transition: transform 0.2s ease;
+          color: #6b7280;
+        }
+
+        .about-faq-arrow.open {
+          transform: rotate(180deg);
+        }
+
+        .about-faq-answer {
+          padding: 0 20px 16px 62px;
+          font-size: 14px;
+          color: #4b5563;
+          line-height: 1.7;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 1024px) {
-          .about-hero-grid {
-            grid-template-columns: 1fr !important;
+          .about-hero-inner {
+            grid-template-columns: 1fr;
+            gap: 32px;
+          }
+          .about-hero-right {
+            justify-content: flex-start;
           }
           .about-main-grid {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr;
+            gap: 40px;
           }
           .about-values-grid {
-            grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
 
         @media (max-width: 768px) {
+          .about-hero {
+            padding: 80px 0 60px;
+          }
+          .about-hero-inner {
+            padding: 0 16px;
+          }
+          .about-container {
+            padding: 0 16px;
+          }
           .about-hero-title {
-            font-size: 32px !important;
+            font-size: 30px;
+          }
+          .about-story {
+            padding: 64px 0 56px;
+          }
+          .about-values {
+            padding: 64px 0 72px;
+          }
+          .about-faq {
+            padding: 64px 0 80px;
           }
           .about-values-grid {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr;
+          }
+          .about-faq-answer {
+            padding-left: 20px;
           }
         }
       `}</style>
