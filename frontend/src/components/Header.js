@@ -140,27 +140,43 @@ const ModernHeader = ({ settings }) => {
               }}
               className="desktop-nav"
             >
-              {menuItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: isActive(item.path) ? '600' : '500',
-                    color: isActive(item.path) ? primaryColor : (settings?.header_link_color || '#374151'),
-                    textDecoration: 'none',
-                    transition: 'color 0.2s',
-                    borderBottom: isActive(item.path) ? `2px solid ${primaryColor}` : 'none',
-                    paddingBottom: '4px',
-                  }}
-                  onMouseEnter={(e) => (e.target.style.color = primaryColor)}
-                  onMouseLeave={(e) =>
-                    (e.target.style.color = isActive(item.path) ? primaryColor : (settings?.header_link_color || '#374151'))
-                  }
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {menuItems.map((item) => {
+                const linkStyle = {
+                  fontSize: '15px',
+                  fontWeight: isActive(item.path) ? '600' : '500',
+                  color: isActive(item.path) ? primaryColor : (settings?.header_link_color || '#374151'),
+                  textDecoration: 'none',
+                  transition: 'color 0.2s',
+                  borderBottom: isActive(item.path) ? `2px solid ${primaryColor}` : 'none',
+                  paddingBottom: '4px',
+                };
+
+                return item.isExternal ? (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={linkStyle}
+                    onMouseEnter={(e) => (e.target.style.color = primaryColor)}
+                    onMouseLeave={(e) => (e.target.style.color = settings?.header_link_color || '#374151')}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    style={linkStyle}
+                    onMouseEnter={(e) => (e.target.style.color = primaryColor)}
+                    onMouseLeave={(e) =>
+                      (e.target.style.color = isActive(item.path) ? primaryColor : (settings?.header_link_color || '#374151'))
+                    }
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Right Section */}
