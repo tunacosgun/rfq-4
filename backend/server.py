@@ -57,6 +57,7 @@ class Admin(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     username: str
     password_hash: str
+    email: Optional[str] = None
 
 class AdminLogin(BaseModel):
     username: str
