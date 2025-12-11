@@ -850,7 +850,7 @@ async def get_customer_quotes(customer_email: str):
 
 @api_router.post("/customer/quotes/{quote_id}/convert-to-order")
 async def convert_quote_to_order(quote_id: str, data: dict):
-    """Convert selected quote items to order"""
+    """Convert selected quote items to order with quantity modifications"""
     quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
     if not quote:
         raise HTTPException(status_code=404, detail="Teklif bulunamadı")
@@ -858,27 +858,54 @@ async def convert_quote_to_order(quote_id: str, data: dict):
     if quote['status'] != 'fiyat_verildi':
         raise HTTPException(status_code=400, detail="Sadece fiyatlandırılmış teklifler sipariş haline çevrilebilir")
     
+    # selected_items format: [{ product_id: str, quantity: int }, ...]
     selected_items = data.get('selected_items', [])
     if not selected_items:
         raise HTTPException(status_code=400, detail="En az bir ürün seçilmelidir")
     
-    # Filter pricing for selected items only
-    if quote.get('pricing'):
-        selected_pricing = [quote['pricing'][idx] for idx in selected_items if idx < len(quote['pricing'])]
-    else:
+    # Build updated pricing list
+    if not quote.get('pricing'):
         raise HTTPException(status_code=400, detail="Fiyatlandırılmamış teklif")
     
-    # Update quote status and store selected items
+    updated_pricing = []
+    for item in selected_items:
+        product_id = item.get('product_id')
+        new_quantity = item.get('quantity', 0)
+        
+        if new_quantity <= 0:
+            continue  # Skip items with 0 or negative quantity
+        
+        # Find this product in original pricing
+        original_item = next((p for p in quote['pricing'] if p['product_id'] == product_id), None)
+        if original_item:
+            # Update quantity and recalculate total
+            updated_item = {
+                'product_id': product_id,
+                'product_name': original_item['product_name'],
+                'quantity': new_quantity,
+                'unit_price': original_item['unit_price'],
+                'total_price': new_quantity * original_item['unit_price']
+            }
+            updated_pricing.append(updated_item)
+    
+    if not updated_pricing:
+        raise HTTPException(status_code=400, detail="Geçerli ürün seçilmedi")
+    
+    # Update quote status and store selected items with new quantities
     await db.quotes.update_one(
         {"id": quote_id},
         {
             "$set": {
                 "status": "onaylandi",
-                "pricing": selected_pricing,
+                "pricing": updated_pricing,
                 "approved_at": datetime.now(timezone.utc).isoformat()
             }
         }
     )
+    
+    # Return updated quote
+    updated_quote = await db.quotes.find_one({"id": quote_id}, {"_id": 0})
+    return updated_quote
 
 # ==================== VISITOR TRACKING ====================
 
