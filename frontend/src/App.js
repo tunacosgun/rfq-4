@@ -35,6 +35,9 @@ import CustomerLogin from './pages/customer/CustomerLogin';
 import CustomerRegister from './pages/customer/CustomerRegister';
 import CustomerPanel from './pages/customer/CustomerPanel';
 import BrandsPage from './pages/customer/BrandsPage';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import AdminForgotPassword from './pages/admin/AdminForgotPassword';
 
 // Context
 import { QuoteCartProvider } from './context/QuoteCartContext';
