@@ -894,51 +894,109 @@ const CustomerPanelNew = () => {
                             border: '2px solid #86EFAC'
                           }}>
                             <strong style={{ display: 'block', marginBottom: '16px', color: '#065F46', fontSize: '16px', fontWeight: '700' }}>
-                              Fiyat Detayları - Ürün Seçin:
+                              Fiyat Detayları - Adet Düzenleyip Sipariş Verin:
                             </strong>
                             {quote.pricing.map((price, idx) => {
-                              const isSelected = (selectedItems[quote.id] || []).includes(idx);
+                              const currentQuantity = editedQuantities[quote.id]?.[price.product_id] !== undefined 
+                                ? editedQuantities[quote.id][price.product_id]
+                                : price.quantity;
+                              const isIncluded = currentQuantity > 0;
+                              
                               return (
                                 <div 
                                   key={idx} 
                                   style={{ 
                                     display: 'flex', 
                                     alignItems: 'center',
-                                    gap: '14px',
-                                    padding: '14px 16px',
-                                    background: isSelected ? 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)' : 'white', 
+                                    gap: '12px',
+                                    padding: '16px',
+                                    background: isIncluded ? 'white' : '#FEE2E2', 
                                     borderRadius: '12px',
                                     marginBottom: '10px',
-                                    fontSize: '14px',
-                                    color: '#047857',
-                                    cursor: 'pointer',
-                                    border: isSelected ? '2px solid #10B981' : '2px solid #E5E7EB',
+                                    border: isIncluded ? '2px solid #10B981' : '2px solid #EF4444',
                                     transition: 'all 0.2s',
-                                    fontWeight: '500'
                                   }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleItemSelection(quote.id, idx);
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    if (!isSelected) e.currentTarget.style.background = '#F9FAFB';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    if (!isSelected) e.currentTarget.style.background = 'white';
-                                  }}
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  <input 
-                                    type="checkbox" 
-                                    checked={isSelected}
-                                    onChange={() => toggleItemSelection(quote.id, idx)}
-                                    onClick={(e) => e.stopPropagation()}
-                                    style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#10B981' }}
-                                  />
-                                  <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontWeight: '600' }}>{price.product_name}</span>
-                                    <span style={{ fontWeight: '700', color: '#065F46' }}>
-                                      ₺{price.unit_price} × {price.quantity} = ₺{price.total_price}
-                                    </span>
+                                  <div style={{ flex: 1 }}>
+                                    <div style={{ fontWeight: '600', color: '#111827', marginBottom: '8px' }}>
+                                      {price.product_name}
+                                    </div>
+                                    <div style={{ fontSize: '14px', color: '#6B7280' }}>
+                                      Birim Fiyat: ₺{price.unit_price.toLocaleString('tr-TR')}
+                                    </div>
+                                  </div>
+                                  
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateQuantity(quote.id, price.product_id, Math.max(0, currentQuantity - 1));
+                                      }}
+                                      style={{
+                                        width: '32px',
+                                        height: '32px',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        background: '#E5E7EB',
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        fontWeight: '700',
+                                        color: '#374151'
+                                      }}
+                                    >
+                                      −
+                                    </button>
+                                    
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={currentQuantity}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        updateQuantity(quote.id, price.product_id, parseInt(e.target.value) || 0);
+                                      }}
+                                      onClick={(e) => e.stopPropagation()}
+                                      style={{
+                                        width: '70px',
+                                        padding: '8px',
+                                        textAlign: 'center',
+                                        border: '2px solid #D1D5DB',
+                                        borderRadius: '8px',
+                                        fontSize: '16px',
+                                        fontWeight: '600'
+                                      }}
+                                    />
+                                    
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        updateQuantity(quote.id, price.product_id, currentQuantity + 1);
+                                      }}
+                                      style={{
+                                        width: '32px',
+                                        height: '32px',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        background: '#10B981',
+                                        cursor: 'pointer',
+                                        fontSize: '18px',
+                                        fontWeight: '700',
+                                        color: 'white'
+                                      }}
+                                    >
+                                      +
+                                    </button>
+                                    
+                                    <div style={{ 
+                                      marginLeft: '12px',
+                                      fontWeight: '700',
+                                      color: isIncluded ? '#10B981' : '#EF4444',
+                                      minWidth: '100px',
+                                      textAlign: 'right'
+                                    }}>
+                                      {isIncluded ? `₺${(currentQuantity * price.unit_price).toLocaleString('tr-TR')}` : 'Çıkarıldı'}
+                                    </div>
                                   </div>
                                 </div>
                               );
