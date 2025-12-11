@@ -19,7 +19,7 @@ const CustomerLogin = () => {
 
   useEffect(() => {
     fetchSettings();
-  }, []);
+  }, [fetchSettings]);
 
   useEffect(() => {
     if (isAuthenticated) {
