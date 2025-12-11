@@ -303,7 +303,11 @@ const AdminQuoteDetail = () => {
               
               {!showPricing ? (
                 <div style={styles.productsList}>
-                  {quote.items.map((item, index) => (
+                  {/* Show pricing items for approved quotes, otherwise show original items */}
+                  {(quote.status === 'onaylandi' && quote.pricing && quote.pricing.length > 0 
+                    ? quote.pricing 
+                    : quote.items
+                  ).map((item, index) => (
                     <div key={index} style={styles.productItem} data-testid={`quote-item-${index}`}>
                       <div style={styles.productIcon}>
                         <Package size={24} style={{ color: '#3BB77E' }} />
@@ -327,24 +331,36 @@ const AdminQuoteDetail = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {quote.items.map((item, index) => {
-                        const unitPrice = parseFloat(pricing[item.product_id] || 0);
+                      {/* For approved quotes, show pricing. For others, show items for editing */}
+                      {(quote.status === 'onaylandi' && quote.pricing && quote.pricing.length > 0 
+                        ? quote.pricing 
+                        : quote.items
+                      ).map((item, index) => {
+                        const unitPrice = quote.status === 'onaylandi' && quote.pricing 
+                          ? item.unit_price 
+                          : parseFloat(pricing[item.product_id] || 0);
                         const total = unitPrice * item.quantity;
+                        const isApproved = quote.status === 'onaylandi' && quote.pricing && quote.pricing.length > 0;
+                        
                         return (
                           <tr key={index} style={styles.tableRow}>
                             <td style={styles.tableCell}>{item.product_name}</td>
                             <td style={styles.tableCell}>{item.quantity}</td>
                             <td style={styles.tableCell}>
-                              <Input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                value={pricing[item.product_id] || ''}
-                                onChange={(e) => setPricing({ ...pricing, [item.product_id]: e.target.value })}
-                                placeholder="0.00"
-                                data-testid={`unit-price-${index}`}
-                                style={{ width: '120px' }}
-                              />
+                              {isApproved ? (
+                                <strong>{unitPrice.toFixed(2)} TL</strong>
+                              ) : (
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  value={pricing[item.product_id] || ''}
+                                  onChange={(e) => setPricing({ ...pricing, [item.product_id]: e.target.value })}
+                                  placeholder="0.00"
+                                  data-testid={`unit-price-${index}`}
+                                  style={{ width: '120px' }}
+                                />
+                              )}
                             </td>
                             <td style={styles.tableCell}>
                               <strong>{total.toFixed(2)} TL</strong>
@@ -357,23 +373,28 @@ const AdminQuoteDetail = () => {
                           GENEL TOPLAM:
                         </td>
                         <td style={{ ...styles.tableCell, fontWeight: 'bold', fontSize: '18px', color: '#3BB77E' }}>
-                          {quote.items.reduce((sum, item) => {
-                            const unitPrice = parseFloat(pricing[item.product_id] || 0);
-                            return sum + (unitPrice * item.quantity);
-                          }, 0).toFixed(2)} TL
+                          {(quote.status === 'onaylandi' && quote.pricing && quote.pricing.length > 0 
+                            ? quote.pricing.reduce((sum, item) => sum + item.total_price, 0)
+                            : quote.items.reduce((sum, item) => {
+                                const unitPrice = parseFloat(pricing[item.product_id] || 0);
+                                return sum + (unitPrice * item.quantity);
+                              }, 0)
+                          ).toFixed(2)} TL
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                  <Button
-                    onClick={savePricing}
-                    disabled={updating}
-                    style={{ ...styles.saveButton, marginTop: '16px' }}
-                    data-testid="save-pricing-button"
-                  >
-                    <DollarSign size={18} style={{ marginRight: '8px' }} />
-                    Fiyatlandırmayı Kaydet
-                  </Button>
+                  {quote.status !== 'onaylandi' && (
+                    <Button
+                      onClick={savePricing}
+                      disabled={updating}
+                      style={{ ...styles.saveButton, marginTop: '16px' }}
+                      data-testid="save-pricing-button"
+                    >
+                      <DollarSign size={18} style={{ marginRight: '8px' }} />
+                      Fiyatlandırmayı Kaydet
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
