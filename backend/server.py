@@ -575,6 +575,97 @@ async def init_admin():
     await db.admins.insert_one(admin.model_dump())
     return {"message": "Admin oluşturuldu", "username": "admin", "password": "admin123"}
 
+# Admin Management endpoints
+@api_router.get("/admin/users")
+async def get_admin_users(admin: dict = Depends(get_current_admin)):
+    """Get all admin users (super admin only)"""
+    if admin.get("role") != "super_admin":
+        raise HTTPException(status_code=403, detail="Sadece süper admin yetkisi gerekli")
+    
+    admins = await db.admins.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    return admins
+
+@api_router.post("/admin/users")
+async def create_admin_user(new_admin: AdminCreate, admin: dict = Depends(get_current_admin)):
+    """Create new admin user (super admin only)"""
+    if admin.get("role") != "super_admin":
+        raise HTTPException(status_code=403, detail="Sadece süper admin yetkisi gerekli")
+    
+    # Check if username exists
+    existing = await db.admins.find_one({"username": new_admin.username})
+    if existing:
+        raise HTTPException(status_code=400, detail="Bu kullanıcı adı zaten kullanılıyor")
+    
+    # Check if email exists
+    if new_admin.email:
+        existing_email = await db.admins.find_one({"email": new_admin.email})
+        if existing_email:
+            raise HTTPException(status_code=400, detail="Bu email zaten kullanılıyor")
+    
+    # Create new admin
+    admin_data = {
+        "id": str(uuid.uuid4()),
+        "username": new_admin.username,
+        "email": new_admin.email,
+        "password_hash": get_password_hash(new_admin.password),
+        "role": new_admin.role,
+        "permissions": new_admin.permissions,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by": admin["id"],
+        "is_active": True
+    }
+    
+    await db.admins.insert_one(admin_data)
+    
+    return {"message": "Admin kullanıcısı oluşturuldu", "username": new_admin.username}
+
+@api_router.put("/admin/users/{admin_id}")
+async def update_admin_user(admin_id: str, update_data: AdminUpdate, admin: dict = Depends(get_current_admin)):
+    """Update admin user (super admin only)"""
+    if admin.get("role") != "super_admin":
+        raise HTTPException(status_code=403, detail="Sadece süper admin yetkisi gerekli")
+    
+    # Don't allow updating self
+    if admin_id == admin["id"]:
+        raise HTTPException(status_code=400, detail="Kendi hesabınızı bu şekilde güncelleyemezsiniz")
+    
+    update_dict = {}
+    if update_data.email:
+        update_dict["email"] = update_data.email
+    if update_data.password:
+        update_dict["password_hash"] = get_password_hash(update_data.password)
+    if update_data.role:
+        update_dict["role"] = update_data.role
+    if update_data.permissions:
+        update_dict["permissions"] = update_data.permissions
+    if update_data.is_active is not None:
+        update_dict["is_active"] = update_data.is_active
+    
+    if not update_dict:
+        raise HTTPException(status_code=400, detail="Güncellenecek alan yok")
+    
+    result = await db.admins.update_one({"id": admin_id}, {"$set": update_dict})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    
+    return {"message": "Admin güncellendi"}
+
+@api_router.delete("/admin/users/{admin_id}")
+async def delete_admin_user(admin_id: str, admin: dict = Depends(get_current_admin)):
+    """Delete admin user (super admin only)"""
+    if admin.get("role") != "super_admin":
+        raise HTTPException(status_code=403, detail="Sadece süper admin yetkisi gerekli")
+    
+    # Don't allow deleting self
+    if admin_id == admin["id"]:
+        raise HTTPException(status_code=400, detail="Kendi hesabınızı silemezsiniz")
+    
+    result = await db.admins.delete_one({"id": admin_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Admin bulunamadı")
+    
+    return {"message": "Admin silindi"}
+
 # Category endpoints
 @api_router.get("/categories", response_model=List[Category])
 async def get_categories():
