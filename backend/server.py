@@ -60,6 +60,25 @@ class Admin(BaseModel):
     username: str
     password_hash: str
     email: Optional[str] = None
+    role: str = "admin"  # "super_admin" or "admin"
+    permissions: List[str] = ["all"]  # ["messages", "quotes", "products", "customers", etc.] or ["all"]
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_by: Optional[str] = None  # ID of the admin who created this user
+    is_active: bool = True
+
+class AdminCreate(BaseModel):
+    username: str
+    email: str
+    password: str
+    role: str = "admin"
+    permissions: List[str] = ["all"]
+
+class AdminUpdate(BaseModel):
+    email: Optional[str] = None
+    password: Optional[str] = None
+    role: Optional[str] = None
+    permissions: Optional[List[str]] = None
+    is_active: Optional[bool] = None
 
 class AdminLogin(BaseModel):
     username: str
