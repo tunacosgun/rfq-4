@@ -132,11 +132,49 @@ const CustomerPanelNew = () => {
     }
   };
 
-  const handleConvertToOrder = async (quoteId) => {
-    const selected = selectedItems[quoteId] || [];
+  const updateQuantity = (quoteId, productId, newQuantity) => {
+    setEditedQuantities(prev => ({
+      ...prev,
+      [quoteId]: {
+        ...(prev[quoteId] || {}),
+        [productId]: Math.max(0, newQuantity)
+      }
+    }));
+  };
+
+  const calculateUpdatedTotal = (quote) => {
+    if (!quote.pricing) return 0;
     
-    if (selected.length === 0) {
-      toast.error('Lütfen en az bir ürün seçin');
+    return quote.pricing.reduce((sum, item) => {
+      const quantity = editedQuantities[quote.id]?.[item.product_id] !== undefined
+        ? editedQuantities[quote.id][item.product_id]
+        : item.quantity;
+      return sum + (quantity * item.unit_price);
+    }, 0);
+  };
+
+  const handleConvertToOrder = async (quoteId) => {
+    const quote = quotes.find(q => q.id === quoteId);
+    if (!quote || !quote.pricing) {
+      toast.error('Teklif bulunamadı');
+      return;
+    }
+
+    // Build selected items with quantities
+    const selectedItems = quote.pricing
+      .map(item => {
+        const quantity = editedQuantities[quoteId]?.[item.product_id] !== undefined
+          ? editedQuantities[quoteId][item.product_id]
+          : item.quantity;
+        return {
+          product_id: item.product_id,
+          quantity: quantity
+        };
+      })
+      .filter(item => item.quantity > 0);
+
+    if (selectedItems.length === 0) {
+      toast.error('Lütfen en az bir ürün seçin (adet > 0)');
       return;
     }
 
@@ -146,11 +184,16 @@ const CustomerPanelNew = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ selected_items: selected }),
+        body: JSON.stringify({ selected_items: selectedItems }),
       });
 
       if (response.ok) {
-        toast.success('Sipariş başarıyla oluşturuldu!');
+        toast.success('Sipariş başarıyla oluşturuldu! Admin onayından sonra işlenecektir.');
+        setEditedQuantities(prev => {
+          const newState = { ...prev };
+          delete newState[quoteId];
+          return newState;
+        });
         fetchQuotes(); // Refresh quotes
       } else {
         const error = await response.json();
