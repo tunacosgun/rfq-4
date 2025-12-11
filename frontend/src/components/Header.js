@@ -55,6 +55,16 @@ const ModernHeader = ({ settings }) => {
     { path: '/iletisim', label: settings?.header_menu_contact || 'İletişim', icon: Mail },
   ];
 
+  // Add online catalog if URL is provided
+  if (settings?.catalog_pdf_url) {
+    menuItems.splice(2, 0, {
+      path: settings.catalog_pdf_url,
+      label: 'Online Katalog',
+      icon: Package,
+      isExternal: true
+    });
+  }
+
   const headerBgColor = settings?.header_bg_color || '#FFFFFF';
   const primaryColor = settings?.header_link_active_color || '#e06c1b';
   const cartBgColor = settings?.header_cart_button_bg || '#E06C1B';
