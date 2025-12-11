@@ -60,7 +60,7 @@ const CustomerLogin = () => {
     };
   }, [isAuthenticated, navigate, location]);
 
-  const handleGoogleResponse = async (response) => {
+  const handleGoogleResponse = useCallback(async (response) => {
     try {
       const res = await fetch(`${backendUrl}/api/customer/google-login`, {
         method: 'POST',
@@ -80,9 +80,9 @@ const CustomerLogin = () => {
       console.error('Google login error:', error);
       toast.error('Bir hata oluştu');
     }
-  };
+  }, [backendUrl, login]);
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       const response = await fetch(`${backendUrl}/api/settings`);
       if (response.ok) {
@@ -92,7 +92,7 @@ const CustomerLogin = () => {
     } catch (error) {
       console.error('Settings fetch error:', error);
     }
-  };
+  }, [backendUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
