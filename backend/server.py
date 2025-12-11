@@ -20,6 +20,8 @@ import shutil
 from services.email_service import email_service
 from services.pdf_service import pdf_service
 from services.visitor_tracking import track_visitor
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 
 ROOT_DIR = Path(__file__).parent
