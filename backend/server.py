@@ -217,6 +217,13 @@ class FAQUpdate(BaseModel):
     order: Optional[int] = None
     is_active: Optional[bool] = None
 
+class PasswordResetRequest(BaseModel):
+    email: str
+
+class PasswordReset(BaseModel):
+    token: str
+    new_password: str
+
 class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     slug: Optional[str] = None
