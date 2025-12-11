@@ -858,6 +858,133 @@ async def customer_login(data: CustomerLogin):
         }
     }
 
+# Customer Password Reset
+@api_router.post("/customer/forgot-password")
+async def customer_forgot_password(request: PasswordResetRequest):
+    """Request password reset for customer"""
+    customer = await db.customers.find_one({"email": request.email}, {"_id": 0})
+    if not customer:
+        # Don't reveal if email exists or not for security
+        return {"message": "Eğer email kayıtlıysa, sıfırlama linki gönderildi"}
+    
+    # Generate reset token
+    reset_token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    # Store reset token
+    await db.password_resets.insert_one({
+        "email": request.email,
+        "token": reset_token,
+        "type": "customer",
+        "expires_at": expires_at,
+        "used": False,
+        "created_at": datetime.now(timezone.utc)
+    })
+    
+    # Get settings for email
+    settings = await db.settings.find_one({}, {"_id": 0}) or {}
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+    reset_link = f"{frontend_url}/reset-password?token={reset_token}"
+    
+    # Send email
+    email_service.send_password_reset_email(
+        request.email,
+        customer['name'],
+        reset_link,
+        settings
+    )
+    
+    return {"message": "Eğer email kayıtlıysa, sıfırlama linki gönderildi"}
+
+@api_router.post("/customer/reset-password")
+async def customer_reset_password(reset: PasswordReset):
+    """Reset customer password with token"""
+    # Find valid token
+    reset_doc = await db.password_resets.find_one({
+        "token": reset.token,
+        "type": "customer",
+        "used": False,
+        "expires_at": {"$gt": datetime.now(timezone.utc)}
+    })
+    
+    if not reset_doc:
+        raise HTTPException(status_code=400, detail="Geçersiz veya süresi dolmuş token")
+    
+    # Update customer password
+    new_hash = get_password_hash(reset.new_password)
+    await db.customers.update_one(
+        {"email": reset_doc['email']},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    # Mark token as used
+    await db.password_resets.update_one(
+        {"token": reset.token},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Şifreniz başarıyla değiştirildi"}
+
+# Admin Password Reset
+@api_router.post("/admin/forgot-password")
+async def admin_forgot_password(request: PasswordResetRequest):
+    """Request password reset for admin"""
+    admin = await db.admins.find_one({"email": request.email}, {"_id": 0})
+    if not admin:
+        return {"message": "Eğer email kayıtlıysa, sıfırlama linki gönderildi"}
+    
+    reset_token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    await db.password_resets.insert_one({
+        "email": request.email,
+        "token": reset_token,
+        "type": "admin",
+        "expires_at": expires_at,
+        "used": False,
+        "created_at": datetime.now(timezone.utc)
+    })
+    
+    settings = await db.settings.find_one({}, {"_id": 0}) or {}
+    frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+    reset_link = f"{frontend_url}/admin/reset-password?token={reset_token}"
+    
+    email_service.send_password_reset_email(
+        request.email,
+        admin.get('username', 'Admin'),
+        reset_link,
+        settings,
+        is_admin=True
+    )
+    
+    return {"message": "Eğer email kayıtlıysa, sıfırlama linki gönderildi"}
+
+@api_router.post("/admin/reset-password")
+async def admin_reset_password(reset: PasswordReset):
+    """Reset admin password with token"""
+    reset_doc = await db.password_resets.find_one({
+        "token": reset.token,
+        "type": "admin",
+        "used": False,
+        "expires_at": {"$gt": datetime.now(timezone.utc)}
+    })
+    
+    if not reset_doc:
+        raise HTTPException(status_code=400, detail="Geçersiz veya süresi dolmuş token")
+    
+    new_hash = get_password_hash(reset.new_password)
+    await db.admins.update_one(
+        {"email": reset_doc['email']},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    await db.password_resets.update_one(
+        {"token": reset.token},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Şifreniz başarıyla değiştirildi"}
+
 @api_router.get("/customer/{customer_id}")
 async def get_customer_by_id(customer_id: str):
     """Get customer by ID"""
