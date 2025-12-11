@@ -686,9 +686,9 @@ const ProductsPage = () => {
         .product-image-element {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           display: block;
-          padding: 8px;
+          padding: 12px;
           transition: transform 0.4s ease;
         }
 
