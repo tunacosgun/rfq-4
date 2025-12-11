@@ -64,10 +64,10 @@ const CustomerLogin = () => {
 
   const handleGoogleResponse = useCallback(async (response) => {
     try {
-      const res = await fetch(`${backendUrl}/api/customer/google-login`, {
+      const res = await fetch(`${backendUrl}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: response.credential }),
+        body: JSON.stringify({ credential: response.credential }),
       });
 
       if (res.ok) {
