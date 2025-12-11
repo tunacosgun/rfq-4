@@ -1011,9 +1011,9 @@ const CustomerPanelNew = () => {
                               fontSize: '18px',
                               color: '#065F46'
                             }}>
-                              <span>Seçili Ürünler Toplamı:</span>
+                              <span>Toplam:</span>
                               <span>
-                                ₺{calculateSelectedTotal(quote).toLocaleString('tr-TR')}
+                                ₺{calculateUpdatedTotal(quote).toLocaleString('tr-TR')}
                               </span>
                             </div>
                             
@@ -1022,35 +1022,35 @@ const CustomerPanelNew = () => {
                                 e.stopPropagation();
                                 handleConvertToOrder(quote.id);
                               }}
-                              disabled={(selectedItems[quote.id] || []).length === 0}
+                              disabled={calculateUpdatedTotal(quote) === 0}
                               style={{
                                 width: '100%',
                                 marginTop: '20px',
                                 padding: '16px',
-                                background: (selectedItems[quote.id] || []).length === 0 ? '#D1D5DB' : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                                background: calculateUpdatedTotal(quote) === 0 ? '#D1D5DB' : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '12px',
                                 fontSize: '16px',
                                 fontWeight: '700',
-                                cursor: (selectedItems[quote.id] || []).length === 0 ? 'not-allowed' : 'pointer',
+                                cursor: calculateUpdatedTotal(quote) === 0 ? 'not-allowed' : 'pointer',
                                 transition: 'all 0.3s',
-                                boxShadow: (selectedItems[quote.id] || []).length === 0 ? 'none' : '0 4px 12px rgba(16, 185, 129, 0.3)'
+                                boxShadow: calculateUpdatedTotal(quote) === 0 ? 'none' : '0 4px 12px rgba(16, 185, 129, 0.3)'
                               }}
                               onMouseEnter={(e) => {
-                                if ((selectedItems[quote.id] || []).length > 0) {
+                                if (calculateUpdatedTotal(quote) > 0) {
                                   e.target.style.transform = 'translateY(-2px)';
                                   e.target.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.4)';
                                 }
                               }}
                               onMouseLeave={(e) => {
-                                if ((selectedItems[quote.id] || []).length > 0) {
+                                if (calculateUpdatedTotal(quote) > 0) {
                                   e.target.style.transform = 'translateY(0)';
                                   e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
                                 }
                               }}
                             >
-                              Seçili Ürünlerle Sipariş Oluştur ({(selectedItems[quote.id] || []).length} ürün)
+                              Siparişi Onayla ve Gönder
                             </button>
                           </div>
                         )}
