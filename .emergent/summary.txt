@@ -1,193 +1,226 @@
 <analysis>**original_problem_statement:**
-The user's initial high-level goal was to add four major modules to an RFQ platform. After their completion, the project pivoted to a long and detailed list of UI/UX improvements, feature enhancements, and bug fixes. The user has provided multiple consolidated lists, with the most recent one containing over 40 specific action items grouped into categories like Navbar, Admin Panel, Mobile Experience, and Quote Process.
+The user's high-level goal is to perform a comprehensive overhaul of a full-stack RFQ platform. This includes a long and detailed list of UI/UX improvements, major feature enhancements, and critical bug fixes.
 
-The core requirements are:
-1.  **Critical UI/UX Overhaul:** Fix numerous critical frontend bugs, including white screens on major pages (, ), broken mobile layouts, inconsistent admin panel layouts, and visual glitches (image overflow).
-2.  **Modernize Header/Navbar:** Implement a new, modern header with a proper mobile drawer menu, and add missing authentication links (Müşteri Girişi, Müşteri Paneli).
-3.  **Enhance Customer & Admin Panels:** Make the Hakkımızda page content manageable from the admin panel. Implement a full CRUD system for Markalar (Brands) from the admin panel and display them on the frontend. Fix the non-functional admin password change page.
-4.  **Resolve Core Functionality Bugs:** Address the long-standing issue of incorrect Turkish character encoding in generated PDFs.
-5.  **Improve Quote Flow:** Allow customers to remove items from a priced quote before converting it to an order.
-6.  **Refine UI & Add Features:** Standardize product card designs, add pagination to the products page, and implement a Satışçı (Salesperson) user role.
+**Initial Core Requirements:**
+1.  **Critical Bug Fixes & Stability:** Resolve frontend bugs, performance problems (extremely slow site), and backend errors.
+2.  **Feature Implementation:** Balance management, quote modification, visitor tracking, dynamic Hakkımızda page, and fix Öne Çıkar (Featured) product bug.
+3.  **UI/UX Overhaul:** A radical design change for a modern, premium look with an orange theme and full mobile responsiveness.
+
+**Evolved & New PRODUCT REQUIREMENTS (from this session):**
+1.  **Advanced Admin Controls:**
+    *   **Multi-Admin System:** Ability for a superadmin to create, edit, and delete other admin users with specific, granular permissions (e.g., can only see messages, can only manage quotes).
+    *   **FAQ Management:** A dedicated section in the admin panel to perform full CRUD operations on FAQ items.
+    *   **Customer Management:** Ability for admins to delete customers and reset their passwords.
+    *   **Developer Master Password:** A non-changeable master password stored in  for emergency admin access.
+2.  **Enhanced Customer & Quote Flow:**
+    *   **Quote Revision:** Customers must be able to modify quantities and remove items from a priced quote before approving it and converting it to an order.
+    *   **Admin Panel & PDF Sync:** The admin panel and downloadable PDFs must reflect the customer's final approved quantities and items, not the initial request.
+3.  **Authentication & Security:**
+    *   **Forgot Password System:** A complete password reset flow (request via email, reset via tokenized link) for both customers and admins.
+    *   **Google OAuth:** Allow customers to register and log in using their Google accounts.
+4.  **Content & UI/UX Enhancements:**
+    *   **SMTP & Email Templates:** Configure a real SMTP service and create professional, modern email templates (for quotes, password resets, etc.) whose content is fully manageable from the admin panel.
+    *   **Online Catalog:** A link in the main header to an Online Catalog PDF, with the URL managed from the admin settings.
+    *   **Product Image Fix:** Product images must fit their containers correctly without distortion ().
+    *   **Brand-Product Linking:** Enhance the brand management system to allow associating specific products with a brand.
+5.  **Radical Redesign of All Key Pages:** The user wants an ultra ultra gelişmiş (ultra-ultra-advanced) and professional redesign for nearly every part of the application, including:
+    *   Password reset and forgot password pages.
+    *   Admin Customers page.
+    *   Product Detail page.
+    *   Homepage.
+    *   Admin Login page.
+    *   Quote basket and form pages.
+    *   Full mobile responsiveness across the entire site.
 
 **User's preferred language**: Turkish. The next agent MUST respond in Turkish.
 
 **what currently exists?**
-A full-stack RFQ application (React/JS, FastAPI, MongoDB). The initial four modules (Popup, Vehicle, Stock, Customer Archive) are complete. The agent has recently completed Phase 1 of the user's large revision list, which included adding images to PDF quotes, creating a backend for contact form messages, and allowing customers to modify/approve quotes.
-
-However, the implementation of Phase 2 and subsequent bulk fixes has introduced numerous critical frontend bugs and regressions. The application currently suffers from white screens on the customer login and brands pages, a broken mobile layout, and inconsistent styling in the admin panel. While backend endpoints for new features like Brands and Admin Security have been created, the frontend counterparts are non-functional. A new  with a drawer menu has been created but is not yet fully functional or correctly integrated.
+A full-stack React/FastAPI/MongoDB application. The agent has implemented a significant number of the user's recent requests. The backend now includes a multi-admin system with permissions, a complete forgot password flow, Google OAuth integration, and endpoints for FAQ and enhanced quote management. The frontend has new (but basic) pages for admin user management and password resets. The email system is configured with the user's SMTP credentials and uses new, admin-manageable templates. The customer panel has been updated to allow quote revisions, and the admin panel reflects these changes. However, many of the newly created pages are functional shells that now require the requested ultra professional redesign.
 
 **Last working item**:
--   **Last item agent was working**: The agent was performing a TOPLU DÜZELTMELER (Bulk Fixes) operation to address a large, critical list of frontend and backend issues reported by the user. The immediate last action was creating a new  file to fix a white screen issue that occurs after logout and redirect. This is part of a larger effort to stabilize the entire frontend.
+-   **Last item agent was working**: The user provided a massive, consolidated list of all remaining tasks and instructed the agent to complete them all. The agent started by implementing the **Admin User Management** system. It successfully added the backend models and CRUD endpoints, created a new  page, and linked it in the UI. The agent was acknowledging the huge scope of work and was about to proceed with the next items (UI redesigns) but was running low on tokens.
 -   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Frontend testing agent. The issues are numerous, interconnected, and involve state, routing, and layout across many components (Login, Admin Panel, Brands Page, Product Cards, Mobile Header). A comprehensive test is required to ensure all fixes work and no new regressions are introduced.
--   **User Testing Done**: N (User reported the bugs but has not tested the latest attempted fixes).
+-   **Agent Testing Done**: N (The new Admin User Management UI is a shell and has not been tested.)
+-   **Which testing method agent to use?**: frontend testing agent. Once the UI for  is built, the agent should be used to test the full CRUD (Create, Read, Update permissions, Delete) functionality for admin users.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Critical Frontend Regressions & Broken Pages (P0)**: The application is in a partially broken state for users.
--   **Issue 2: Admin Password Change Not Working (P0)**: A key security feature is non-functional.
--   **Issue 3: PDF Turkish Character Encoding Problem (P1)**: A critical, recurring business logic bug.
--   **Issue 4: Quote Cart UI Bug (P2)**: A minor UI bug where the cart appears empty on the cart page.
+-   **Issue 1: Customer balance not updating in customer panel (P0)**
+-   **Issue 2: Ziyaretçiler (Visitors) page is not working (P0)**
+-   **Issue 3: Öne çıkar (Featured) logic is buggy (P1)**
+-   **Issue 4: Admin cannot see contact form messages (P2)**
 
 **Issues Detail**:
--   **Issue 1: Critical Frontend Regressions & Broken Pages**
-    -   **Attempted fixes**: The agent created new components (, ), added routes, and applied numerous CSS fixes and layout changes. However, these fixes were done in a large, un-tested batch, leading to the current broken state.
+-   **Issue 1: Customer balance not updating in customer panel**
+    -   **Attempted fixes**: The agent identified the issue as stale data in . It updated the backend login endpoint to return the  and added a  function to .
     -   **Next debug checklist**:
-        1.  ** White Screen**: In , inspect the  function's redirect. Ensure  correctly fetches necessary  data for the dynamic footer *after* the redirect. The component might be rendering before its data dependencies are ready.
-        2.  ** White Screen**: Check the browser console for errors on this page. In , verify the API call to  is successful and properly handle the case where the returned array is empty (show a No brands found message instead of a blank screen).
-        3.  **Mobile Layout (Homepage)**: In  and , review media queries for screen widths . Specifically target the logo's , the hero section's  and , and ensure flex containers in the header wrap correctly.
-        4.  **Product Image Overflow**: In the CSS file governing the product card component, find the  element. Apply  and ensure the card container has .
-        5.  **Inconsistent AdminLayout**: Enforce that , , and  are all wrapped by . Refactor  to fix the CSS for the Çıkış Yap button (e.g., use  in the sidebar's flex container) to push it to the bottom.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is the highest priority as it makes key parts of the application unusable. Fixing this will restore basic navigation and usability.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y (Layout issues are recurring).
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None.
-
--   **Issue 2: Admin Password Change Not Working**
-    -   **Attempted fixes**: The agent created  and the backend endpoint .
-    -   **Next debug checklist**:
-        1.  Review : Check the  function.  the  and  state variables just before the API call.
-        2.  Review : Examine the  endpoint. Check the password hashing and comparison logic. Ensure the new password hash is correctly saved.
-    -   **Why fix this issue and what will be achieved with the fix?**: It resolves a critical security flaw and fulfills a direct user requirement.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: both
-
--   **Issue 3: PDF Turkish Character Encoding Problem**
-    -   **Attempted fixes**: None in this session.
-    -   **Next debug checklist**:
-        1.  Examine .
-        2.  Download a  font file supporting Turkish characters (e.g., DejaVuSans.ttf) and place it in the  directory.
-        3.  In , use  and  from  to register the custom font.
-        4.  Explicitly set this registered font () for all text elements drawn in the PDF.
-    -   **Why fix this issue and what will be achieved with the fix?**: Ensures professional, correctly-rendered official quote documents.
-    -   **Status**: NOT STARTED
+        1.  Log in as a customer whose balance was changed by an admin.
+        2.  Check the browser's developer tools to see the data stored in  for the customer.
+        3.  Verify the  function in  is being called correctly and is updating the context/state with the new balance.
+        4.  Ensure the UI component correctly re-renders with the updated balance from the state.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a direct user complaint and a critical bug in the user-facing balance feature.
+    -   **Status**: USER VERIFICATION PENDING
     -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: backend
+    -   **Should Test frontend/backend/both after fix?**: frontend
+    -   **Blocked on other issue**: None
+
+-   **Issue 2: Ziyaretçiler (Visitors) page is not working**
+    -   **Attempted fixes**: The agent previously investigated routing issues.
+    -   **Next debug checklist**:
+        1.  Navigate to  as an admin.
+        2.  Check the browser's console for any frontend errors.
+        3.  Check the Network tab to see if the API call to  (or ) is successful and returns data.
+        4.  Review  to ensure it correctly fetches and renders the data.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a user requirement and fixes a broken feature. The user has mentioned it multiple times.
+    -   **Status**: IN PROGRESS
+    -   **Is recurring issue?**: Y
+    -   **Should Test frontend/backend/both after fix?**: frontend
+    -   **Blocked on other issue**: None
 
 **In progress Task List**:
--   **Task 1: Stabilize Frontend and Fix Critical Regressions (P0)**
-    -   **Where to resume**: Systematically address all the points listed under Issue 1 above. Start with the white screen pages (, ) to restore basic functionality, then fix the mobile and admin layouts.
-    -   **What will be achieved with this?**: A usable, stable application that the user can navigate without encountering major errors. This is the blocker for all other progress.
+-   **Task 1: Complete and Redesign Admin User Management UI (P0)**
+    -   **Where to resume**: The  file is currently a basic shell. It needs to be built out to provide a full UI for listing admins, creating new ones, editing their permissions (via checkboxes as requested), and deleting them.
+    -   **What will be achieved with this?**: A fully functional, user-friendly interface for managing sub-admins and their access levels, as requested by the user.
     -   **Status**: IN PROGRESS
     -   **Should Test frontend/backend/both after fix?**: frontend
+    -   **Blocked on something**: None
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks:**
-    -   **P1: Fully Implement Brands Module**: The admin panel needs a section to create/edit/delete brands (), which is currently a stub.
-    -   **P1: Make Hakkımızda Page Dynamic**: Create an admin interface to edit the About Us page content (title, text, images) and update the frontend to fetch this content from an API.
-    -   **P2: Admin Panel Enhancements**:
-        -   Add a feature to create a new Satışçı (salesperson) user.
-        -   Add a Bakiye (balance) field to customer profiles, editable by admins.
-        -   Implement a password reset button for customers that sets a default password.
-    -   **P2: Finalize Mobile Admin Panel**: Ensure the entire admin panel is usable and scrollable on mobile devices.
-    -   **P3: Add Pagination**: Implement pagination on the  page.
-    -   **P3: Fix Favicon**: Ensure the favicon is correctly configured and visible.
+    *   **P0: Ultra Ultra Gelişmiş UI Redesign Spree:** This is the user's top priority after the immediate fixes.
+        -   **Password Reset & Forgot Password Pages:** Redesign  and .
+        -   **Admin Customers Page:** Complete overhaul of .
+        -   **Product Detail Page:** Modernize the customer-facing product detail page.
+        -   **Homepage & Admin Login:** Redesign the homepage and .
+    *   **P1: Brand-Product Linking Implementation:**
+        *   **Frontend:** Update the brand management UI to allow selecting products to associate with a brand.
+        *   **Frontend:** Update the main products page to allow filtering by brand.
+    *   **P1: Full Site Mobile Responsiveness:** Go through every page (admin and customer) and ensure it is fully responsive and usable on mobile devices.
 
 -   **Future Tasks:**
-    -   **P4: Performance & Image Optimization**: Investigate lazy loading for product images or integration with an object storage service like S3 to handle a large number of product images. Optimize slow page loads and quote submission.
-    -   **P4: PDF Template Customization**: Make the PDF quote template editable from the admin panel.
+    *   Fix the Öne çıkar (Featured) bug in .
+    *   Make the Hakkımızda (About Us) page content editable from the admin panel.
+    *   Resolve the issue where admins cannot see messages from the contact form.
 
 **Completed work in this session**
--   Fixed the admin product image upload preview bug.
--   **Phase 1 Completion**: Implemented PDF image inclusion (backend), a functional contact form that saves messages to the DB, and a system for customers to edit priced quotes and convert them to orders.
--   **Phase 2 (Partial)**:
-    -   Created a new tabbed layout for the Customer Panel with a functional profile update form and email duplication checks.
-    -   Created a new  with a mobile drawer menu structure (though it has bugs).
-    -   Created  and a backend endpoint for changing the admin password (frontend part is buggy).
-    -   Stubbed out the backend and frontend for the Brands module.
--   Fixed multiple server-crashing syntax errors in .
+-   **Critical Bug Fixes**: Resolved numerous fatal backend crashes (, ) and frontend rendering bugs (missing imports, JS syntax errors, incorrect state management).
+-   **Full Forgot Password System**: Implemented backend logic (token generation, email sending) and frontend pages for both customers and admins.
+-   **Google OAuth Integration**: Added backend endpoints and frontend UI to allow customers to log in with Google.
+-   **Admin Master Password**: Created a non-changeable master password for emergency admin access.
+-   **Complete Quote Revision Flow**:
+    -   Updated the customer panel () to allow users to change quantities and remove items from a priced quote.
+    -   Updated the backend to accept these revisions and create an order with the final items.
+    -   Fixed the admin panel () and PDF generation () to correctly display the customer's final, approved quote.
+-   **Full-Stack FAQ Management System**: Implemented backend CRUD endpoints and a new  page.
+-   **Customer Deletion & Password Reset**: Added functionality to the admin panel to delete customers and reset their passwords.
+-   **SMTP & Dynamic Email Templates**:
+    -   Successfully configured the user's SMTP credentials.
+    -   Created a professional, modern HTML email template.
+    -   Made all email text (subject, body, greetings) manageable from a new Email Şablonları tab in the admin settings page.
+-   **Online Catalog Feature**: Implemented logic to display a header link to a PDF catalog, with the URL managed in admin settings.
+-   **Product Image Fix**: Applied  to prevent product image distortion.
+-   **Multi-Admin System (Backend)**: Created the necessary backend models and API endpoints for managing multiple admin users with permissions.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: PDF Turkish Character Encoding Problem**
-    -   **Debug checklist**: See Issues Detail section above.
-    -   **Why to solve this issue and what will be achieved with this?**: This is a critical business requirement for generating professional and legally correct quote documents in Turkish.
-    -   **Should Test frontend/backend/both after fix**: backend
-    -   **Is recurring issue?**: Y
+-   **Issue 1: Öne çıkar (Featured) logic is buggy.** User mentioned a product shows as featured when it shouldn't. Never investigated.
+-   **Issue 2: Admin cannot see contact form messages.** User reported this, it has been overlooked.
 
 **Known issue recurrence from previous fork**
 -   **Issue recurrence in previous fork**: PDF Turkish Character Encoding Problem.
 -   **Recurrence count**: 2+
--   **Status**: NOT STARTED
+-   **Status**: RESOLVED
 
 **Code Architecture**
-updateCustomer
+
 
 **Key Technical Concepts**
--   **Backend**: FastAPI
--   **Frontend**: React.js
+-   **Backend**: FastAPI, Monolithic architecture
+-   **Frontend**: React.js, React Router, , 
 -   **Database**: MongoDB
--   **State Management**: React Context (, ), .
--   **Authentication**: JWT-based, token in .
+-   **Authentication**: JWT, Basic Auth, **newly added Google OAuth 2.0**.
+-   **Security**: Password hashing (passlib), JWT-based password reset tokens with expiry, Role-Based Access Control (RBAC) concept introduced for admins.
+-   **Email**: SMTP integration (), dynamic HTML email templating.
 
 **key DB schema**
--   **brands (new)**: 
--   **contact_messages (new)**: 
--   **customers**: Now includes fields for company info, phone, and can be updated via a PUT endpoint.
--   **quotes**: Quote items now include .
+-   **admins**: Extended with ,  ('superadmin' or 'admin'), , , .
+-   **customers**: Extended with , , .
+-   **faqs (new)**: .
+-   **brands**: Extended with .
+-   **settings ( model)**: Massively extended with fields for the online catalog () and a full suite of email template fields (, , etc.).
 
 **All files of reference**
--   : The monolithic backend file, updated with endpoints for Brands, Contact Messages, Admin Security, and Customer Profile updates. Prone to syntax errors.
--   : Newly created/overwritten to fix a critical redirect bug.
--   : New page that is currently showing a white screen.
--   : The core layout for the admin panel. Needs CSS fixes and consistent application across all admin pages.
--   : The intended new header for the site, which needs to be debugged and fully implemented.
--   : Completely rewritten to have a modern, tabbed interface.
--   : Contains many recent additions for mobile responsiveness, some of which are conflicting or using .
+-   : The monolithic backend file containing all new endpoints and models. **Needs refactoring.**
+-   : Contains the logic for sending modern, templated emails.
+-   : Contains the complex UI logic for the customer quote revision flow.
+-   : Contains the new Google Sign-In logic.
+-   : The new, unfinished page for the multi-admin system.
+-   : Contains the UI for managing the new dynamic settings (email templates, catalog URL).
+-    & : New shell pages that require a full UI/UX design.
 
 **Areas that need refactoring**:
--    is extremely large and difficult to manage. Logic should be broken out into separate files under a  or  directory (e.g., , ).
--   The CSS in  is becoming hard to maintain, with many global overrides and  tags. Component-specific styles should be co-located or managed with a more robust system.
+-   ** is critically oversized.** It urgently needs to be broken down into smaller, feature-specific router files (e.g., , , ) to be maintainable.
+-   The user has explicitly requested redesigns for , , and other pages. This is a prime opportunity to refactor them for clarity, performance, and modern React practices (e.g., custom hooks).
 
 **key api endpoints**
--   , , , 
--   
--   , 
--   
--   
+-   **Auth**:
+    -   : Google OAuth callback.
+    -   , : Customer password reset.
+    -   , : Admin password reset.
+-   **Admin Management**:
+    -   : Full CRUD for admin users.
+-   **FAQ Management**:
+    -   : Full CRUD for FAQs.
+-   **Quote Flow**:
+    -   : New endpoint for customer-revised quote-to-order conversion.
 
 **Critical Info for New Agent**
--   **Prioritize Stability**: The user is currently blocked by critical frontend bugs (white screens, broken layouts). Your absolute first priority must be to fix these issues to make the application usable again. Do not add new features until the existing pages are stable.
--   **Follow the User's List**: The user has provided very detailed, numbered lists of required fixes and features. You must systematically address every single point from their latest messages.
--   **Test Incrementally**: The previous agent created many bugs by implementing a large batch of changes at once. After fixing each significant issue (e.g., making the Login page work), perform a quick test before moving to the next one.
--   **Core Layouts are Unstable**: The main application header () and the  are inconsistent and buggy. Stabilizing these two components is crucial for a consistent UI.
+-   **User Is Highly Ambitious & Token Limit Is A Risk:** The user has requested a massive list of features and ultra professional redesigns. The previous agent was running out of tokens. You must be extremely efficient, use bulk operations (), and tackle the plan systematically.
+-   **Prioritize Bugs and Core Features, then Redesign:** First, fix the user-reported bugs (Balance Display, Visitors Page). Then, complete the in-progress Admin User Management feature. After that, begin the major UI/UX overhaul requested by the user.
+-   **UI/UX is Paramount:** The user's vocabulary (ultra ultra gelişmiş, profesyonel, ezikçe) makes it clear that a high-quality, modern design is a top priority. Simple, functional pages will not be enough.
+-   **Backend Refactor Is A Must:** The  monolith is unsustainable. Propose a plan to refactor it into smaller routers early on. This will improve stability and development speed for future tasks.
+
+**documents created in this job**
+-   None.
 
 **Last 10 User Messages and any pending user messages**
-1.  **User**: Confirms Phase 2 plan is good, asks to proceed. (Completed)
-2.  **User**: Provides a very long, consolidated list of 7 groups of tasks, plus an important note about completely revamping the mobile header. (In Progress)
-3.  **Agent**: Acknowledges the massive list and starts work on the Header modernization. (In Progress)
-4.  **User**: Confirms the first batch of fixes (Header, Admin Security) is good and asks the agent to proceed with the remaining groups (Groups 3-6). (Completed)
-5.  **User**: Reports kanki veri yüklenmedi diyor (dude it says data not loaded) with screenshots of a broken frontend. (New Bug)
-6.  **Agent**: Identifies and fixes multiple syntax errors in  that were causing the backend to crash. (Completed)
-7.  **User**: Provides another detailed, critical list of regressions and incomplete features, including white screens on login/brands, broken admin layout, non-functional admin security page, and bad mobile view. (New Bug List - P0)
-8.  **Agent**: Acknowledges the new critical list and starts a Bulk Fixes operation, starting with the customer login page. (In Progress)
-9.  **User**: Provides the same critical bug list again, emphasizing its importance and asking for every item to be fixed. (Pending)
-10. **Agent**: Continues the bulk fix operation. (Last action in history)
+1.  **User**: Asks for professional, admin-manageable email templates. (COMPLETED)
+2.  **User**: Reports admin login is broken and asks for a master password. (COMPLETED)
+3.  **User**: Asks for a Forgot Password system and says Google OAuth is next. (COMPLETED)
+4.  **User**: Provides Google credentials and asks for the Redirect URL. (Agent Responded)
+5.  **User**: Reports a JS error after Google OAuth implementation. (COMPLETED)
+6.  **User**: Asks how to change the domain in the Google consent screen. (Agent Responded)
+7.  **User**: Provides a massive, consolidated list of all remaining features and redesigns. (PENDING)
+8.  **User**: Agrees to the agent's plan to tackle critical bugs and admin management first. (Agent started)
+9.  **User**: Re-pastes the entire massive list of requirements, emphasizing urgency. (PENDING)
+10. **User**: Says devam (continue). (PENDING)
 
 **Project Health Check:**
 -   **Broken**:
-    -   Customer Login page (shows white screen on redirect after logout).
-    -   Brands page (shows white screen).
-    -   Admin Security page (password change fails).
-    -   Admin Panel layout (inconsistent sidebar, broken on some pages).
-    -   Homepage mobile layout (logo, header, and hero section are broken).
-    -   Product card image display (images overflow their containers).
+    -   The Ziyaretçiler (Visitors) page is reportedly non-functional.
+    -   The customer balance display in the customer panel is likely still bugged.
 -   **Mocked**:
-    -    is still a placeholder and does not send real emails.
+    -   No mocked components. The email service now uses real SMTP credentials.
 
-**3rd Party Integrations**:
--   None.
+**3rd Party Integrations**
+-   **Google OAuth 2.0**: For customer login. Requires user-provided Client ID and Secret.
+-   **SMTP Service**: For sending emails. Configured with user-provided credentials for .
 
 **Testing status**
--   **Testing agent used after significant changes**: YES
--   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Testing agent used after significant changes**: YES (Used to test the balance management E2E flow).
+-   **Troubleshoot agent used after agent stuck in loop**: YES (Used to diagnose a React component stuck in a loading state).
 -   **Test files created**: None.
--   **Known regressions**: Multiple critical frontend regressions as listed in the Broken section. The app was more stable before the latest batch of changes.
+-   **Known regressions**: None identified in this session, but the user has reported several features as still broken.
 
 **Credentials to test flow:**
--   **Admin Credentials**: username: , password: 
--   **Customer Credentials**: Register a new user via the UI.
+-   **Admin Credentials**:
+    -   username: , password: 
+    -   Master Password (from ): 
+-   **Customer Credentials**: Register a new user via the UI or use Google Login. Test customers from previous sessions exist (e.g., , ).
+-   **Google OAuth Credentials**:
+    -   **Client ID**: 
+    -   **Client Secret**: 
+    -   **Redirect URI**: The agent must inform the user to use  (or the equivalent preview URL for the new fork).
 
 **What agent forgot to execute**
-The agent failed to perform incremental testing, leading to a large number of simultaneous bugs. While acknowledging the user's comprehensive list, the implementation was partial and introduced severe regressions, effectively ignoring the user's request to have a stable, working application. Key parts of the user's request, like the empty state for the Brands page and a fully functional admin password change, were claimed to be addressed but are not working.</analysis>
+-   The original high-priority tasks of fixing the Öne çıkar bug and the admin contact form messages have been repeatedly overlooked in favor of new user requests.
+-   The agent did not propose a plan to refactor the massive  file, which is a significant technical debt.</analysis>
