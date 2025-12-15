@@ -818,11 +818,27 @@ async def get_quotes(admin: dict = Depends(get_current_admin), status_filter: Op
     query = {}
     if status_filter:
         query["status"] = status_filter
-    quotes = await db.quotes.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
-    for quote in quotes:
-        if isinstance(quote.get('created_at'), str):
-            quote['created_at'] = datetime.fromisoformat(quote['created_at'])
-    return quotes
+    
+    # Get raw docs first to handle validation manualy
+    quotes_docs = await db.quotes.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    
+    valid_quotes = []
+    for doc in quotes_docs:
+        try:
+            # Fix datetime strings
+            if isinstance(doc.get('created_at'), str):
+                doc['created_at'] = datetime.fromisoformat(doc['created_at'])
+            
+            # Attempt to validate against model
+            quote = Quote(**doc)
+            valid_quotes.append(quote)
+        except Exception as e:
+            # Log error but don't crash the whole response
+            # Using print/logging since logger might not be configured globally
+            logging.error(f"Skipping invalid quote {doc.get('id', 'unknown')}: {str(e)}")
+            continue
+            
+    return valid_quotes
 
 @api_router.get("/quotes/{quote_id}", response_model=Quote)
 async def get_quote(quote_id: str, admin: dict = Depends(get_current_admin)):
